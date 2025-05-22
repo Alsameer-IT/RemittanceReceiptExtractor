@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Remittance Receipt Extractor</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #f0f4f8 0%, #d9e2ec 100%);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .login-container {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+        h2 {
+            color: #2c3e50;
+            margin-bottom: 30px;
+            font-size: 24px;
+            font-weight: 600;
+        }
+        .input-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #34495e;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #dfe6e9;
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+        }
+        input[type="text"]:focus,
+        input[type="password"]:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+        .password-toggle {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+            user-select: none;
+        }
+        .password-toggle input[type="checkbox"] {
+            margin-right: 8px;
+            cursor: pointer;
+            width: 16px;
+            height: 16px;
+        }
+        .password-toggle label {
+            margin: 0;
+            font-size: 13px;
+            color: #7f8c8d;
+            cursor: pointer;
+        }
+        button {
+            background-color: #3498db;
+            color: #ffffff;
+            border: none;
+            padding: 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .error-message {
+            color: #e74c3c;
+            margin-top: 15px;
+            font-size: 14px;
+            display: none;
+        }
+        @media (max-width: 480px) {
+            .login-container {
+                padding: 20px;
+                max-width: 90%;
+            }
+            h2 {
+                font-size: 20px;
+            }
+            button {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h2>Login</h2>
+        <div class="input-group">
+            <label for="username">Username</label>
+            <input type="text" id="username" placeholder="Enter your username" required>
+        </div>
+        <div class="input-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" placeholder="Enter your password" required>
+            <div class="password-toggle">
+                <input type="checkbox" id="showPassword" onclick="togglePassword()">
+                <label for="showPassword">Show Password</label>
+            </div>
+        </div>
+        <button onclick="login()">Login</button>
+        <div id="errorMessage" class="error-message">Incorrect password.</div>
+    </div>
+
+    <script>
+        function togglePassword() {
+            const passwordField = document.getElementById('password');
+            const showPassword = document.getElementById('showPassword');
+            passwordField.type = showPassword.checked ? 'text' : 'password';
+        }
+
+        function generateSessionId() {
+            return 'xxxx-xxxx-xxxx-xxxx'.replace(/[x]/g, () => {
+                return Math.floor(Math.random() * 16).toString(16);
+            });
+        }
+
+        function login() {
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            const errorMessage = document.getElementById('errorMessage');
+
+            // Static password for all users
+            const staticPassword = 'admin123';
+
+            if (!username) {
+                errorMessage.textContent = 'Username cannot be empty.';
+                errorMessage.style.display = 'block';
+                return;
+            }
+
+            if (password === staticPassword) {
+                const sessionId = generateSessionId();
+                sessionStorage.setItem('authenticated', 'true');
+                sessionStorage.setItem('username', username);
+                sessionStorage.setItem('sessionId', sessionId);
+
+                // Store login details in localStorage
+                const loginData = JSON.parse(localStorage.getItem('loginData')) || [];
+                const loginEntry = {
+                    sessionId: sessionId,
+                    username: username,
+                    loginTime: new Date().toISOString(),
+                    lastActive: new Date().toISOString(),
+                    isActive: true
+                };
+                loginData.push(loginEntry);
+                localStorage.setItem('loginData', JSON.stringify(loginData));
+
+                window.location.href = 'index.html';
+            } else {
+                errorMessage.textContent = 'Incorrect password.';
+                errorMessage.style.display = 'block';
+            }
+        }
+    </script>
+</body>
+</html>

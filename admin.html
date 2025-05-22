@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Remittance Receipt Extractor</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #f0f4f8 0%, #d9e2ec 100%);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        }
+        header {
+            background: linear-gradient(90deg, #3498db 0%, #2980b9 100%);
+            color: #ffffff;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: 600;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+        .summary-card {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .summary-card p {
+            margin: 0;
+            font-size: 16px;
+            color: #34495e;
+        }
+        .summary-card .active-count {
+            font-weight: bold;
+            color: #2ecc71;
+        }
+        .action-button {
+            background-color: #e67e22;
+            color: #ffffff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            margin: 10px auto;
+            display: block;
+            transition: background-color 0.3s ease;
+        }
+        .action-button:hover {
+            background-color: #d35400;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #dfe6e9;
+        }
+        th {
+            background-color: #f8f9fa;
+            color: #34495e;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        td {
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+        tr:nth-child(even) {
+            background-color: #f9fbfc;
+        }
+        tr:hover {
+            background-color: #f1f5f9;
+            transition: background-color 0.3s ease;
+        }
+        tr.new-login {
+            animation: highlight 2s ease-out;
+        }
+        @keyframes highlight {
+            0% { background-color: #d4edda; }
+            100% { background-color: transparent; }
+        }
+        .status-active {
+            color: #2ecc71;
+            font-weight: bold;
+        }
+        .status-inactive {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+        .login-prompt {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .login-container {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+        .login-container h2 {
+            color: #2c3e50;
+            margin-bottom: 30px;
+            font-size: 24px;
+            font-weight: 600;
+        }
+        .input-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #34495e;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        .input-group input[type="password"],
+        .input-group input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #dfe6e9;
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+        }
+        .input-group input[type="password"]:focus,
+        .input-group input[type="text"]:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+        .password-toggle {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+            user-select: none;
+        }
+        .password-toggle input[type="checkbox"] {
+            margin-right: 8px;
+            cursor: pointer;
+            width: 16px;
+            height: 16px;
+        }
+        .password-toggle label {
+            margin: 0;
+            font-size: 13px;
+            color: #7f8c8d;
+            cursor: pointer;
+        }
+        .login-container button {
+            background-color: #3498db;
+            color: #ffffff;
+            border: none;
+            padding: 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            transition: background-color 0.3s ease;
+        }
+        .login-container button:hover {
+            background-color: #2980b9;
+        }
+        .error-message {
+            color: #e74c3c;
+            margin-top: 15px;
+            font-size: 14px;
+            display: none;
+        }
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 10px;
+            }
+            th, td {
+                font-size: 13px;
+                padding: 10px;
+            }
+            header h1 {
+                font-size: 24px;
+            }
+            .summary-card {
+                text-align: center;
+            }
+            .summary-card p {
+                margin-bottom: 10px;
+            }
+            .login-container {
+                padding: 20px;
+                max-width: 90%;
+            }
+            .action-button {
+                padding: 8px 16px;
+                font-size: 13px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Admin Login Prompt -->
+    <div id="adminLoginPrompt" class="login-prompt">
+        <div class="login-container">
+            <h2>Admin Login</h2>
+            <div class="input-group">
+                <label for="adminPassword">Admin Password</label>
+                <input type="password" id="adminPassword" placeholder="Enter admin password" required>
+                <div class="password-toggle">
+                    <input type="checkbox" id="showAdminPassword" onclick="toggleAdminPassword()">
+                    <label for="showAdminPassword">Show Password</label>
+                </div>
+            </div>
+            <button onclick="adminLogin()">Login</button>
+            <div id="adminErrorMessage" class="error-message">Incorrect password.</div>
+        </div>
+    </div>
+
+    <!-- Admin Dashboard -->
+    <header>
+        <h1>Admin Dashboard - Remittance Receipt Extractor</h1>
+    </header>
+    <div class="container">
+        <div class="summary-card">
+            <p>Total Active Users: <span id="activeUserCount" class="active-count">0</span></p>
+        </div>
+        <button class="action-button" onclick="refreshLoginData()">Refresh (Clear All Login Data)</button>
+        <table>
+            <thead>
+                <tr>
+                    <th>Username</th>
+                    <th>Login Time</th>
+                    <th>Last Active</th>
+                    <th>Working Duration</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody id="userTableBody"></tbody>
+        </table>
+    </div>
+
+    <script>
+        let lastLoginCount = 0;
+        let lastCleanupDate = null;
+
+        function toggleAdminPassword() {
+            const passwordField = document.getElementById('adminPassword');
+            const showPassword = document.getElementById('showAdminPassword');
+            passwordField.type = showPassword.checked ? 'text' : 'password';
+        }
+
+        function adminLogin() {
+            const password = document.getElementById('adminPassword').value;
+            const errorMessage = document.getElementById('adminErrorMessage');
+
+            if (password === 'admin789') {
+                document.getElementById('adminLoginPrompt').style.display = 'none';
+                cleanupOldLoginData(); // Initial cleanup
+                displayUserActivity();
+                // Update table every 5 seconds for near-real-time tracking
+                setInterval(displayUserActivity, 5000);
+                // Listen for real-time changes to localStorage
+                window.addEventListener('storage', handleStorageChange);
+                // Schedule daily cleanup at midnight
+                scheduleDailyCleanup();
+            } else {
+                errorMessage.style.display = 'block';
+            }
+        }
+
+        function refreshLoginData() {
+            localStorage.removeItem('loginData');
+            lastLoginCount = 0;
+            lastCleanupDate = null;
+            displayUserActivity(); // Update table to reflect cleared data
+        }
+
+        function handleStorageChange(event) {
+            if (event.key === 'loginData') {
+                cleanupOldLoginData();
+                displayUserActivity();
+            }
+        }
+
+        function getCurrentDateString() {
+            const now = new Date();
+            return now.toISOString().split('T')[0]; // YYYY-MM-DD format
+        }
+
+        function cleanupOldLoginData() {
+            const currentDate = getCurrentDateString();
+            if (lastCleanupDate === currentDate) {
+                return; // Skip if already cleaned today
+            }
+
+            const loginData = JSON.parse(localStorage.getItem('loginData')) || [];
+            const today = new Date();
+            today.setHours(0, 0, 0, 0); // Start of today
+            const filteredData = loginData.filter(entry => {
+                const loginDate = new Date(entry.loginTime);
+                return loginDate >= today;
+            });
+
+            localStorage.setItem('loginData', JSON.stringify(filteredData));
+            lastCleanupDate = currentDate;
+        }
+
+        function scheduleDailyCleanup() {
+            const now = new Date();
+            const tomorrow = new Date(now);
+            tomorrow.setDate(now.getDate() + 1);
+            tomorrow.setHours(0, 0, 0, 0); // Midnight next day
+            const timeToMidnight = tomorrow - now;
+
+            setTimeout(() => {
+                cleanupOldLoginData();
+                scheduleDailyCleanup(); // Reschedule for next day
+            }, timeToMidnight);
+        }
+
+        function formatDuration(milliseconds) {
+            if (milliseconds < 0) return "00:00:00";
+            const totalSeconds = Math.floor(milliseconds / 1000);
+            const hours = Math.floor(totalSeconds / 3600);
+            const minutes = Math.floor((totalSeconds % 3600) / 60);
+            const seconds = totalSeconds % 60;
+            return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+        }
+
+        function displayUserActivity() {
+            cleanupOldLoginData(); // Ensure data is filtered before display
+            const loginData = JSON.parse(localStorage.getItem('loginData')) || [];
+            const tableBody = document.getElementById('userTableBody');
+            const activeUserCount = document.getElementById('activeUserCount');
+            const now = new Date();
+            const timeout = 15 * 1000; // 15 seconds timeout for activity
+
+            // Check if new logins have occurred
+            const currentLoginCount = loginData.length;
+            const hasNewLogin = currentLoginCount > lastLoginCount;
+            lastLoginCount = currentLoginCount;
+
+            tableBody.innerHTML = ''; // Clear table
+            let activeUsers = 0;
+
+            loginData.forEach((entry, index) => {
+                const loginTime = new Date(entry.loginTime).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
+                const lastActive = new Date(entry.lastActive).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
+                const lastActiveTime = new Date(entry.lastActive).getTime();
+                const isActive = (now.getTime() - lastActiveTime) < timeout && entry.isActive;
+
+                if (isActive) activeUsers++;
+
+                // Calculate working duration
+                const loginTimeMs = new Date(entry.loginTime).getTime();
+                const endTimeMs = isActive ? now.getTime() : lastActiveTime;
+                const workingDuration = endTimeMs - loginTimeMs;
+                const durationFormatted = formatDuration(workingDuration);
+
+                const row = document.createElement('tr');
+                // Highlight the row if it's a new login
+                if (hasNewLogin && index === loginData.length - 1) {
+                    row.classList.add('new-login');
+                }
+                row.innerHTML = `
+                    <td>${entry.username}</td>
+                    <td>${loginTime}</td>
+                    <td>${lastActive}</td>
+                    <td>${durationFormatted}</td>
+                    <td class="${isActive ? 'status-active' : 'status-inactive'}">
+                        ${isActive ? 'Active' : 'Inactive'}
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+
+            activeUserCount.textContent = activeUsers;
+        }
+    </script>
+</body>
+</html>

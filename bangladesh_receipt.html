@@ -332,6 +332,13 @@
         const payoutCodeRaw = params.get('payoutCode') || 'N/A';
         const payoutCode = payoutCodeRaw !== 'N/A' ? payoutCodeRaw.replace(/-/g, '') : 'N/A';
 
+        // Function to add commas to a number
+        const addCommas = (numStr) => {
+            const parts = numStr.split('.');
+            const integerPart = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+            return parts.length > 1 ? `${integerPart}.${parts[1]}` : integerPart;
+        };
+
         const data = {
             date: params.get('date') ? params.get('date').split(' ')[0] : 'N/A', // Remove time by splitting at space
             payoutCode: payoutCode, // Use processed payout code without hyphens
@@ -339,7 +346,7 @@
             sendAmount: params.get('sendAmount') ? params.get('sendAmount').replace(/ BND$/, '') : 'N/A', // Remove " BND" from sendAmount
             serviceFee: params.get('serviceFee') ? params.get('serviceFee').replace(/ BND$/, '') : 'N/A', // Remove " BND" from serviceFee
             totalPaid: params.get('totalPaid') ? params.get('totalPaid').replace(/ BND$/, '') : 'N/A', // Remove " BND" from totalPaid
-            payoutAmount: params.get('amount') ? `${params.get('amount')} BDT` : 'N/A', // Restore BDT for payoutAmount
+            payoutAmount: params.get('amount') ? `${addCommas(params.get('amount'))} BDT` : 'N/A', // Add commas to payoutAmount and restore BDT
             exchangeRate: params.get('exchangeRate') ? `1 = ${params.get('exchangeRate').replace(/ BDT$/, '')}` : 'N/A', // Remove BDT from exchangeRate
             beneficiaryName: params.get('beneficiaryName') || 'N/A',
             beneficiaryMobile: params.get('beneficiaryMobile') || 'N/A',

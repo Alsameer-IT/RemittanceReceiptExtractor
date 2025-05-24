@@ -242,7 +242,7 @@
             <div class="upload-section">
                 <input type="file" id="indonesiaFileInput" class="file-input" accept=".pdf">
                 <label for="indonesiaFileInput" class="upload-label">Choose PDF File</label>
-                <p id="indonesia">No file selected</p>
+                <p id="indonesiaFileName">No file selected</p>
                 <div id="indonesiaLoading" class="loading">Processing...</div>
                 <div id="indonesiaCountryError" class="error-message">Receipt can only be downloaded for Indonesia payout country.</div>
             </div>
@@ -340,7 +340,7 @@
             </div>
         </div>
 
-        <!-- Bangladesh Section -->
+        <!-- Bangladesh Section (Original) -->
         <div class="country-section">
             <div style="text-align: center;">
                 <h1 style="display: inline-block; font-family: Arial, Helvetica, sans-serif;">
@@ -399,15 +399,135 @@
                 </div>
             </div>
         </div>
+
+        <!-- Bangladesh (New) Section -->
+        <div class="country-section">
+            <div style="text-align: center;">
+                <h1 style="display: inline-block; font-family: Arial, Helvetica, sans-serif;">
+                    <img src="https://flagcdn.com/w40/bd.png" alt="Bangladesh Flag" style="vertical-align: middle; margin-right: 8px; border: 2px solid #000; border-radius: 4px;">
+                    Bangladesh (New)
+                </h1>
+            </div>
+            <div class="upload-section">
+                <input type="file" id="bangladeshNewFileInput" class="file-input" accept=".pdf">
+                <label for="bangladeshNewFileInput" class="upload-label">Choose PDF File</label>
+                <p id="bangladeshNewFileName">No file selected</p>
+                <div id="bangladeshNewLoading" class="loading">Processing...</div>
+                <div id="bangladeshNewCountryError" class="error-message">Receipt can only be downloaded for Bangladesh payout country.</div>
+            </div>
+            <div class="receipt-container" id="bangladeshNewReceiptContainer">
+                <div class="section">
+                    <div class="section-title">Receipt Metadata</div>
+                    <div class="detail-row">
+                        <div class="detail-key">Transaction No:</div>
+                        <div class="detail-value" id="bangladeshNewTxnNo"></div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-key">Date:</div>
+                        <div class="detail-value" id="bangladeshNewDate"></div>
+                    </div>
+                </div>
+                <div class="section">
+                    <div class="section-title">Sender Details</div>
+                    <div class="detail-row">
+                        <div class="detail-key">Customer Id:</div>
+                        <div class="detail-value" id="bangladeshNewCustomerId"></div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-key">Name:</div>
+                        <div class="detail-value" id="bangladeshNewSenderName"></div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-key">Address:</div>
+                        <div class="detail-value" id="bangladeshNewSenderAddress"></div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-key">Passport:</div>
+                        <div class="detail-value" id="bangladeshNewNationalId"></div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-key">Nationality:</div>
+                        <div class="detail-value" id="bangladeshNewNationality"></div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-key">Profession:</div>
+                        <div class="detail-value" id="bangladeshNewProfession"></div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-key">Mobile No:</div>
+                        <div class="detail-value" id="bangladeshNewSenderMobile"></div>
+                    </div>
+                </div>
+                <div class="section">
+                    <div class="section-title">Beneficiary Details</div>
+                    <div class="detail-row">
+                        <div class="detail-key">Name:</div>
+                        <div class="detail-value" id="bangladeshNewBeneficiaryName"></div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-key">Bank Name:</div>
+                        <div class="detail-value" id="bangladeshNewBankName"></div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-key">Account No:</div>
+                        <div class="detail-value" id="bangladeshNewAccountNo"></div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-key">IFSC/Bank Code:</div>
+                        <div class="detail-value" id="bangladeshNewIfscCode"></div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-key">Mobile No:</div>
+                        <div class="detail-value" id="bangladeshNewBeneficiaryMobile"></div>
+                    </div>
+                </div>
+                <div class="section">
+                    <div class="section-title">Payment Details</div>
+                    <div class="detail-row">
+                        <div class="detail-key">Payout Country:</div>
+                        <div class="detail-value" id="bangladeshNewPayoutCountry"></div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-key">Source:</div>
+                        <div class="detail-value" id="bangladeshNewSource"></div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-key">Purpose:</div>
+                        <div class="detail-value" id="bangladeshNewPurpose"></div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-key">Payout Amount:</div>
+                        <div class="detail-value" id="bangladeshNewPayoutAmount"></div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-key">Exchange Rate:</div>
+                        <div class="detail-value" id="bangladeshNewExchangeRate"></div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-key">Pay in Amount:</div>
+                        <div class="detail-value" id="bangladeshNewPayInAmount"></div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-key">Service Charge:</div>
+                        <div class="detail-value" id="bangladeshNewServiceCharge"></div>
+                    </div>
+                    <div class="total-amount" id="bangladeshNewTotalAmount"></div>
+                </div>
+                <div class="button-container">
+                    <button id="bangladeshNewDownloadBtn" disabled title="Upload a valid PDF to enable download">Get Receipt</button>
+                    <button id="bangladeshNewResetBtn" style="background-color: #e74c3c; margin-left: 10px;">Reset</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
         // Initialize PDF.js worker
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.11.338/pdf.worker.min.js';
-
+        
         // Indonesia Section
         const indonesiaFileInput = document.getElementById('indonesiaFileInput');
-        const indonesiaFileNameDisplay = document.getElementById('indonesia');
+        const indonesiaFileNameDisplay = document.getElementById('indonesiaFileName');
         const indonesiaReceiptContainer = document.getElementById('indonesiaReceiptContainer');
         const indonesiaLoadingIndicator = document.getElementById('indonesiaLoading');
         const indonesiaDownloadBtn = document.getElementById('indonesiaDownloadBtn');
@@ -749,7 +869,7 @@
             window.open(receiptUrl, '_blank');
         }
 
-        // Bangladesh Section
+        // Bangladesh Section (Original)
         const bangladeshFileInput = document.getElementById('bangladeshFileInput');
         const bangladeshFileNameDisplay = document.getElementById('bangladeshFileName');
         const bangladeshReceiptContainer = document.getElementById('bangladeshReceiptContainer');
@@ -922,6 +1042,387 @@
             
             window.open(receiptUrl, '_blank');
         }
-    </script>
+
+     // Bangladesh (New) Section
+const bangladeshNewFileInput = document.getElementById('bangladeshNewFileInput');
+const bangladeshNewFileNameDisplay = document.getElementById('bangladeshNewFileName');
+const bangladeshNewReceiptContainer = document.getElementById('bangladeshNewReceiptContainer');
+const bangladeshNewLoadingIndicator = document.getElementById('bangladeshNewLoading');
+const bangladeshNewDownloadBtn = document.getElementById('bangladeshNewDownloadBtn');
+const bangladeshNewResetBtn = document.getElementById('bangladeshNewResetBtn');
+const bangladeshNewCountryError = document.getElementById('bangladeshNewCountryError');
+
+bangladeshNewFileInput.addEventListener('change', async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    
+    bangladeshNewFileNameDisplay.textContent = `Selected file: ${file.name}`;
+    bangladeshNewLoadingIndicator.style.display = 'block';
+    bangladeshNewCountryError.style.display = 'none';
+    
+    try {
+        const extractedData = await extractDataFromPDFBangladeshNew(file);
+        populateReceiptBangladeshNew(extractedData);
+        bangladeshNewReceiptContainer.style.display = 'block';
+        
+        const isBangladesh = extractedData.payoutCountry && 
+                            (extractedData.payoutCountry.toLowerCase().includes('bangladesh') || 
+                             extractedData.payoutCountry.toLowerCase().includes('bd'));
+        
+        if (isBangladesh) {
+            bangladeshNewDownloadBtn.disabled = false;
+            bangladeshNewDownloadBtn.title = 'Download Receipt';
+            bangladeshNewDownloadBtn.style.backgroundColor = '#3498db';
+        } else {
+            bangladeshNewDownloadBtn.disabled = true;
+            bangladeshNewDownloadBtn.title = 'Receipt can only be downloaded for Bangladesh payout country';
+            bangladeshNewDownloadBtn.style.backgroundColor = '#95a5a6';
+            bangladeshNewCountryError.style.display = 'block';
+        }
+    } catch (error) {
+        console.error('Error processing Bangladesh (New) PDF:', error);
+        let message = 'Error processing PDF. Please ensure it is a valid PDF and has the correct format.';
+        if (error.message.includes('Invalid PDF')) {
+            message = 'The uploaded file is not a valid PDF.';
+        } else if (error.message.includes('No text')) {
+            message = 'The PDF contains no extractable text.';
+        }
+        alert(message);
+    } finally {
+        bangladeshNewLoadingIndicator.style.display = 'none';
+    }
+});
+
+bangladeshNewResetBtn.addEventListener('click', () => {
+    bangladeshNewFileInput.value = '';
+    bangladeshNewFileNameDisplay.textContent = 'No file selected';
+    bangladeshNewReceiptContainer.style.display = 'none';
+    bangladeshNewDownloadBtn.disabled = true;
+    bangladeshNewDownloadBtn.style.backgroundColor = '#3498db';
+    document.querySelectorAll('#bangladeshNewReceiptContainer .detail-value').forEach(el => el.textContent = '');
+    document.getElementById('bangladeshNewTotalAmount').textContent = '';
+    bangladeshNewCountryError.style.display = 'none';
+});
+
+async function extractDataFromPDFBangladeshNew(file) {
+    const arrayBuffer = await file.arrayBuffer();
+    const pdf = await pdfjsLib.getDocument(arrayBuffer).promise;
+    const page = await pdf.getPage(1);
+    const textContent = await page.getTextContent();
+    const textItems = textContent.items.map(item => item.str);
+    
+    let text = textItems.join('\n');
+    text = text.replace(/\s*:\s*/g, ': ').replace(/\n\s+/g, '\n');
+    
+    console.log('Full extracted text (Bangladesh New):', text);
+    
+    const topLeftDateMatch = text.match(/^\d{1,2}\/\d{1,2}\/\d{2},\s*\d{1,2}:\d{2}\s*(?:AM|PM)/im);
+    const txnNoMatch = text.match(/Txn\s*No:?\s*(\d+)/i);
+    const paymentChannelMatch = text.match(/Payment Channel: ([^\n]+)/i);
+    const dateMatch = text.match(/Date: (\d{2}-\d{2}-\d{4})/i);
+    
+    const senderSectionMatch = text.match(/Sender Details([\s\S]*?)Beneficary Details/i);
+    let senderSection = senderSectionMatch ? senderSectionMatch[1] : '';
+    console.log('Sender Section (Bangladesh New):', senderSection);
+    
+    const customerIdMatch = senderSection.match(/Customer Id: ([^\n]+)/i);
+    const senderNameMatch = senderSection.match(/Name: ([^\n]+)/i);
+    const senderAddressMatch = senderSection.match(/Address: ([\s\S]*?)(?=(?:National ID|Passport))/i);
+    let senderAddress = 'N/A';
+    let senderAddressRaw = 'N/A';
+    if (senderAddressMatch) {
+        senderAddressRaw = senderAddressMatch[1].trim();
+        senderAddress = senderAddressRaw.replace(/\n/g, ', ').trim();
+    }
+    const nationalIdMatch = senderSection.match(/(?:National ID|Passport): ([^\n]+)/i);
+    const nationalityMatch = senderSection.match(/Nationality: ([^\n]+)/i);
+    const professionMatch = senderSection.match(/Profession: ([^\n]+)/i);
+    const senderMobileMatch = senderSection.match(/Mobile No: (\d+)/i) || 
+                            senderSection.match(/Mobile\s*No: (\d+)/i);
+    
+    const senderName = senderNameMatch ? senderNameMatch[1].trim() : '';
+    
+    const beneficiarySectionMatch = text.match(/Beneficary Details([\s\S]*?)(?=Payout\s*(?:Amount|Country)|$)/i);
+    let beneficiarySection = beneficiarySectionMatch ? beneficiarySectionMatch[1] : '';
+    console.log('Beneficiary Section (Bangladesh New):', beneficiarySection);
+    
+    const lines = beneficiarySection.split('\n');
+    let beneficiaryData = {
+        name: '',
+        bankName: '',
+        accountNo: '',
+        ifscCode: 'N/A',
+        routingNumber: 'N/A',
+        branchName: 'N/A',
+        mobileNo: 'N/A'
+    };
+    
+    let fieldIndex = 0;
+    let lastAccountNo = '';
+    let expectingValue = false;
+    
+    for (let i = 0; i < lines.length && fieldIndex < 5; i++) {
+        let line = lines[i].trim();
+        
+        if (!line) continue;
+        
+        console.log(`Processing Beneficiary Line ${i} (fieldIndex=${fieldIndex}): ${line}`);
+        
+        if (expectingValue) {
+            if (fieldIndex === 0) {
+                const nameMatch = line.match(/^:?\s*([^\n]+)/);
+                if (nameMatch) {
+                    beneficiaryData.name = nameMatch[1].trim();
+                    fieldIndex++;
+                    expectingValue = false;
+                }
+            }
+            continue;
+        }
+        
+        if (fieldIndex === 0 && line.match(/Name/i) && !line.match(/:/)) {
+            expectingValue = true;
+        } else if (fieldIndex === 0 && line.match(/Name:/i)) {
+            const nameMatch = line.match(/Name: ([^\n]+)/i);
+            if (nameMatch) {
+                beneficiaryData.name = nameMatch[1].trim();
+                fieldIndex++;
+            }
+        } else if (fieldIndex === 1 && line.match(/(?:Bank|Bank Name):/i)) {
+            const bankMatch = line.match(/(?:Bank|Bank Name): ([^\n]+)/i);
+            if (bankMatch) {
+                beneficiaryData.bankName = bankMatch[1].trim();
+                fieldIndex++;
+            }
+        } else if (fieldIndex === 1 && !line.match(/(?:Bank|Bank Name):/i) && line.match(/[A-Z\s]+/)) {
+            beneficiaryData.bankName = line.trim();
+            fieldIndex++;
+        } else if (fieldIndex === 2 && line.match(/Account No:/i)) {
+            const accountMatch = line.match(/Account No: ([^\n]+)/i);
+            if (accountMatch) {
+                beneficiaryData.accountNo = accountMatch[1].trim();
+                lastAccountNo = beneficiaryData.accountNo;
+                fieldIndex++;
+            }
+        } else if (fieldIndex === 2 && line.match(/\d+/)) {
+            beneficiaryData.accountNo = line.trim();
+            lastAccountNo = beneficiaryData.accountNo;
+            fieldIndex++;
+        } else if (fieldIndex === 3 && line.match(/(?:IFSC(?:\/Bank)?\s*Code|Branch\s*Code|Bank\s*Code|IFSC):/i)) {
+            const ifscMatch = line.match(/(?:IFSC(?:\/Bank)?\s*Code|Branch\s*Code|Bank\s*Code|IFSC): ([^\n]+)/i);
+            if (ifscMatch) {
+                const potentialIfsc = ifscMatch[1].trim();
+                console.log(`Found potential IFSC code with label: ${potentialIfsc}`);
+                if (potentialIfsc !== lastAccountNo && potentialIfsc.length > 1 && !potentialIfsc.match(/mobile/i)) {
+                    beneficiaryData.ifscCode = potentialIfsc;
+                    const ifscParts = potentialIfsc.split(/\s+/);
+                    if (ifscParts.length >= 2) {
+                        beneficiaryData.routingNumber = ifscParts[ifscParts.length - 1];
+                        beneficiaryData.branchName = ifscParts.slice(0, -1).join(' ');
+                    }
+                } else {
+                    console.log('IFSC code matches account number, is too short, or contains "mobile", keeping as N/A');
+                }
+                fieldIndex++;
+            }
+        } else if (fieldIndex === 3 && !line.match(/(?:IFSC(?:\/Bank)?\s*Code|Branch\s*Code|Bank\s*Code|IFSC):/i)) {
+            const potentialIfsc = line.trim();
+            console.log(`Found potential IFSC code without label: ${potentialIfsc}`);
+            if (potentialIfsc !== lastAccountNo && potentialIfsc.length > 1 && !potentialIfsc.match(/mobile/i)) {
+                beneficiaryData.ifscCode = potentialIfsc;
+                const ifscParts = potentialIfsc.split(/\s+/);
+                if (ifscParts.length >= 2) {
+                    beneficiaryData.routingNumber = ifscParts[ifscParts.length - 1];
+                    beneficiaryData.branchName = ifscParts.slice(0, -1).join(' ');
+                }
+            } else {
+                console.log('Potential IFSC code matches account number, is too short, or contains "mobile", keeping as N/A');
+            }
+            fieldIndex++;
+        } else if (fieldIndex === 4 && line.match(/Mobile No:/i)) {
+            const mobileMatch = line.match(/Mobile No: (\d+)/i);
+            if (mobileMatch) {
+                const potentialMobile = mobileMatch[1].trim();
+                console.log(`Found potential Mobile No with label: ${potentialMobile}`);
+                if (potentialMobile !== lastAccountNo && /^\d+$/.test(potentialMobile)) {
+                    beneficiaryData.mobileNo = potentialMobile;
+                } else {
+                    console.log('Mobile No matches account number or is not numeric, keeping as N/A');
+                }
+                fieldIndex++;
+            }
+        } else if (fieldIndex === 4 && line.match(/\d+/)) {
+            const potentialMobile = line.trim();
+            console.log(`Found potential Mobile No without label: ${potentialMobile}`);
+            if (potentialMobile !== lastAccountNo && /^\d+$/.test(potentialMobile)) {
+                beneficiaryData.mobileNo = potentialMobile;
+            } else {
+                console.log('Potential Mobile No matches account number or is not numeric, keeping as N/A');
+            }
+            fieldIndex++;
+        }
+    }
+    
+    if (!beneficiaryData.name) {
+        const nameMatch = text.match(/Beneficary Details[\s\S]*?Name[\s\S]*?: ([^\n]+)/i);
+        if (nameMatch) {
+            beneficiaryData.name = nameMatch[1].trim();
+        }
+    }
+    if (!beneficiaryData.bankName) {
+        const bankMatch = text.match(/Beneficary Details[\s\S]*?(?:Bank|Bank Name): ([^\n]+)/i);
+        beneficiaryData.bankName = bankMatch ? bankMatch[1].trim() : '';
+    }
+    if (!beneficiaryData.accountNo) {
+        const accountMatch = text.match(/Beneficary Details[\s\S]*?Account No: ([^\n]+)/i);
+        beneficiaryData.accountNo = accountMatch ? accountMatch[1].trim() : '';
+    }
+    if (beneficiaryData.ifscCode === 'N/A') {
+        const ifscMatch = text.match(/Beneficary Details[\s\S]*?(?:IFSC(?:\/Bank)?\s*Code|Branch\s*Code|Bank\s*Code|IFSC): ([^\n]+)/i);
+        if (ifscMatch) {
+            const potentialIfsc = ifscMatch[1].trim();
+            console.log(`Fallback IFSC code found: ${potentialIfsc}`);
+            if (potentialIfsc !== beneficiaryData.accountNo && potentialIfsc.length > 1 && !potentialIfsc.match(/mobile/i)) {
+                beneficiaryData.ifscCode = potentialIfsc;
+                const ifscParts = potentialIfsc.split(/\s+/);
+                if (ifscParts.length >= 2) {
+                    beneficiaryData.routingNumber = ifscParts[ifscParts.length - 1];
+                    beneficiaryData.branchName = ifscParts.slice(0, -1).join(' ');
+                }
+            } else {
+                console.log('Fallback IFSC code matches account number, is too short, or contains "mobile", keeping as N/A');
+            }
+        }
+    }
+    if (beneficiaryData.mobileNo === 'N/A') {
+        const mobileMatch = text.match(/Beneficary Details[\s\S]*?Mobile No: (\d+)/i);
+        if (mobileMatch) {
+            const potentialMobile = mobileMatch[1].trim();
+            console.log(`Fallback Mobile No found: ${potentialMobile}`);
+            if (potentialMobile !== beneficiaryData.accountNo && /^\d+$/.test(potentialMobile)) {
+                beneficiaryData.mobileNo = potentialMobile;
+            }
+        }
+    }
+    
+    console.log('Extracted Beneficiary Data (Bangladesh New):', beneficiaryData);
+    
+    const paymentSectionMatch = text.match(/(?:Payout\s*(?:Amount|Country)|PayoutCountry)([\s\S]*)$/i);
+    let paymentSection = paymentSectionMatch ? paymentSectionMatch[1] : text;
+    console.log('Payment Section (Bangladesh New):', paymentSection);
+    
+    let payoutCountryMatch = paymentSection.match(/Payout Country: ([^\n]+)/i);
+    if (!payoutCountryMatch) {
+        payoutCountryMatch = paymentSection.match(/PayoutCountry: ([^\n]+)/i);
+    }
+    if (!payoutCountryMatch) {
+        payoutCountryMatch = text.match(/Payout\s*Country: ([^\n]+)/i) || text.match(/PayoutCountry: ([^\n]+)/i);
+    }
+    
+    const sourceMatch = paymentSection.match(/Source: ([^\n]+)/i);
+    const purposeMatch = paymentSection.match(/Purpose: ([^\n]+)/i);
+    const payoutAmountMatch = paymentSection.match(/([\d,]+\.\d{2})\s*([A-Z]{3})/i);
+    const exchangeRateMatch = paymentSection.match(/Exchange Rate: ([\d.]+)\s*([A-Z]{3})/i);
+    const payInAmountMatch = paymentSection.match(/Pay In Amount: ([\d,]+\.\d{2})\s*([A-Z]{3})/i);
+    const serviceChargeMatch = paymentSection.match(/Service Charge: ([\d,]+\.\d{2})\s*([A-Z]{3})/i);
+    const totalAmountMatch = paymentSection.match(/Total Amount: ([\d,]+\.\d{2})\s*([A-Z]{3})/i);
+    
+    const finalIfscCode = beneficiaryData.ifscCode && beneficiaryData.ifscCode.length > 1 && !beneficiaryData.ifscCode.match(/mobile/i) 
+        ? beneficiaryData.ifscCode 
+        : 'N/A';
+    const finalMobileNo = beneficiaryData.mobileNo && /^\d+$/.test(beneficiaryData.mobileNo) 
+        ? beneficiaryData.mobileNo 
+        : 'N/A';
+    
+    const extractedData = {
+        txnNo: txnNoMatch ? txnNoMatch[1].trim() : 'N/A',
+        date: dateMatch ? dateMatch[1].trim() : (topLeftDateMatch ? topLeftDateMatch[0].trim() : 'N/A'),
+        paymentChannel: paymentChannelMatch ? paymentChannelMatch[1].trim() : 'N/A',
+        customerId: customerIdMatch ? customerIdMatch[1].trim() : 'N/A',
+        senderName: senderNameMatch ? senderNameMatch[1].trim() : 'N/A',
+        senderAddress: senderAddress,
+        senderAddressRaw: senderAddressRaw,
+        nationalId: nationalIdMatch ? nationalIdMatch[1].trim() : 'N/A',
+        nationality: nationalityMatch ? nationalityMatch[1].trim() : 'N/A',
+        profession: professionMatch ? professionMatch[1].trim() : 'N/A',
+        senderMobile: senderMobileMatch ? senderMobileMatch[1].trim() : 'N/A',
+        beneficiaryName: beneficiaryData.name || 'N/A',
+        bankName: beneficiaryData.bankName || 'N/A',
+        accountNo: beneficiaryData.accountNo || 'N/A',
+        ifscCode: finalIfscCode,
+        routingNumber: beneficiaryData.routingNumber || 'N/A',
+        branchName: beneficiaryData.branchName || 'N/A',
+        beneficiaryMobile: finalMobileNo,
+        payoutCountry: payoutCountryMatch ? payoutCountryMatch[1].trim() : 'N/A',
+        source: sourceMatch ? sourceMatch[1].trim() : 'N/A',
+        purpose: purposeMatch ? purposeMatch[1].trim() : 'N/A',
+        payoutAmount: payoutAmountMatch ? `${payoutAmountMatch[1].trim()} ${payoutAmountMatch[2]}` : 'N/A',
+        exchangeRate: exchangeRateMatch ? `${exchangeRateMatch[1].trim()} ${exchangeRateMatch[2]}` : 'N/A',
+        payInAmount: payInAmountMatch ? `${payInAmountMatch[1].trim()} ${payInAmountMatch[2]}` : 'N/A',
+        serviceCharge: serviceChargeMatch ? `${serviceChargeMatch[1].trim()} ${serviceChargeMatch[2]}` : 'N/A',
+        totalAmount: totalAmountMatch ? `${totalAmountMatch[1].trim()} ${totalAmountMatch[2]}` : 'N/A'
+    };
+    
+    console.log('Extracted Data (Bangladesh New):', extractedData);
+    return extractedData;
+}
+
+function populateReceiptBangladeshNew(data) {
+    console.log('Data passed to UI (Bangladesh New):', data);
+    document.getElementById('bangladeshNewTxnNo').textContent = data.txnNo || 'N/A';
+    document.getElementById('bangladeshNewDate').textContent = data.date || 'N/A';
+    document.getElementById('bangladeshNewCustomerId').textContent = data.customerId || 'N/A';
+    document.getElementById('bangladeshNewSenderName').textContent = data.senderName || 'N/A';
+    document.getElementById('bangladeshNewSenderAddress').innerHTML = (data.senderAddressRaw || 'N/A').replace(/\n/g, '<br>');
+    document.getElementById('bangladeshNewNationalId').textContent = data.nationalId || 'N/A';
+    document.getElementById('bangladeshNewNationality').textContent = data.nationality || 'N/A';
+    document.getElementById('bangladeshNewProfession').textContent = data.profession || 'N/A';
+    document.getElementById('bangladeshNewSenderMobile').textContent = data.senderMobile || 'N/A';
+    document.getElementById('bangladeshNewBeneficiaryName').textContent = data.beneficiaryName || 'N/A';
+    document.getElementById('bangladeshNewBankName').textContent = data.bankName || 'N/A';
+    document.getElementById('bangladeshNewAccountNo').textContent = data.accountNo || 'N/A';
+    document.getElementById('bangladeshNewIfscCode').textContent = data.ifscCode || 'N/A';
+    document.getElementById('bangladeshNewBeneficiaryMobile').textContent = data.beneficiaryMobile || 'N/A';
+    document.getElementById('bangladeshNewPayoutCountry').textContent = data.payoutCountry || 'N/A';
+    document.getElementById('bangladeshNewSource').textContent = data.source || 'N/A';
+    document.getElementById('bangladeshNewPurpose').textContent = data.purpose || 'N/A';
+    document.getElementById('bangladeshNewPayoutAmount').textContent = data.payoutAmount || 'N/A';
+    document.getElementById('bangladeshNewExchangeRate').textContent = data.exchangeRate || 'N/A';
+    document.getElementById('bangladeshNewPayInAmount').textContent = data.payInAmount || 'N/A';
+    document.getElementById('bangladeshNewServiceCharge').textContent = data.serviceCharge || 'N/A';
+    document.getElementById('bangladeshNewTotalAmount').textContent = `Total Amount: ${data.totalAmount || 'N/A'}`;
+    document.getElementById('bangladeshNewDownloadBtn').onclick = () => downloadReceiptBangladeshNew(data);
+}
+
+function downloadReceiptBangladeshNew(data) {
+    const amountMatch = data.payoutAmount.match(/([\d,]+\.\d{2})/);
+    const amount = amountMatch ? amountMatch[1].replace(',', '') : '90007.00';
+    const now = new Date();
+    const bruneiTime = new Date(now.getTime() + (8 * 60 * 60 * 1000));
+    const formattedDate = bruneiTime.toISOString().replace('T', ' ').replace(/\.\d+Z/, '') + ' BNT';
+    
+    const receiptUrl = 'bangladesh_new_receipt.html?' + new URLSearchParams({
+        date: formattedDate,
+        bankName: data.bankName || 'N/A',
+        accountNo: data.accountNo || 'N/A',
+        beneficiaryName: data.beneficiaryName || 'N/A',
+        beneficiaryMobile: data.beneficiaryMobile || 'N/A',
+        senderName: data.senderName || 'N/A',
+        senderMobile: data.senderMobile || 'N/A',
+        amount: amount,
+        ref: data.txnNo || 'N/A',
+        exchangeRate: data.exchangeRate || 'N/A',
+        payoutAmount: data.payoutAmount || 'N/A',
+        payInAmount: data.payInAmount || 'N/A',
+        serviceCharge: data.serviceCharge || 'N/A',
+        totalAmount: data.totalAmount || 'N/A',
+        routingNumber: data.routingNumber || 'N/A',
+        branchName: data.branchName || 'N/A'
+    }).toString();
+    
+    window.open(receiptUrl, '_blank');
+}
+</script>
+
 </body>
 </html>

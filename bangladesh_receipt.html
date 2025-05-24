@@ -207,7 +207,6 @@
 </head>
 <body>
 
-    
     <div class="receipt-container" id="receiptContainer">
         <div class="receipt-header">
             <div class="receipt-title">
@@ -307,7 +306,6 @@
         
         <div class="receipt-footer">
             <p>Thank you for using our service.</p>
-           
         </div>
         
         <button class="download-btn" id="downloadBtn">
@@ -345,7 +343,7 @@
             referenceNumber: referenceNumber, // Modified reference number with static "721"
             sendAmount: params.get('sendAmount') ? params.get('sendAmount').replace(/ BND$/, '') : 'N/A', // Remove " BND" from sendAmount
             serviceFee: params.get('serviceFee') ? params.get('serviceFee').replace(/ BND$/, '') : 'N/A', // Remove " BND" from serviceFee
-            totalPaid: params.get('totalPaid') ? params.get('totalPaid').replace(/ BND$/, '') : 'N/A', // Remove " BND" from totalPaid
+            totalPaid: params.get('totalPaid') ? `${addCommas(params.get('totalPaid').replace(/ BND$/, ''))} ` : 'N/A', // Add commas to totalPaid and restore BND
             payoutAmount: params.get('amount') ? `${addCommas(params.get('amount'))} BDT` : 'N/A', // Add commas to payoutAmount and restore BDT
             exchangeRate: params.get('exchangeRate') ? `1 = ${params.get('exchangeRate').replace(/ BDT$/, '')}` : 'N/A', // Remove BDT from exchangeRate
             beneficiaryName: params.get('beneficiaryName') || 'N/A',

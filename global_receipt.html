@@ -292,6 +292,10 @@
                     <div class="detail-key">Bank Name</div>
                     <div class="detail-value" id="bankName"></div>
                 </div>
+                <div class="detail-row" id="accountNoRow">
+                    <div class="detail-key">Account No</div>
+                    <div class="detail-value" id="accountNo"></div>
+                </div>
                 <div class="detail-row" id="routingRow">
                     <div class="detail-key">Routing Number</div>
                     <div class="detail-value" id="routingNumber"></div>
@@ -411,12 +415,16 @@
 
         // Update payment method, default to "Cash Pickup" if not specified
         const paymentChannelRaw = params.get('paymentChannel') || 'N/A';
-        const paymentMethod = paymentChannelRaw === 'N/A' ? 'Cash Pickup' : paymentChannelRaw;
+        let paymentMethod = paymentChannelRaw === 'N/A' ? 'Cash Pickup' : paymentChannelRaw;
+        // Change "REAL TIME" or "BANK TRANSFER" to "ACCOUNT CREDIT"
+        if (paymentMethod.toUpperCase() === 'REAL TIME' || paymentMethod.toUpperCase() === 'BANK TRANSFER') {
+            paymentMethod = 'ACCOUNT CREDIT';
+        }
         document.getElementById('paymentMethod').textContent = paymentMethod.toUpperCase();
 
         // Use the ref value directly as the reference number
         const randomDigits = () => Math.floor(Math.random() * 100).toString().padStart(2, '0');
-const referenceNumber = randomDigits() + (params.get('ref') || 'N/A') + randomDigits();
+        const referenceNumber = randomDigits() + (params.get('ref') || 'N/A') + randomDigits();
 
         // Function to add commas to a number
         const addCommas = (numStr) => {
@@ -436,6 +444,7 @@ const referenceNumber = randomDigits() + (params.get('ref') || 'N/A') + randomDi
             beneficiaryName: params.get('beneficiaryName') || 'N/A',
             beneficiaryMobile: params.get('beneficiaryMobile') || 'N/A',
             bankName: params.get('bankName') || 'N/A',
+            accountNo: params.get('accountNo') || 'N/A',
             routingNumber: params.get('routingNumber') || 'N/A',
             branchName: params.get('branchName') || 'N/A',
             pin: params.get('pin') || 'N/A',
@@ -453,6 +462,7 @@ const referenceNumber = randomDigits() + (params.get('ref') || 'N/A') + randomDi
         document.getElementById('beneficiaryName').textContent = data.beneficiaryName.toUpperCase();
         document.getElementById('beneficiaryMobile').textContent = data.beneficiaryMobile.toUpperCase();
         document.getElementById('bankName').textContent = data.bankName.toUpperCase();
+        document.getElementById('accountNo').textContent = data.accountNo.toUpperCase();
         document.getElementById('routingNumber').textContent = data.routingNumber.toUpperCase();
         document.getElementById('branchName').textContent = data.branchName.toUpperCase();
         document.getElementById('pin').textContent = data.pin.toUpperCase();
@@ -460,12 +470,16 @@ const referenceNumber = randomDigits() + (params.get('ref') || 'N/A') + randomDi
 
         // Conditionally hide rows if values are "N/A"
         const mobileRow = document.getElementById('mobileRow');
+        const accountNoRow = document.getElementById('accountNoRow');
         const routingRow = document.getElementById('routingRow');
         const branchRow = document.getElementById('branchRow');
         const pinRow = document.getElementById('pinRow');
 
         if (data.beneficiaryMobile.toUpperCase() === 'N/A') {
             mobileRow.classList.add('hidden');
+        }
+        if (data.accountNo.toUpperCase() === 'N/A') {
+            accountNoRow.classList.add('hidden');
         }
         if (data.routingNumber.toUpperCase() === 'N/A') {
             routingRow.classList.add('hidden');

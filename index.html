@@ -222,7 +222,7 @@
         document.addEventListener('click', updateLastActive);
         document.addEventListener('change', updateLastActive);
 
-     // Global variable to store the latest payout country
+        // Global variable to store the latest payout country
         let latestPayoutCountry = '';
 
         // Country code mapping for flag display
@@ -306,7 +306,7 @@
     <header>
         <div style="display: flex; justify-content: space-between; align-items: center;">
             <h1 style="margin: 0; font-size: 24px;">
-                Remittance Receipt Extractor
+                
                 <img id="headerFlag" src="" alt="Country Flag" style="width: 40px; height: 40px; vertical-align: middle; margin-left: 8px; border: 2px solid #000; border-radius: 4px; display: none;">
             </h1>
             <button class="logout-btn" onclick="logout()">Logout</button>
@@ -319,7 +319,7 @@
             <div style="text-align: center;">
                 <h1 style="display: inline-block; font-family: Arial, Helvetica, sans-serif;">
                     <img id="globalCountryFlag" src="" alt="Country Flag" style="width: 40px; height: 40px; vertical-align: middle; margin-right: 8px; border: 2px solid #000; border-radius: 4px; display: none;">
-                    <span id="globalCountryName">Global Remittance</span>
+                    <span id="globalCountryName">Global </span>
                 </h1>
             </div>
             <div class="upload-section">
@@ -685,6 +685,7 @@
             document.getElementById('globalTotalAmount').textContent = '';
             globalCountryError.style.display = 'none';
             updateHeaderFlag('');
+            updateGlobalSectionFlag('');
         });
 
         async function extractDataFromPDFGlobal(file) {
@@ -953,6 +954,9 @@
 
         function populateReceiptGlobal(data) {
             console.log('Data passed to UI (Global):', data);
+
+            // Update the section flag and title
+            updateGlobalSectionFlag(data.payoutCountry);
 
             document.getElementById('globalTxnNo').textContent = data.txnNo || 'N/A';
             document.getElementById('globalDate').textContent = data.date || 'N/A';
@@ -1354,210 +1358,201 @@
             
             window.open(receiptUrl, '_blank');
         }
+// Bangladesh Section
+        const bangladeshFileInput = document.getElementById('bangladeshFileInput');
+        const bangladeshFileNameDisplay = document.getElementById('bangladeshFileName');
+        const bangladeshReceiptContainer = document.getElementById('bangladeshReceiptContainer');
+        const bangladeshLoadingIndicator = document.getElementById('bangladeshLoading');
+        const bangladeshDownloadBtn = document.getElementById('bangladeshDownloadBtn');
+        const bangladeshResetBtn = document.getElementById('bangladeshResetBtn');
+        const bangladeshCountryError = document.getElementById('bangladeshCountryError');
 
-       // Bangladesh Section
-const bangladeshFileInput = document.getElementById('bangladeshFileInput');
-const bangladeshFileNameDisplay = document.getElementById('bangladeshFileName');
-const bangladeshReceiptContainer = document.getElementById('bangladeshReceiptContainer');
-const bangladeshLoadingIndicator = document.getElementById('bangladeshLoading');
-const bangladeshDownloadBtn = document.getElementById('bangladeshDownloadBtn');
-const bangladeshResetBtn = document.getElementById('bangladeshResetBtn');
-const bangladeshCountryError = document.getElementById('bangladeshCountryError');
+        bangladeshFileInput.addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            bangladeshFileNameDisplay.textContent = `Selected file: ${file.name}`;
+            bangladeshLoadingIndicator.style.display = 'block';
+            bangladeshCountryError.style.display = 'none';
+            try {
+                const extractedData = await extractDataFromPDFBangladesh(file);
+                populateReceiptBangladesh(extractedData);
+                bangladeshReceiptContainer.style.display = 'block';
+                if (extractedData.destinationCountry.toLowerCase().includes('bangladesh')) {
+                    bangladeshDownloadBtn.disabled = false;
+                    bangladeshDownloadBtn.title = 'Download Receipt';
+                    bangladeshDownloadBtn.style.backgroundColor = '#3498db';
+                } else {
+                    bangladeshDownloadBtn.disabled = true;
+                    bangladeshDownloadBtn.title = 'Receipt can only be downloaded for Bangladesh payout country';
+                    bangladeshDownloadBtn.style.backgroundColor = '#95a5a6';
+                    bangladeshCountryError.style.display = 'block';
+                }
+            } catch (error) {
+                console.error('Error processing Bangladesh PDF:', error);
+                alert('Error processing PDF. Please ensure it is a valid PDF.');
+            } finally {
+                bangladeshLoadingIndicator.style.display = 'none';
+            }
+        });
 
-bangladeshFileInput.addEventListener('change', async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-
-    bangladeshFileNameDisplay.textContent = `Selected file: ${file.name}`;
-    bangladeshLoadingIndicator.style.display = 'block';
-    bangladeshCountryError.style.display = 'none';
-
-    try {
-        const extractedData = await extractDataFromPDFBangladesh(file);
-        populateReceiptBangladesh(extractedData);
-        bangladeshReceiptContainer.style.display = 'block';
-
-        updateHeaderFlag(extractedData.destinationCountry);
-
-        if (extractedData.destinationCountry && extractedData.destinationCountry.toLowerCase().includes('bangladesh')) {
-            bangladeshDownloadBtn.disabled = false;
-            bangladeshDownloadBtn.title = 'Download Receipt';
-            bangladeshDownloadBtn.style.backgroundColor = '#3498db';
-        } else {
+        bangladeshResetBtn.addEventListener('click', () => {
+            bangladeshFileInput.value = '';
+            bangladeshFileNameDisplay.textContent = 'No file selected';
+            bangladeshReceiptContainer.style.display = 'none';
             bangladeshDownloadBtn.disabled = true;
-            bangladeshDownloadBtn.title = 'Receipt can only be downloaded for Bangladesh payout country';
-            bangladeshDownloadBtn.style.backgroundColor = '#95a5a6';
-            bangladeshCountryError.style.display = 'block';
-            bangladeshCountryError.textContent = 'Receipt can only be downloaded for Bangladesh payout country';
+            bangladeshDownloadBtn.style.backgroundColor = '#3498db';
+            document.querySelectorAll('#bangladeshReceiptContainer .detail-value').forEach(el => el.textContent = '');
+            document.getElementById('bangladeshTotalPaid').textContent = '';
+            bangladeshCountryError.style.display = 'none';
+        });
+
+        async function extractDataFromPDFBangladesh(file) {
+            const arrayBuffer = await file.arrayBuffer();
+            const pdf = await pdfjsLib.getDocument(arrayBuffer).promise;
+            const page = await pdf.getPage(1);
+            const textContent = await page.getTextContent();
+            const text = textContent.items.map(item => item.str).join('\n').replace(/\s*:\s*/g, ': ').replace(/,\s*,/g, ',');
+
+            console.log('Full extracted text (Bangladesh):', text);
+
+            // Transaction Details
+            const refNoMatch = text.match(/Receipt No\.?\s*([A-Za-z0-9-]+)/i) || text.match(/Ref No: ([^\n]+)/i);
+            const dateMatch = text.match(/Date: (\d{1,2}\s+[A-Za-z]+\s+\d{4})/i);
+
+            // Sender Details
+            const senderNameMatch = text.match(/Sender Name: ([^\n]+)/i);
+            const passportNoMatch = text.match(/Sender Passport No: ([^\n]+)/i);
+            const icNoMatch = text.match(/Sender IC No: ([^\n]+)/i);
+            const senderAddressMatch = text.match(/Sender Address: ([\s\S]*?)(?=(?:Sender Citizenship|Sender Mobile No|$))/i);
+            const citizenshipMatch = text.match(/Sender Citizenship: ([^\n]+)/i);
+            const senderMobileMatch = text.match(/Sender Mobile No: (\+?\d+)/i);
+
+            // Beneficiary Details
+            const beneficiaryNameMatch = text.match(/Beneficiary Name: ([^\n]+)/i);
+            const beneficiaryMobileMatch = text.match(/Beneficiary Mobile No: (\+?\d+)/i);
+            const bankNameMatch = text.match(/Beneficiary Bank Name: ([^\n]+)/i);
+            const accountNoMatch = text.match(/Beneficiary Account No: ([^\n]+)/i);
+            const bankBranchMatch = text.match(/Beneficiary Bank Branch: ([^\n]+)/i);
+            const ifscRoutingNoMatch = text.match(/IFSC \/ Routing No: ([^\n]+)/i);
+
+            // Payment Details
+            const paymentChannelMatch = text.match(/Payment Channel: ([^\n]+)/i);
+            const cashPickupAtMatch = text.match(/Cash Pick\s*-?\s*up at: ([^\n]+)/i);
+            const payoutCodeMatch = text.match(/Payout Code: ([\d-]+)/i) || text.match(/([\d-]{3,}-\d{3,}-\d{3,})/i);
+            const sourceMatch = text.match(/Source: ([^\n]+)/i);
+            const purposeMatch = text.match(/Purpose: ([^\n]+)/i);
+            const destinationCountryMatch = text.match(/Destination Country: ([^\n]+)/i);
+            const payoutAmountMatch = text.match(/Payout Amount to Beneficiary: ([\d,]+\.\d{2})/i);
+            const exchangeRateMatch = text.match(/Exchange Rate: ([\d.]+)/i);
+            const sendAmountMatch = text.match(/Send Amount in BND: BND([\d,]+\.\d{2})/i);
+            const serviceFeeMatch = text.match(/\n\s*SERVICE FEE\s*([\d,]+\.\d{2})/i);
+            const totalMatch = text.match(/Total\s*BND([\d,]+\.\d{2})/i);
+
+            // Format IC No by removing special characters and spaces
+            const icNoRaw = icNoMatch ? icNoMatch[1].trim() : 'N/A';
+            const icNoFormatted = icNoRaw.replace(/[^a-zA-Z0-9]/g, '');
+
+            // Format Sender Address
+            let senderAddress = 'N/A';
+            if (senderAddressMatch) {
+                senderAddress = senderAddressMatch[1].trim().replace(/\n/g, ', ').replace(/,\s*,/g, ',');
+            }
+
+            // Parse Send Amount and Service Fee for total calculation
+            const sendAmountValue = sendAmountMatch ? parseFloat(sendAmountMatch[1].replace(',', '')) : 0;
+            const serviceFeeValue = serviceFeeMatch ? parseFloat(serviceFeeMatch[1].replace(',', '')) : 0;
+            const totalPaidValue = totalMatch ? parseFloat(totalMatch[1].replace(',', '')) : (sendAmountValue + serviceFeeValue);
+            const totalPaidFormatted = totalPaidValue.toFixed(2);
+
+            const extractedData = {
+                refNo: refNoMatch ? refNoMatch[1].trim() : 'N/A',
+                date: dateMatch ? dateMatch[1].trim() : 'N/A',
+                senderName: senderNameMatch ? senderNameMatch[1].trim() : 'N/A',
+                passportNo: passportNoMatch ? passportNoMatch[1].trim() : 'N/A',
+                icNo: icNoFormatted,
+                senderAddress: senderAddress,
+                citizenship: citizenshipMatch ? citizenshipMatch[1].trim() : 'N/A',
+                senderMobile: senderMobileMatch ? senderMobileMatch[1].trim() : 'N/A',
+                beneficiaryName: beneficiaryNameMatch ? beneficiaryNameMatch[1].trim() : 'N/A',
+                beneficiaryMobile: beneficiaryMobileMatch ? beneficiaryMobileMatch[1].trim() : 'N/A',
+                bankName: bankNameMatch ? bankNameMatch[1].trim() : 'N/A',
+                accountNo: accountNoMatch ? accountNoMatch[1].trim() : 'N/A',
+                bankBranch: bankBranchMatch ? bankBranchMatch[1].trim() : 'N/A',
+                ifscRoutingNo: ifscRoutingNoMatch ? ifscRoutingNoMatch[1].trim() : 'N/A',
+                paymentChannel: paymentChannelMatch ? paymentChannelMatch[1].trim() : 'N/A',
+                cashPickupAt: cashPickupAtMatch ? cashPickupAtMatch[1].trim() : 'N/A',
+                payoutCode: payoutCodeMatch ? payoutCodeMatch[1].trim() : 'N/A',
+                source: sourceMatch ? sourceMatch[1].trim() : 'N/A',
+                purpose: purposeMatch ? purposeMatch[1].trim() : 'N/A',
+                destinationCountry: destinationCountryMatch ? destinationCountryMatch[1].trim() : 'N/A',
+                payoutAmount: payoutAmountMatch ? `${payoutAmountMatch[1]} BDT` : 'N/A',
+                exchangeRate: exchangeRateMatch ? `${exchangeRateMatch[1]}` : 'N/A',
+                sendAmount: sendAmountMatch ? `${sendAmountMatch[1]} BND` : 'N/A',
+                serviceFee: serviceFeeMatch ? `${serviceFeeMatch[1]} BND` : 'N/A',
+                totalPaid: `${totalPaidFormatted} BND`
+            };
+
+            console.log('Extracted Data (Bangladesh):', extractedData);
+            return extractedData;
         }
-    } catch (error) {
-        console.error('Error processing Bangladesh PDF:', error);
-        let message = 'Error processing PDF. Please ensure it is a valid PDF and has the correct format.';
-        if (error.message.includes('Invalid PDF')) {
-            message = 'The uploaded file is not a valid PDF.';
-        } else if (error.message.includes('No text')) {
-            message = 'The PDF contains no extractable text.';
+
+        function populateReceiptBangladesh(data) {
+            document.getElementById('bangladeshRefNo').textContent = data.refNo;
+            document.getElementById('bangladeshDate').textContent = data.date;
+            document.getElementById('bangladeshSenderName').textContent = data.senderName;
+            document.getElementById('bangladeshPassportNo').textContent = data.passportNo;
+            document.getElementById('bangladeshIcNo').textContent = data.icNo;
+            document.getElementById('bangladeshSenderAddress').innerHTML = data.senderAddress.replace(/, /g, '<br>');
+            document.getElementById('bangladeshCitizenship').textContent = data.citizenship;
+            document.getElementById('bangladeshSenderMobile').textContent = data.senderMobile;
+            document.getElementById('bangladeshBeneficiaryName').textContent = data.beneficiaryName;
+            document.getElementById('bangladeshBeneficiaryMobile').textContent = data.beneficiaryMobile;
+            document.getElementById('bangladeshBankName').textContent = data.bankName;
+            document.getElementById('bangladeshAccountNo').textContent = data.accountNo;
+            document.getElementById('bangladeshBankBranch').textContent = data.bankBranch;
+            document.getElementById('bangladeshIfscRoutingNo').textContent = data.ifscRoutingNo;
+            document.getElementById('bangladeshPaymentChannel').textContent = data.paymentChannel;
+            document.getElementById('bangladeshCashPickupAt').textContent = data.cashPickupAt;
+            document.getElementById('bangladeshPayoutCode').textContent = data.payoutCode;
+            document.getElementById('bangladeshSource').textContent = data.source;
+            document.getElementById('bangladeshPurpose').textContent = data.purpose;
+            document.getElementById('bangladeshDestinationCountry').textContent = data.destinationCountry;
+            document.getElementById('bangladeshPayoutAmount').textContent = data.payoutAmount;
+            document.getElementById('bangladeshExchangeRate').textContent = data.exchangeRate;
+            document.getElementById('bangladeshSendAmount').textContent = data.sendAmount;
+            document.getElementById('bangladeshServiceFee').textContent = data.serviceFee;
+            document.getElementById('bangladeshTotalPaid').textContent = `Total Paid in BND: ${data.totalPaid}`;
+            document.getElementById('bangladeshDownloadBtn').onclick = () => downloadReceiptBangladesh(data);
         }
-        alert(message);
-        bangladeshDownloadBtn.disabled = true;
-        bangladeshDownloadBtn.title = 'Upload a valid PDF to enable download';
-        bangladeshDownloadBtn.style.backgroundColor = '#95a5a6';
-        bangladeshCountryError.style.display = 'block';
-        bangladeshCountryError.textContent = message;
-    } finally {
-        bangladeshLoadingIndicator.style.display = 'none';
-    }
-});
 
-bangladeshResetBtn.addEventListener('click', () => {
-    bangladeshFileInput.value = '';
-    bangladeshFileNameDisplay.textContent = 'No file selected';
-    bangladeshReceiptContainer.style.display = 'none';
-    bangladeshDownloadBtn.disabled = true;
-    bangladeshDownloadBtn.title = 'Upload a valid PDF to enable download';
-    bangladeshDownloadBtn.style.backgroundColor = '#3498db';
-    document.querySelectorAll('#bangladeshReceiptContainer .detail-value').forEach(el => el.textContent = '');
-    document.getElementById('bangladeshTotalPaid').textContent = '';
-    bangladeshCountryError.style.display = 'none';
-    updateHeaderFlag('');
-});
+        function downloadReceiptBangladesh(data) {
+            const amount = data.payoutAmount.match(/([\d,]+\.\d{2})/)?.[1].replace(',', '') || '138900.00';
+            const now = new Date();
+            const bruneiTime = new Date(now.getTime() + (8 * 60 * 60 * 1000)); // Adjust to Brunei time (UTC+8)
+            const formattedDate = bruneiTime.toISOString().replace('T', ' ').replace(/\.\d+Z/, '') + ' BNT';
 
-async function extractDataFromPDFBangladesh(file) {
-    const arrayBuffer = await file.arrayBuffer();
-    const pdf = await pdfjsLib.getDocument(arrayBuffer).promise;
-    const page = await pdf.getPage(1);
-    const textContent = await page.getTextContent();
-    const text = textContent.items.map(item => item.str).join('\n').replace(/\s*:\s*/g, ': ');
+            const receiptUrl = 'bangladesh_receipt.html?' + new URLSearchParams({
+                date: formattedDate,
+                bankName: data.bankName,
+                accountNo: data.accountNo,
+                beneficiaryName: data.beneficiaryName,
+                beneficiaryMobile: data.beneficiaryMobile,
+                senderName: data.senderName,
+                senderMobile: data.senderMobile,
+                amount: amount,
+                ref: data.refNo,
+                payoutCode: data.payoutCode,
+                exchangeRate: data.exchangeRate,
+                payoutAmount: data.payoutAmount,
+                sendAmount: data.sendAmount,
+                serviceFee: data.serviceFee,
+                totalPaid: data.totalPaid
+            }).toString();
 
-    console.log('Full extracted text (Bangladesh):', text);
-
-    const refNoMatch = text.match(/Ref No: ([^\n]+)/i);
-    const dateMatch = text.match(/Date: ([^\n]+)/i);
-    const senderNameMatch = text.match(/Sender Name: ([^\n]+)/i);
-    const passportNoMatch = text.match(/Sender Passport No: ([^\n]+)/i);
-    const icNoMatch = text.match(/Sender IC No: ([^\n]+)/i);
-    const senderAddressMatch = text.match(/Sender Address: ([\s\S]*?)(?=(?:Sender Citizenship|Sender Mobile No|$))/i);
-    const citizenshipMatch = text.match(/Sender Citizenship: ([^\n]+)/i);
-    const senderMobileMatch = text.match(/Sender Mobile No: (\d+)/i);
-    const beneficiaryNameMatch = text.match(/Beneficiary Name: ([^\n]+)/i);
-    const beneficiaryMobileMatch = text.match(/Beneficiary Mobile No: (\d+)/i);
-    const bankNameMatch = text.match(/Beneficiary Bank Name: ([^\n]+)/i);
-    const accountNoMatch = text.match(/Beneficiary Account No: ([^\n]+)/i);
-    const bankBranchMatch = text.match(/Beneficiary Bank Branch: ([^\n]+)/i);
-    const ifscRoutingNoMatch = text.match(/IFSC \/ Routing No: ([^\n]+)/i);
-    const paymentChannelMatch = text.match(/Payment Channel: ([^\n]+)/i);
-    const cashPickupAtMatch = text.match(/Cash Pick up at: ([^\n]+)/i);
-    const payoutCodeMatch = text.match(/Payout Code: ([^\n]+)/i);
-    const sourceMatch = text.match(/Source: ([^\n]+)/i);
-    const purposeMatch = text.match(/Purpose: ([^\n]+)/i);
-    const destinationCountryMatch = text.match(/Destination Country: ([^\n]+)/i);
-    const payoutAmountMatch = text.match(/Payout Amount: ([\d,]+\.\d{2})\s*([A-Z]{3})/i);
-    const exchangeRateMatch = text.match(/Exchange Rate: ([\d.]+)\s*([A-Z]{3})/i);
-    const sendAmountMatch = text.match(/Send Amount in BND: ([\d,]+\.\d{2})\s*([A-Z]{3})/i);
-    const serviceFeeMatch = text.match(/Service Fee: ([\d,]+\.\d{2})\s*([A-Z]{3})/i);
-    const totalPaidMatch = text.match(/Total Paid: ([\d,]+\.\d{2})\s*([A-Z]{3})/i);
-
-    let senderAddress = 'N/A';
-    let senderAddressRaw = 'N/A';
-    if (senderAddressMatch) {
-        senderAddressRaw = senderAddressMatch[1].trim();
-        senderAddress = senderAddressRaw.replace(/\n/g, ', ').trim();
-    }
-
-    const extractedData = {
-        refNo: refNoMatch ? refNoMatch[1].trim() : 'N/A',
-        date: dateMatch ? dateMatch[1].trim() : 'N/A',
-        senderName: senderNameMatch ? senderNameMatch[1].trim() : 'N/A',
-        passportNo: passportNoMatch ? passportNoMatch[1].trim() : 'N/A',
-        icNo: icNoMatch ? icNoMatch[1].trim() : 'N/A',
-        senderAddress: senderAddress,
-        senderAddressRaw: senderAddressRaw,
-        citizenship: citizenshipMatch ? citizenshipMatch[1].trim() : 'N/A',
-        senderMobile: senderMobileMatch ? senderMobileMatch[1].trim() : 'N/A',
-        beneficiaryName: beneficiaryNameMatch ? beneficiaryNameMatch[1].trim() : 'N/A',
-        beneficiaryMobile: beneficiaryMobileMatch ? beneficiaryMobileMatch[1].trim() : 'N/A',
-        bankName: bankNameMatch ? bankNameMatch[1].trim() : 'N/A',
-        accountNo: accountNoMatch ? accountNoMatch[1].trim() : 'N/A',
-        bankBranch: bankBranchMatch ? bankBranchMatch[1].trim() : 'N/A',
-        ifscRoutingNo: ifscRoutingNoMatch ? ifscRoutingNoMatch[1].trim() : 'N/A',
-        paymentChannel: paymentChannelMatch ? paymentChannelMatch[1].trim() : 'N/A',
-        cashPickupAt: cashPickupAtMatch ? cashPickupAtMatch[1].trim() : 'N/A',
-        payoutCode: payoutCodeMatch ? payoutCodeMatch[1].trim() : 'N/A',
-        source: sourceMatch ? sourceMatch[1].trim() : 'N/A',
-        purpose: purposeMatch ? purposeMatch[1].trim() : 'N/A',
-        destinationCountry: destinationCountryMatch ? destinationCountryMatch[1].trim() : 'N/A',
-        payoutAmount: payoutAmountMatch ? `${payoutAmountMatch[1].trim()} ${payoutAmountMatch[2]}` : 'N/A',
-        exchangeRate: exchangeRateMatch ? `${exchangeRateMatch[1].trim()} ${exchangeRateMatch[2]}` : 'N/A',
-        sendAmount: sendAmountMatch ? `${sendAmountMatch[1].trim()} ${sendAmountMatch[2]}` : 'N/A',
-        serviceFee: serviceFeeMatch ? `${serviceFeeMatch[1].trim()} ${serviceFeeMatch[2]}` : 'N/A',
-        totalPaid: totalPaidMatch ? `${totalPaidMatch[1].trim()} ${totalPaidMatch[2]}` : 'N/A'
-    };
-
-    console.log('Extracted Data (Bangladesh):', extractedData);
-    return extractedData;
-}
-
-function populateReceiptBangladesh(data) {
-    console.log('Data passed to UI (Bangladesh):', data);
-    document.getElementById('bangladeshRefNo').textContent = data.refNo || 'N/A';
-    document.getElementById('bangladeshDate').textContent = data.date || 'N/A';
-    document.getElementById('bangladeshSenderName').textContent = data.senderName || 'N/A';
-    document.getElementById('bangladeshPassportNo').textContent = data.passportNo || 'N/A';
-    document.getElementById('bangladeshIcNo').textContent = data.icNo || 'N/A';
-    document.getElementById('bangladeshSenderAddress').innerHTML = (data.senderAddressRaw || 'N/A').replace(/\n/g, '<br>');
-    document.getElementById('bangladeshCitizenship').textContent = data.citizenship || 'N/A';
-    document.getElementById('bangladeshSenderMobile').textContent = data.senderMobile || 'N/A';
-    document.getElementById('bangladeshBeneficiaryName').textContent = data.beneficiaryName || 'N/A';
-    document.getElementById('bangladeshBeneficiaryMobile').textContent = data.beneficiaryMobile || 'N/A';
-    document.getElementById('bangladeshBankName').textContent = data.bankName || 'N/A';
-    document.getElementById('bangladeshAccountNo').textContent = data.accountNo || 'N/A';
-    document.getElementById('bangladeshBankBranch').textContent = data.bankBranch || 'N/A';
-    document.getElementById('bangladeshIfscRoutingNo').textContent = data.ifscRoutingNo || 'N/A';
-    document.getElementById('bangladeshPaymentChannel').textContent = data.paymentChannel || 'N/A';
-    document.getElementById('bangladeshCashPickupAt').textContent = data.cashPickupAt || 'N/A';
-    document.getElementById('bangladeshPayoutCode').textContent = data.payoutCode || 'N/A';
-    document.getElementById('bangladeshSource').textContent = data.source || 'N/A';
-    document.getElementById('bangladeshPurpose').textContent = data.purpose || 'N/A';
-    document.getElementById('bangladeshDestinationCountry').textContent = data.destinationCountry || 'N/A';
-    document.getElementById('bangladeshPayoutAmount').textContent = data.payoutAmount || 'N/A';
-    document.getElementById('bangladeshExchangeRate').textContent = data.exchangeRate || 'N/A';
-    document.getElementById('bangladeshSendAmount').textContent = data.sendAmount || 'N/A';
-    document.getElementById('bangladeshServiceFee').textContent = data.serviceFee || 'N/A';
-    document.getElementById('bangladeshTotalPaid').textContent = `Total Paid: ${data.totalPaid || 'N/A'}`;
-
-    document.getElementById('bangladeshDownloadBtn').onclick = () => downloadReceiptBangladesh(data);
-}
-
-function downloadReceiptBangladesh(data) {
-    const amountMatch = data.payoutAmount.match(/([\d,]+\.\d{2})/);
-    const amount = amountMatch ? amountMatch[1].replace(',', '') : '100000';
-    const now = new Date();
-    const bruneiTime = new Date(now.getTime() + (8 * 60 * 60 * 1000));
-    const formattedDate = bruneiTime.toISOString().replace('T', ' ').replace(/\.\d+Z/, '') + ' BNT';
-
-    const receiptUrl = 'bangladesh_receipt.html?' + new URLSearchParams({
-        date: formattedDate,
-        bankName: data.bankName || 'N/A',
-        accountNo: data.accountNo || 'N/A',
-        beneficiaryName: data.beneficiaryName || 'N/A',
-        beneficiaryMobile: data.beneficiaryMobile || 'N/A',
-        senderName: data.senderName || 'N/A',
-        amount: amount,
-        sendAmount: data.sendAmount || 'N/A',
-        serviceFee: data.serviceFee || 'N/A',
-        totalPaid: data.totalPaid || 'N/A',
-        exchangeRate: data.exchangeRate || 'N/A',
-        ref: data.refNo || '123456789',
-        routingNo: data.ifscRoutingNo || 'N/A',
-        bankBranch: data.bankBranch || 'N/A',
-        destinationCountry: data.destinationCountry || 'N/A',
-        paymentChannel: data.paymentChannel || 'N/A',
-        cashPickupAt: data.cashPickupAt || 'N/A',
-        payoutCode: data.payoutCode || 'N/A'
-    }).toString();
-
-    window.open(receiptUrl, '_blank');
-}
-</script>
-</body>
-</html>
+            window.open(receiptUrl, '_blank');
+        }
+    </script>
+    </script>
+    </script>
+    </body>
+    </html>

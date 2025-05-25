@@ -619,398 +619,397 @@
         // Initialize PDF.js worker
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.11.338/pdf.worker.min.js';
         
-        // Global Section
-        const globalFileInput = document.getElementById('globalFileInput');
-        const globalFileNameDisplay = document.getElementById('globalFileName');
-        const globalReceiptContainer = document.getElementById('globalReceiptContainer');
-        const globalLoadingIndicator = document.getElementById('globalLoading');
-        const globalDownloadBtn = document.getElementById('globalDownloadBtn');
-        const globalResetBtn = document.getElementById('globalResetBtn');
-        const globalCountryError = document.getElementById('globalCountryError');
+     // Global Section
+const globalFileInput = document.getElementById('globalFileInput');
+const globalFileNameDisplay = document.getElementById('globalFileName');
+const globalReceiptContainer = document.getElementById('globalReceiptContainer');
+const globalLoadingIndicator = document.getElementById('globalLoading');
+const globalDownloadBtn = document.getElementById('globalDownloadBtn');
+const globalResetBtn = document.getElementById('globalResetBtn');
+const globalCountryError = document.getElementById('globalCountryError');
 
-        globalFileInput.addEventListener('change', async (e) => {
-            const file = e.target.files[0];
-            if (!file) return;
+globalFileInput.addEventListener('change', async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
 
-            globalFileNameDisplay.textContent = `Selected file: ${file.name}`;
-            globalLoadingIndicator.style.display = 'block';
-            globalCountryError.style.display = 'none';
+    globalFileNameDisplay.textContent = `Selected file: ${file.name}`;
+    globalLoadingIndicator.style.display = 'block';
+    globalCountryError.style.display = 'none';
 
-            try {
-                const extractedData = await extractDataFromPDFGlobal(file);
-                populateReceiptGlobal(extractedData);
-                globalReceiptContainer.style.display = 'block';
+    try {
+        const extractedData = await extractDataFromPDFGlobal(file);
+        populateReceiptGlobal(extractedData);
+        globalReceiptContainer.style.display = 'block';
 
-                const payoutCountry = extractedData.payoutCountry ? extractedData.payoutCountry.trim().toLowerCase() : '';
-                updateHeaderFlag(payoutCountry);
+        const payoutCountry = extractedData.payoutCountry ? extractedData.payoutCountry.trim().toLowerCase() : '';
+        updateHeaderFlag(payoutCountry);
 
-                if (payoutCountry && payoutCountry !== 'n/a') {
-                    globalDownloadBtn.disabled = false;
-                    globalDownloadBtn.title = 'Download Receipt';
-                    globalDownloadBtn.style.backgroundColor = '#3498db';
-                } else {
-                    globalDownloadBtn.disabled = true;
-                    globalDownloadBtn.title = 'Receipt can only be downloaded for a valid payout country';
-                    globalDownloadBtn.style.backgroundColor = '#95a5a6';
-                    globalCountryError.style.display = 'block';
-                    globalCountryError.textContent = 'Receipt can only be downloaded for a valid payout country';
-                }
-            } catch (error) {
-                console.error('Error processing Global PDF:', error);
-                let message = 'Error processing PDF. Please ensure it is a valid PDF and has the correct format.';
-                if (error.message.includes('Invalid PDF')) {
-                    message = 'The uploaded file is not a valid PDF.';
-                } else if (error.message.includes('No text')) {
-                    message = 'The PDF contains no extractable text.';
-                }
-                alert(message);
-                globalDownloadBtn.disabled = true;
-                globalDownloadBtn.title = 'Upload a valid PDF to enable download';
-                globalDownloadBtn.style.backgroundColor = '#95a5a6';
-                globalCountryError.style.display = 'block';
-                globalCountryError.textContent = message;
-            } finally {
-                globalLoadingIndicator.style.display = 'none';
-            }
-        });
-
-        globalResetBtn.addEventListener('click', () => {
-            globalFileInput.value = '';
-            globalFileNameDisplay.textContent = 'No file selected';
-            globalReceiptContainer.style.display = 'none';
-            globalDownloadBtn.disabled = true;
+        if (payoutCountry && payoutCountry !== 'n/a') {
+            globalDownloadBtn.disabled = false;
+            globalDownloadBtn.title = 'Download Receipt';
             globalDownloadBtn.style.backgroundColor = '#3498db';
-            globalDownloadBtn.title = 'Upload a valid PDF to enable download';
-            document.querySelectorAll('#globalReceiptContainer .detail-value').forEach(el => el.textContent = '');
-            document.getElementById('globalTotalAmount').textContent = '';
-            globalCountryError.style.display = 'none';
-            updateHeaderFlag('');
-            updateGlobalSectionFlag('');
-        });
+        } else {
+            globalDownloadBtn.disabled = true;
+            globalDownloadBtn.title = 'Receipt can only be downloaded for a valid payout country';
+            globalDownloadBtn.style.backgroundColor = '#95a5a6';
+            globalCountryError.style.display = 'block';
+            globalCountryError.textContent = 'Receipt can only be downloaded for a valid payout country';
+        }
+    } catch (error) {
+        console.error('Error processing Global PDF:', error);
+        let message = 'Error processing PDF. Please ensure it is a valid PDF and has the correct format.';
+        if (error.message.includes('Invalid PDF')) {
+            message = 'The uploaded file is not a valid PDF.';
+        } else if (error.message.includes('No text')) {
+            message = 'The PDF contains no extractable text.';
+        }
+        alert(message);
+        globalDownloadBtn.disabled = true;
+        globalDownloadBtn.title = 'Upload a valid PDF to enable download';
+        globalDownloadBtn.style.backgroundColor = '#95a5a6';
+        globalCountryError.style.display = 'block';
+        globalCountryError.textContent = message;
+    } finally {
+        globalLoadingIndicator.style.display = 'none';
+    }
+});
 
-        async function extractDataFromPDFGlobal(file) {
-            const arrayBuffer = await file.arrayBuffer();
-            const pdf = await pdfjsLib.getDocument(arrayBuffer).promise;
-            const page = await pdf.getPage(1);
-            const textContent = await page.getTextContent();
-            const textItems = textContent.items.map(item => item.str);
+globalResetBtn.addEventListener('click', () => {
+    globalFileInput.value = '';
+    globalFileNameDisplay.textContent = 'No file selected';
+    globalReceiptContainer.style.display = 'none';
+    globalDownloadBtn.disabled = true;
+    globalDownloadBtn.style.backgroundColor = '#3498db';
+    globalDownloadBtn.title = 'Upload a valid PDF to enable download';
+    document.querySelectorAll('#globalReceiptContainer .detail-value').forEach(el => el.textContent = '');
+    document.getElementById('globalTotalAmount').textContent = '';
+    globalCountryError.style.display = 'none';
+    updateHeaderFlag('');
+    updateGlobalSectionFlag('');
+});
 
-            let text = textItems.join('\n');
-            text = text.replace(/\s*:\s*/g, ': ').replace(/\n\s+/g, '\n');
+async function extractDataFromPDFGlobal(file) {
+    const arrayBuffer = await file.arrayBuffer();
+    const pdf = await pdfjsLib.getDocument(arrayBuffer).promise;
+    const page = await pdf.getPage(1);
+    const textContent = await page.getTextContent();
+    const textItems = textContent.items.map(item => item.str);
 
-            console.log('Full extracted text (Global):', text);
+    let text = textItems.join('\n');
+    text = text.replace(/\s*:\s*/g, ': ').replace(/\n\s+/g, '\n');
 
-            const topLeftDateMatch = text.match(/^\d{1,2}\/\d{1,2}\/\d{2},\s*\d{1,2}:\d{2}\s*(?:AM|PM)/im);
-            const txnNoMatch = text.match(/Txn\s*No:?\s*(\d+)/i);
-            const paymentChannelMatch = text.match(/Payment Channel: ([^\n]+)/i);
-            const pinMatch = text.match(/(?:^|\n)\s*Pin\s*:+\s*([A-Za-z0-9]+)/i);
-            const dateMatch = text.match(/Date: (\d{2}-\d{2}-\d{4})/i);
+    console.log('Full extracted text (Global):', text);
 
-            console.log('Pin Match (Global):', pinMatch);
+    const topLeftDateMatch = text.match(/^\d{1,2}\/\d{1,2}\/\d{2},\s*\d{1,2}:\d{2}\s*(?:AM|PM)/im);
+    const txnNoMatch = text.match(/Txn\s*No:?\s*(\d+)/i);
+    const paymentChannelMatch = text.match(/Payment Channel: ([^\n]+)/i);
+    const pinMatch = text.match(/(?:^|\n)\s*Pin\s*:+\s*([A-Za-z0-9]+)/i);
+    const dateMatch = text.match(/Date: (\d{2}-\d{2}-\d{4})/i);
 
-            const senderSectionMatch = text.match(/Sender Details([\s\S]*?)Beneficary Details/i);
-            let senderSection = senderSectionMatch ? senderSectionMatch[1] : '';
-            console.log('Sender Section (Global):', senderSection);
+    console.log('Pin Match (Global):', pinMatch);
 
-            const customerIdMatch = senderSection.match(/Customer Id: ([^\n]+)/i);
-            const senderNameMatch = senderSection.match(/Name: ([^\n]+)/i);
-            const senderAddressMatch = senderSection.match(/Address: ([\s\S]*?)(?=(?:National ID|Passport))/i);
-            let senderAddress = 'N/A';
-            let senderAddressRaw = 'N/A';
-            if (senderAddressMatch) {
-                senderAddressRaw = senderAddressMatch[1].trim();
-                senderAddress = senderAddressRaw.replace(/\n/g, ', ').trim();
-            }
-            const nationalIdMatch = senderSection.match(/(?:National ID|Passport): ([^\n]+)/i);
-            const nationalityMatch = senderSection.match(/Nationality: ([^\n]+)/i);
-            const professionMatch = senderSection.match(/Profession: ([^\n]+)/i);
-            const senderMobileMatch = senderSection.match(/Mobile No: (\d+)/i) || 
-                                    senderSection.match(/Mobile\s*No: (\d+)/i);
+    const senderSectionMatch = text.match(/Sender Details([\s\S]*?)Beneficary Details/i);
+    let senderSection = senderSectionMatch ? senderSectionMatch[1] : '';
+    console.log('Sender Section (Global):', senderSection);
 
-            const senderName = senderNameMatch ? senderNameMatch[1].trim() : '';
+    const customerIdMatch = senderSection.match(/Customer Id: ([^\n]+)/i);
+    const senderNameMatch = senderSection.match(/Name: ([^\n]+)/i);
+    const senderAddressMatch = senderSection.match(/Address: ([\s\S]*?)(?=(?:National ID|Passport))/i);
+    let senderAddress = 'N/A';
+    let senderAddressRaw = 'N/A';
+    if (senderAddressMatch) {
+        senderAddressRaw = senderAddressMatch[1].trim();
+        senderAddress = senderAddressRaw.replace(/\n/g, ', ').trim();
+    }
+    const nationalIdMatch = senderSection.match(/(?:National ID|Passport): ([^\n]+)/i);
+    const nationalityMatch = senderSection.match(/Nationality: ([^\n]+)/i);
+    const professionMatch = senderSection.match(/Profession: ([^\n]+)/i);
+    const senderMobileMatch = senderSection.match(/Mobile No: (\d+)/i) || 
+                            senderSection.match(/Mobile\s*No: (\d+)/i);
 
-            const beneficiarySectionMatch = text.match(/Beneficary Details([\s\S]*?)(?=Payout\s*(?:Amount|Country)|$)/i);
-            let beneficiarySection = beneficiarySectionMatch ? beneficiarySectionMatch[1] : '';
-            console.log('Beneficiary Section (Global):', beneficiarySection);
+    const senderName = senderNameMatch ? senderNameMatch[1].trim() : '';
 
-            const lines = beneficiarySection.split('\n');
-            let beneficiaryData = {
-                name: '',
-                bankName: '',
-                accountNo: '',
-                ifscCode: 'N/A',
-                routingNumber: 'N/A',
-                branchName: 'N/A',
-                mobileNo: 'N/A'
-            };
+    const beneficiarySectionMatch = text.match(/Beneficary Details([\s\S]*?)(?=Payout\s*(?:Amount|Country)|$)/i);
+    let beneficiarySection = beneficiarySectionMatch ? beneficiarySectionMatch[1] : '';
+    console.log('Beneficiary Section (Global):', beneficiarySection);
 
-            let fieldIndex = 0;
-            let lastAccountNo = '';
-            let expectingValue = false;
+    const lines = beneficiarySection.split('\n');
+    let beneficiaryData = {
+        name: '',
+        bankName: '',
+        accountNo: 'N/A', // Default to N/A
+        ifscCode: 'N/A',
+        routingNumber: 'N/A',
+        branchName: 'N/A',
+        mobileNo: 'N/A'
+    };
 
-            for (let i = 0; i < lines.length && fieldIndex < 5; i++) {
-                let line = lines[i].trim();
+    let fieldIndex = 0;
+    let lastAccountNo = '';
+    let expectingValue = false;
 
-                if (!line) continue;
+    for (let i = 0; i < lines.length && fieldIndex < 5; i++) {
+        let line = lines[i].trim();
 
-                console.log(`Processing Beneficiary Line ${i} (fieldIndex=${fieldIndex}): ${line}`);
+        if (!line) continue;
 
-                if (expectingValue) {
-                    if (fieldIndex === 0) {
-                        const nameMatch = line.match(/^:?\s*([^\n]+)/);
-                        if (nameMatch) {
-                            beneficiaryData.name = nameMatch[1].trim();
-                            fieldIndex++;
-                            expectingValue = false;
-                        }
-                    }
-                    continue;
-                }
+        console.log(`Processing Beneficiary Line ${i} (fieldIndex=${fieldIndex}): ${line}`);
 
-                if (fieldIndex === 0 && line.match(/Name/i) && !line.match(/:/)) {
-                    expectingValue = true;
-                } else if (fieldIndex === 0 && line.match(/Name:/i)) {
-                    const nameMatch = line.match(/Name: ([^\n]+)/i);
-                    if (nameMatch) {
-                        beneficiaryData.name = nameMatch[1].trim();
-                        fieldIndex++;
-                    }
-                } else if (fieldIndex === 1 && line.match(/(?:Bank|Bank Name):/i)) {
-                    const bankMatch = line.match(/(?:Bank|Bank Name): ([^\n]+)/i);
-                    if (bankMatch) {
-                        beneficiaryData.bankName = bankMatch[1].trim();
-                        fieldIndex++;
-                    }
-                } else if (fieldIndex === 1 && !line.match(/(?:Bank|Bank Name):/i) && line.match(/[A-Z\s]+/)) {
-                    beneficiaryData.bankName = line.trim();
-                    fieldIndex++;
-                } else if (fieldIndex === 2 && line.match(/Account No:/i)) {
-                    const accountMatch = line.match(/Account No: ([^\n]+)/i);
-                    if (accountMatch) {
-                        beneficiaryData.accountNo = accountMatch[1].trim();
-                        lastAccountNo = beneficiaryData.accountNo;
-                        fieldIndex++;
-                    }
-                } else if (fieldIndex === 2 && line.match(/\d+/)) {
-                    beneficiaryData.accountNo = line.trim();
-                    lastAccountNo = beneficiaryData.accountNo;
-                    fieldIndex++;
-                } else if (fieldIndex === 3 && line.match(/(?:IFSC(?:\/Bank)?\s*Code|Branch\s*Code|Bank\s*Code|IFSC):/i)) {
-                    const ifscMatch = line.match(/(?:IFSC(?:\/Bank)?\s*Code|Branch\s*Code|Bank\s*Code|IFSC): ([^\n]+)/i);
-                    if (ifscMatch) {
-                        const potentialIfsc = ifscMatch[1].trim();
-                        console.log(`Found potential IFSC code with label: ${potentialIfsc}`);
-                        if (potentialIfsc !== lastAccountNo && potentialIfsc.length > 1 && !potentialIfsc.match(/mobile/i)) {
-                            beneficiaryData.ifscCode = potentialIfsc;
-                            const ifscParts = potentialIfsc.split(/\s+/);
-                            if (ifscParts.length >= 2) {
-                                beneficiaryData.routingNumber = ifscParts[ifscParts.length - 1];
-                                beneficiaryData.branchName = ifscParts.slice(0, -1).join(' ');
-                            }
-                        } else {
-                            console.log('IFSC code matches account number, is too short, or contains "mobile", keeping as N/A');
-                        }
-                        fieldIndex++;
-                    }
-                } else if (fieldIndex === 3 && !line.match(/(?:IFSC(?:\/Bank)?\s*Code|Branch\s*Code|Bank\s*Code|IFSC):/i)) {
-                    const potentialIfsc = line.trim();
-                    console.log(`Found potential IFSC code without label: ${potentialIfsc}`);
-                    if (potentialIfsc !== lastAccountNo && potentialIfsc.length > 1 && !potentialIfsc.match(/mobile/i)) {
-                        beneficiaryData.ifscCode = potentialIfsc;
-                        const ifscParts = potentialIfsc.split(/\s+/);
-                        if (ifscParts.length >= 2) {
-                            beneficiaryData.routingNumber = ifscParts[ifscParts.length - 1];
-                            beneficiaryData.branchName = ifscParts.slice(0, -1).join(' ');
-                        }
-                    } else {
-                        console.log('Potential IFSC code matches account number, is too short, or contains "mobile", keeping as N/A');
-                    }
-                    fieldIndex++;
-                } else if (fieldIndex === 4 && line.match(/Mobile No:/i)) {
-                    const mobileMatch = line.match(/Mobile No: (\d+)/i);
-                    if (mobileMatch) {
-                        const potentialMobile = mobileMatch[1].trim();
-                        console.log(`Found potential Mobile No with label: ${potentialMobile}`);
-                        if (potentialMobile !== lastAccountNo && /^\d+$/.test(potentialMobile)) {
-                            beneficiaryData.mobileNo = potentialMobile;
-                        } else {
-                            console.log('Mobile No matches account number or is not numeric, keeping as N/A');
-                        }
-                        fieldIndex++;
-                    }
-                } else if (fieldIndex === 4 && line.match(/\d+/)) {
-                    const potentialMobile = line.trim();
-                    console.log(`Found potential Mobile No without label: ${potentialMobile}`);
-                    if (potentialMobile !== lastAccountNo && /^\d+$/.test(potentialMobile)) {
-                        beneficiaryData.mobileNo = potentialMobile;
-                    } else {
-                        console.log('Potential Mobile No matches account number or is not numeric, keeping as N/A');
-                    }
-                    fieldIndex++;
-                }
-            }
-
-            if (!beneficiaryData.name) {
-                const nameMatch = text.match(/Beneficary Details[\s\S]*?Name[\s\S]*?: ([^\n]+)/i);
+        if (expectingValue) {
+            if (fieldIndex === 0) {
+                const nameMatch = line.match(/^:?\s*([^\n]+)/);
                 if (nameMatch) {
                     beneficiaryData.name = nameMatch[1].trim();
+                    fieldIndex++;
+                    expectingValue = false;
                 }
             }
-            if (!beneficiaryData.bankName) {
-                const bankMatch = text.match(/Beneficary Details[\s\S]*?(?:Bank|Bank Name): ([^\n]+)/i);
-                beneficiaryData.bankName = bankMatch ? bankMatch[1].trim() : '';
+            continue;
+        }
+
+        if (fieldIndex === 0 && line.match(/Name/i) && !line.match(/:/)) {
+            expectingValue = true;
+        } else if (fieldIndex === 0 && line.match(/Name:/i)) {
+            const nameMatch = line.match(/Name: ([^\n]+)/i);
+            if (nameMatch) {
+                beneficiaryData.name = nameMatch[1].trim();
+                fieldIndex++;
             }
-            if (!beneficiaryData.accountNo) {
-                const accountMatch = text.match(/Beneficary Details[\s\S]*?Account No: ([^\n]+)/i);
-                beneficiaryData.accountNo = accountMatch ? accountMatch[1].trim() : '';
+        } else if (fieldIndex === 1 && line.match(/(?:Bank|Bank Name):/i)) {
+            const bankMatch = line.match(/(?:Bank|Bank Name): ([^\n]+)/i);
+            if (bankMatch) {
+                beneficiaryData.bankName = bankMatch[1].trim();
+                fieldIndex++;
             }
-            if (beneficiaryData.ifscCode === 'N/A') {
-                const ifscMatch = text.match(/Beneficary Details[\s\S]*?(?:IFSC(?:\/Bank)?\s*Code|Branch\s*Code|Bank\s*Code|IFSC): ([^\n]+)/i);
-                if (ifscMatch) {
-                    const potentialIfsc = ifscMatch[1].trim();
-                    console.log(`Fallback IFSC code found: ${potentialIfsc}`);
-                    if (potentialIfsc !== beneficiaryData.accountNo && potentialIfsc.length > 1 && !potentialIfsc.match(/mobile/i)) {
-                        beneficiaryData.ifscCode = potentialIfsc;
-                        const ifscParts = potentialIfsc.split(/\s+/);
-                        if (ifscParts.length >= 2) {
-                            beneficiaryData.routingNumber = ifscParts[ifscParts.length - 1];
-                            beneficiaryData.branchName = ifscParts.slice(0, -1).join(' ');
-                        }
-                    } else {
-                        console.log('Fallback IFSC code matches account number, is too short, or contains "mobile", keeping as N/A');
+        } else if (fieldIndex === 1 && !line.match(/(?:Bank|Bank Name):/i) && line.match(/[A-Z\s]+/)) {
+            beneficiaryData.bankName = line.trim();
+            fieldIndex++;
+        } else if (fieldIndex === 2 && line.match(/Account No:/i)) {
+            const accountMatch = line.match(/Account No: ([^\n]+)/i);
+            if (accountMatch) {
+                beneficiaryData.accountNo = accountMatch[1].trim();
+                lastAccountNo = beneficiaryData.accountNo;
+                fieldIndex++;
+            }
+        } else if (fieldIndex === 2 && line.match(/Mobile No:/i)) {
+            // Skip if the line is a mobile number, don't treat it as account number
+            continue;
+        } else if (fieldIndex === 3 && line.match(/(?:IFSC(?:\/Bank)?\s*Code|Branch\s*Code|Bank\s*Code|IFSC):/i)) {
+            const ifscMatch = line.match(/(?:IFSC(?:\/Bank)?\s*Code|Branch\s*Code|Bank\s*Code|IFSC): ([^\n]+)/i);
+            if (ifscMatch) {
+                const potentialIfsc = ifscMatch[1].trim();
+                console.log(`Found potential IFSC code with label: ${potentialIfsc}`);
+                if (potentialIfsc !== lastAccountNo && potentialIfsc.length > 1 && !potentialIfsc.match(/mobile/i)) {
+                    beneficiaryData.ifscCode = potentialIfsc;
+                    const ifscParts = potentialIfsc.split(/\s+/);
+                    if (ifscParts.length >= 2) {
+                        beneficiaryData.routingNumber = ifscParts[ifscParts.length - 1];
+                        beneficiaryData.branchName = ifscParts.slice(0, -1).join(' ');
                     }
+                } else {
+                    console.log('IFSC code matches account number, is too short, or contains "mobile", keeping as N/A');
                 }
+                fieldIndex++;
             }
-            if (beneficiaryData.mobileNo === 'N/A') {
-                const mobileMatch = text.match(/Beneficary Details[\s\S]*?Mobile No: (\d+)/i);
-                if (mobileMatch) {
-                    const potentialMobile = mobileMatch[1].trim();
-                    console.log(`Fallback Mobile No found: ${potentialMobile}`);
-                    if (potentialMobile !== beneficiaryData.accountNo && /^\d+$/.test(potentialMobile)) {
-                        beneficiaryData.mobileNo = potentialMobile;
-                    }
+        } else if (fieldIndex === 3 && !line.match(/(?:IFSC(?:\/Bank)?\s*Code|Branch\s*Code|Bank\s*Code|IFSC):/i)) {
+            const potentialIfsc = line.trim();
+            console.log(`Found potential IFSC code without label: ${potentialIfsc}`);
+            if (potentialIfsc !== lastAccountNo && potentialIfsc.length > 1 && !potentialIfsc.match(/mobile/i)) {
+                beneficiaryData.ifscCode = potentialIfsc;
+                const ifscParts = potentialIfsc.split(/\s+/);
+                if (ifscParts.length >= 2) {
+                    beneficiaryData.routingNumber = ifscParts[ifscParts.length - 1];
+                    beneficiaryData.branchName = ifscParts.slice(0, -1).join(' ');
                 }
+            } else {
+                console.log('Potential IFSC code matches account number, is too short, or contains "mobile", keeping as N/A');
             }
-
-            console.log('Extracted Beneficiary Data (Global):', beneficiaryData);
-
-            const paymentSectionMatch = text.match(/(?:Payout\s*(?:Amount|Country)|PayoutCountry)([\s\S]*)$/i);
-            let paymentSection = paymentSectionMatch ? paymentSectionMatch[1] : text;
-            console.log('Payment Section (Global):', paymentSection);
-
-            let payoutCountryMatch = paymentSection.match(/Payout Country: ([^\n]+)/i);
-            if (!payoutCountryMatch) {
-                payoutCountryMatch = paymentSection.match(/PayoutCountry: ([^\n]+)/i);
+            fieldIndex++;
+        } else if (fieldIndex === 4 && line.match(/Mobile No:/i)) {
+            const mobileMatch = line.match(/Mobile No: (\d+)/i);
+            if (mobileMatch) {
+                const potentialMobile = mobileMatch[1].trim();
+                console.log(`Found potential Mobile No with label: ${potentialMobile}`);
+                if (potentialMobile !== lastAccountNo && /^\d+$/.test(potentialMobile)) {
+                    beneficiaryData.mobileNo = potentialMobile;
+                } else {
+                    console.log('Mobile No matches account number or is not numeric, keeping as N/A');
+                }
+                fieldIndex++;
             }
-            if (!payoutCountryMatch) {
-                payoutCountryMatch = text.match(/Payout\s*Country: ([^\n]+)/i) || text.match(/PayoutCountry: ([^\n]+)/i);
+        } else if (fieldIndex === 4 && line.match(/\d+/)) {
+            const potentialMobile = line.trim();
+            console.log(`Found potential Mobile No without label: ${potentialMobile}`);
+            if (potentialMobile !== lastAccountNo && /^\d+$/.test(potentialMobile)) {
+                beneficiaryData.mobileNo = potentialMobile;
+            } else {
+                console.log('Potential Mobile No matches account number or is not numeric, keeping as N/A');
             }
-
-            const sourceMatch = paymentSection.match(/Source: ([^\n]+)/i);
-            const purposeMatch = paymentSection.match(/Purpose: ([^\n]+)/i);
-            const payoutAmountMatch = paymentSection.match(/([\d,]+\.\d{2})\s*([A-Z]{3})/i);
-            const exchangeRateMatch = paymentSection.match(/Exchange Rate: ([\d.]+)\s*([A-Z]{3})/i);
-            const payInAmountMatch = paymentSection.match(/Pay In Amount: ([\d,]+\.\d{2})\s*([A-Z]{3})/i);
-            const serviceChargeMatch = paymentSection.match(/Service Charge: ([\d,]+\.\d{2})\s*([A-Z]{3})/i);
-            const totalAmountMatch = paymentSection.match(/Total Amount: ([\d,]+\.\d{2})\s*([A-Z]{3})/i);
-
-            const finalIfscCode = beneficiaryData.ifscCode && beneficiaryData.ifscCode.length > 1 && !beneficiaryData.ifscCode.match(/mobile/i) ? beneficiaryData.ifscCode : 'N/A';
-            const finalMobileNo = beneficiaryData.mobileNo && /^\d+$/.test(beneficiaryData.mobileNo) ? beneficiaryData.mobileNo : 'N/A';
-
-            const extractedData = {
-                txnNo: txnNoMatch ? txnNoMatch[1].trim() : 'N/A',
-                topLeftDate: topLeftDateMatch ? topLeftDateMatch[0].trim() : 'N/A',
-                paymentChannel: paymentChannelMatch ? paymentChannelMatch[1].trim() : 'N/A',
-                pin: pinMatch ? pinMatch[1].trim() : 'N/A',
-                date: dateMatch ? dateMatch[1].trim() : 'N/A',
-                customerId: customerIdMatch ? customerIdMatch[1].trim() : 'N/A',
-                senderName: senderNameMatch ? senderNameMatch[1].trim() : 'N/A',
-                senderAddress: senderAddress,
-                senderAddressRaw: senderAddressRaw,
-                nationalId: nationalIdMatch ? nationalIdMatch[1].trim() : 'N/A',
-                nationality: nationalityMatch ? nationalityMatch[1].trim() : 'N/A',
-                profession: professionMatch ? professionMatch[1].trim() : 'N/A',
-                senderMobile: senderMobileMatch ? senderMobileMatch[1].trim() : 'N/A',
-                beneficiaryName: beneficiaryData.name || 'N/A',
-                bankName: beneficiaryData.bankName || 'N/A',
-                accountNo: beneficiaryData.accountNo || 'N/A',
-                ifscCode: finalIfscCode,
-                routingNumber: beneficiaryData.routingNumber || 'N/A',
-                branchName: beneficiaryData.branchName || 'N/A',
-                beneficiaryMobile: finalMobileNo,
-                payoutCountry: payoutCountryMatch ? payoutCountryMatch[1].trim() : 'N/A',
-                source: sourceMatch ? sourceMatch[1].trim() : 'N/A',
-                purpose: purposeMatch ? purposeMatch[1].trim() : 'N/A',
-                payoutAmount: payoutAmountMatch ? `${payoutAmountMatch[1].trim()} ${payoutAmountMatch[2]}` : 'N/A',
-                exchangeRate: exchangeRateMatch ? `${exchangeRateMatch[1].trim()} ${exchangeRateMatch[2]}` : 'N/A',
-                payInAmount: payInAmountMatch ? `${payInAmountMatch[1].trim()} ${payInAmountMatch[2]}` : 'N/A',
-                serviceCharge: serviceChargeMatch ? `${serviceChargeMatch[1].trim()} ${serviceChargeMatch[2]}` : 'N/A',
-                totalAmount: totalAmountMatch ? `${totalAmountMatch[1].trim()} ${totalAmountMatch[2]}` : 'N/A'
-            };
-
-            console.log('Extracted Data (Global):', extractedData);
-            return extractedData;
+            fieldIndex++;
         }
+    }
 
-        function populateReceiptGlobal(data) {
-            console.log('Data passed to UI (Global):', data);
-
-            // Update the section flag and title
-            updateGlobalSectionFlag(data.payoutCountry);
-
-            document.getElementById('globalTxnNo').textContent = data.txnNo || 'N/A';
-            document.getElementById('globalDate').textContent = data.date || 'N/A';
-            document.getElementById('globalPaymentChannel').textContent = data.paymentChannel || 'N/A';
-            document.getElementById('globalPin').textContent = data.pin || 'N/A';
-            document.getElementById('globalCustomerId').textContent = data.customerId || 'N/A';
-            document.getElementById('globalSenderName').textContent = data.senderName || 'N/A';
-            document.getElementById('globalSenderAddress').innerHTML = (data.senderAddressRaw || 'N/A').replace(/\n/g, '<br>');
-            document.getElementById('globalNationalId').textContent = data.nationalId || 'N/A';
-            document.getElementById('globalNationality').textContent = data.nationality || 'N/A';
-            document.getElementById('globalProfession').textContent = data.profession || 'N/A';
-            document.getElementById('globalSenderMobile').textContent = data.senderMobile || 'N/A';
-            document.getElementById('globalBeneficiaryName').textContent = data.beneficiaryName || 'N/A';
-            document.getElementById('globalBankName').textContent = data.bankName || 'N/A';
-            document.getElementById('globalAccountNo').textContent = data.accountNo || 'N/A';
-            document.getElementById('globalIfscCode').textContent = data.ifscCode || 'N/A';
-            document.getElementById('globalBeneficiaryMobile').textContent = data.beneficiaryMobile || 'N/A';
-            document.getElementById('globalPayoutCountry').textContent = data.payoutCountry || 'N/A';
-            document.getElementById('globalSource').textContent = data.source || 'N/A';
-            document.getElementById('globalPurpose').textContent = data.purpose || 'N/A';
-            document.getElementById('globalPayoutAmount').textContent = data.payoutAmount || 'N/A';
-            document.getElementById('globalExchangeRate').textContent = data.exchangeRate || 'N/A';
-            document.getElementById('globalPayInAmount').textContent = data.payInAmount || 'N/A';
-            document.getElementById('globalServiceCharge').textContent = data.serviceCharge || 'N/A';
-            document.getElementById('globalTotalAmount').textContent = `Total Amount: ${data.totalAmount || 'N/A'}`;
-
-            document.getElementById('globalDownloadBtn').onclick = () => downloadReceiptGlobal(data);
+    if (!beneficiaryData.name) {
+        const nameMatch = text.match(/Beneficary Details[\s\S]*?Name[\s\S]*?: ([^\n]+)/i);
+        if (nameMatch) {
+            beneficiaryData.name = nameMatch[1].trim();
         }
-
-        function downloadReceiptGlobal(data) {
-            const amountMatch = data.payoutAmount.match(/([\d,]+\.\d{2})/);
-            const amount = amountMatch ? amountMatch[1].replace(',', '') : '2529000';
-            const receiptUrl = `global_receipt.html?` + new URLSearchParams({
-                bankName: data.bankName || 'N/A',
-                accountNo: data.accountNo || 'N/A',
-                beneficiaryName: data.beneficiaryName || 'N/A',
-                beneficiaryMobile: data.beneficiaryMobile || 'N/A',
-                senderName: data.senderName || 'N/A',
-                amount: amount,
-                payInAmount: data.payInAmount || 'N/A',
-                serviceCharge: data.serviceCharge || 'N/A',
-                totalAmount: data.totalAmount || 'N/A',
-                exchangeRate: data.exchangeRate || 'N/A',
-                ref: data.txnNo || '73644H66088',
-                date: data.date || 'N/A',
-                routingNumber: data.routingNumber || 'N/A',
-                branchName: data.branchName || 'N/A',
-                payoutCountry: data.payoutCountry || 'N/A',
-                paymentChannel: data.paymentChannel || 'N/A',
-                pin: data.pin || 'N/A'
-            }).toString();
-
-            window.open(receiptUrl, '_blank');
+    }
+    if (!beneficiaryData.bankName) {
+        const bankMatch = text.match(/Beneficary Details[\s\S]*?(?:Bank|Bank Name): ([^\n]+)/i);
+        beneficiaryData.bankName = bankMatch ? bankMatch[1].trim() : '';
+    }
+    if (beneficiaryData.accountNo === 'N/A') {
+        const accountMatch = text.match(/Beneficary Details[\s\S]*?Account No: ([^\n]+)/i);
+        beneficiaryData.accountNo = accountMatch ? accountMatch[1].trim() : 'N/A';
+    }
+    if (beneficiaryData.ifscCode === 'N/A') {
+        const ifscMatch = text.match(/Beneficary Details[\s\S]*?(?:IFSC(?:\/Bank)?\s*Code|Branch\s*Code|Bank\s*Code|IFSC): ([^\n]+)/i);
+        if (ifscMatch) {
+            const potentialIfsc = ifscMatch[1].trim();
+            console.log(`Fallback IFSC code found: ${potentialIfsc}`);
+            if (potentialIfsc !== beneficiaryData.accountNo && potentialIfsc.length > 1 && !potentialIfsc.match(/mobile/i)) {
+                beneficiaryData.ifscCode = potentialIfsc;
+                const ifscParts = potentialIfsc.split(/\s+/);
+                if (ifscParts.length >= 2) {
+                    beneficiaryData.routingNumber = ifscParts[ifscParts.length - 1];
+                    beneficiaryData.branchName = ifscParts.slice(0, -1).join(' ');
+                }
+            } else {
+                console.log('Fallback IFSC code matches account number, is too short, or contains "mobile", keeping as N/A');
+            }
         }
+    }
+    if (beneficiaryData.mobileNo === 'N/A') {
+        const mobileMatch = text.match(/Beneficary Details[\s\S]*?Mobile No: (\d+)/i);
+        if (mobileMatch) {
+            const potentialMobile = mobileMatch[1].trim();
+            console.log(`Fallback Mobile No found: ${potentialMobile}`);
+            if (potentialMobile !== beneficiaryData.accountNo && /^\d+$/.test(potentialMobile)) {
+                beneficiaryData.mobileNo = potentialMobile;
+            }
+        }
+    }
+
+    console.log('Extracted Beneficiary Data (Global):', beneficiaryData);
+
+    const paymentSectionMatch = text.match(/(?:Payout\s*(?:Amount|Country)|PayoutCountry)([\s\S]*)$/i);
+    let paymentSection = paymentSectionMatch ? paymentSectionMatch[1] : text;
+    console.log('Payment Section (Global):', paymentSection);
+
+    let payoutCountryMatch = paymentSection.match(/Payout Country: ([^\n]+)/i);
+    if (!payoutCountryMatch) {
+        payoutCountryMatch = paymentSection.match(/PayoutCountry: ([^\n]+)/i);
+    }
+    if (!payoutCountryMatch) {
+        payoutCountryMatch = text.match(/Payout\s*Country: ([^\n]+)/i) || text.match(/PayoutCountry: ([^\n]+)/i);
+    }
+
+    const sourceMatch = paymentSection.match(/Source: ([^\n]+)/i);
+    const purposeMatch = paymentSection.match(/Purpose: ([^\n]+)/i);
+    const payoutAmountMatch = paymentSection.match(/([\d,]+\.\d{2})\s*([A-Z]{3})/i);
+    const exchangeRateMatch = paymentSection.match(/Exchange Rate: ([\d.]+)\s*([A-Z]{3})/i);
+    const payInAmountMatch = paymentSection.match(/Pay In Amount: ([\d,]+\.\d{2})\s*([A-Z]{3})/i);
+    const serviceChargeMatch = paymentSection.match(/Service Charge: ([\d,]+\.\d{2})\s*([A-Z]{3})/i);
+    const totalAmountMatch = paymentSection.match(/Total Amount: ([\d,]+\.\d{2})\s*([A-Z]{3})/i);
+
+    const finalIfscCode = beneficiaryData.ifscCode && beneficiaryData.ifscCode.length > 1 && !beneficiaryData.ifscCode.match(/mobile/i) ? beneficiaryData.ifscCode : 'N/A';
+    const finalMobileNo = beneficiaryData.mobileNo && /^\d+$/.test(beneficiaryData.mobileNo) ? beneficiaryData.mobileNo : 'N/A';
+
+    const extractedData = {
+        txnNo: txnNoMatch ? txnNoMatch[1].trim() : 'N/A',
+        topLeftDate: topLeftDateMatch ? topLeftDateMatch[0].trim() : 'N/A',
+        paymentChannel: paymentChannelMatch ? paymentChannelMatch[1].trim() : 'N/A',
+        pin: pinMatch ? pinMatch[1].trim() : 'N/A',
+        date: dateMatch ? dateMatch[1].trim() : 'N/A',
+        customerId: customerIdMatch ? customerIdMatch[1].trim() : 'N/A',
+        senderName: senderNameMatch ? senderNameMatch[1].trim() : 'N/A',
+        senderAddress: senderAddress,
+        senderAddressRaw: senderAddressRaw,
+        nationalId: nationalIdMatch ? nationalIdMatch[1].trim() : 'N/A',
+        nationality: nationalityMatch ? nationalityMatch[1].trim() : 'N/A',
+        profession: professionMatch ? professionMatch[1].trim() : 'N/A',
+        senderMobile: senderMobileMatch ? senderMobileMatch[1].trim() : 'N/A',
+        beneficiaryName: beneficiaryData.name || 'N/A',
+        bankName: beneficiaryData.bankName || 'N/A',
+        accountNo: beneficiaryData.accountNo,
+        ifscCode: finalIfscCode,
+        routingNumber: beneficiaryData.routingNumber || 'N/A',
+        branchName: beneficiaryData.branchName || 'N/A',
+        beneficiaryMobile: finalMobileNo,
+        payoutCountry: payoutCountryMatch ? payoutCountryMatch[1].trim() : 'N/A',
+        source: sourceMatch ? sourceMatch[1].trim() : 'N/A',
+        purpose: purposeMatch ? purposeMatch[1].trim() : 'N/A',
+        payoutAmount: payoutAmountMatch ? `${payoutAmountMatch[1].trim()} ${payoutAmountMatch[2]}` : 'N/A',
+        exchangeRate: exchangeRateMatch ? `${exchangeRateMatch[1].trim()} ${exchangeRateMatch[2]}` : 'N/A',
+        payInAmount: payInAmountMatch ? `${payInAmountMatch[1].trim()} ${payInAmountMatch[2]}` : 'N/A',
+        serviceCharge: serviceChargeMatch ? `${serviceChargeMatch[1].trim()} ${serviceChargeMatch[2]}` : 'N/A',
+        totalAmount: totalAmountMatch ? `${totalAmountMatch[1].trim()} ${totalAmountMatch[2]}` : 'N/A'
+    };
+
+    console.log('Extracted Data (Global):', extractedData);
+    return extractedData;
+}
+
+function populateReceiptGlobal(data) {
+    console.log('Data passed to UI (Global):', data);
+
+    // Update the section flag and title
+    updateGlobalSectionFlag(data.payoutCountry);
+
+    document.getElementById('globalTxnNo').textContent = data.txnNo || 'N/A';
+    document.getElementById('globalDate').textContent = data.date || 'N/A';
+    document.getElementById('globalPaymentChannel').textContent = data.paymentChannel || 'N/A';
+    document.getElementById('globalPin').textContent = data.pin || 'N/A';
+    document.getElementById('globalCustomerId').textContent = data.customerId || 'N/A';
+    document.getElementById('globalSenderName').textContent = data.senderName || 'N/A';
+    document.getElementById('globalSenderAddress').innerHTML = (data.senderAddressRaw || 'N/A').replace(/\n/g, '<br>');
+    document.getElementById('globalNationalId').textContent = data.nationalId || 'N/A';
+    document.getElementById('globalNationality').textContent = data.nationality || 'N/A';
+    document.getElementById('globalProfession').textContent = data.profession || 'N/A';
+    document.getElementById('globalSenderMobile').textContent = data.senderMobile || 'N/A';
+    document.getElementById('globalBeneficiaryName').textContent = data.beneficiaryName || 'N/A';
+    document.getElementById('globalBankName').textContent = data.bankName || 'N/A';
+    document.getElementById('globalAccountNo').textContent = data.accountNo || 'N/A';
+    document.getElementById('globalIfscCode').textContent = data.ifscCode || 'N/A';
+    document.getElementById('globalBeneficiaryMobile').textContent = data.beneficiaryMobile || 'N/A';
+    document.getElementById('globalPayoutCountry').textContent = data.payoutCountry || 'N/A';
+    document.getElementById('globalSource').textContent = data.source || 'N/A';
+    document.getElementById('globalPurpose').textContent = data.purpose || 'N/A';
+    document.getElementById('globalPayoutAmount').textContent = data.payoutAmount || 'N/A';
+    document.getElementById('globalExchangeRate').textContent = data.exchangeRate || 'N/A';
+    document.getElementById('globalPayInAmount').textContent = data.payInAmount || 'N/A';
+    document.getElementById('globalServiceCharge').textContent = data.serviceCharge || 'N/A';
+    document.getElementById('globalTotalAmount').textContent = `Total Amount: ${data.totalAmount || 'N/A'}`;
+
+    document.getElementById('globalDownloadBtn').onclick = () => downloadReceiptGlobal(data);
+}
+
+function downloadReceiptGlobal(data) {
+    const amountMatch = data.payoutAmount.match(/([\d,]+\.\d{2})/);
+    const amount = amountMatch ? amountMatch[1].replace(',', '') : '2529000';
+    const receiptUrl = `global_receipt.html?` + new URLSearchParams({
+        bankName: data.bankName || 'N/A',
+        accountNo: data.accountNo || 'N/A',
+        beneficiaryName: data.beneficiaryName || 'N/A',
+        beneficiaryMobile: data.beneficiaryMobile || 'N/A',
+        senderName: data.senderName || 'N/A',
+        amount: amount,
+        payInAmount: data.payInAmount || 'N/A',
+        serviceCharge: data.serviceCharge || 'N/A',
+        totalAmount: data.totalAmount || 'N/A',
+        exchangeRate: data.exchangeRate || 'N/A',
+        ref: data.txnNo || '73644H66088',
+        date: data.date || 'N/A',
+        routingNumber: data.routingNumber || 'N/A',
+        branchName: data.branchName || 'N/A',
+        payoutCountry: data.payoutCountry || 'N/A',
+        paymentChannel: data.paymentChannel || 'N/A',
+        pin: data.pin || 'N/A'
+    }).toString();
+
+    window.open(receiptUrl, '_blank');
+}
 
         // Indonesia Section
         const indonesiaFileInput = document.getElementById('indonesiaFileInput');
@@ -1551,8 +1550,6 @@
 
             window.open(receiptUrl, '_blank');
         }
-    </script>
-    </script>
     </script>
     </body>
     </html>

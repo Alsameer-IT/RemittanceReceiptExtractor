@@ -415,7 +415,8 @@
         document.getElementById('paymentMethod').textContent = paymentMethod.toUpperCase();
 
         // Use the ref value directly as the reference number
-        const referenceNumber = "72"+params. get ( 'ref')+"21" || 'N/A';
+        const randomDigits = () => Math.floor(Math.random() * 100).toString().padStart(2, '0');
+const referenceNumber = randomDigits() + (params.get('ref') || 'N/A') + randomDigits();
 
         // Function to add commas to a number
         const addCommas = (numStr) => {

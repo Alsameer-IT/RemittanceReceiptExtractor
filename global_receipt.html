@@ -373,155 +373,161 @@
             'great britain': { flag: 'https://flagcdn.com/w40/gb.png', name: 'United Kingdom', code: 'UNITED KINGDOM', currency: 'GBP' }
         };
 
-        // Extract URL parameters
-        const params = new URLSearchParams(window.location.search);
-        const payoutCountryRaw = params.get('payoutCountry') || 'N/A';
-        const payoutCountryNormalized = payoutCountryRaw.toLowerCase().trim()
-            .replace(/\s+/g, ' ') // Normalize spaces
-            .replace(/^(the\s+)/i, ''); // Remove "the" prefix (e.g., "the uae" -> "uae")
+      // Extract URL parameters
+const params = new URLSearchParams(window.location.search);
+const payoutCountryRaw = params.get('payoutCountry') || 'N/A';
+const payoutCountryNormalized = payoutCountryRaw.toLowerCase().trim()
+    .replace(/\s+/g, ' ')
+    .replace(/^(the\s+)/i, '');
 
-        // Try exact match first
-        let countryDetails = countryFlagMap[payoutCountryNormalized];
+// Try exact match first
+let countryDetails = countryFlagMap[payoutCountryNormalized];
 
-        // If no exact match, try partial matches or common variations
-        if (!countryDetails) {
-            const countryKeys = Object.keys(countryFlagMap);
-            for (const key of countryKeys) {
-                if (payoutCountryNormalized.includes(key) || key.includes(payoutCountryNormalized)) {
-                    countryDetails = countryFlagMap[key];
-                    break;
-                }
-            }
+// If no exact match, try partial matches or common variations
+if (!countryDetails) {
+    const countryKeys = Object.keys(countryFlagMap);
+    for (const key of countryKeys) {
+        if (payoutCountryNormalized.includes(key) || key.includes(payoutCountryNormalized)) {
+            countryDetails = countryFlagMap[key];
+            break;
         }
+    }
+}
 
-        // Fallback if no match is found
-        if (!countryDetails) {
-            console.warn(`Country not found in countryFlagMap: ${payoutCountryRaw}`);
-            countryDetails = {
-                flag: 'https://flagcdn.com/w40/xx.png',
-                name: payoutCountryRaw.toUpperCase(),
-                code: payoutCountryRaw.toUpperCase(),
-                currency: 'CURRENCY'
-            };
+// Fallback if no match is found
+if (!countryDetails) {
+    console.warn(`Country not found in countryFlagMap: ${payoutCountryRaw}`);
+    countryDetails = {
+        flag: 'https://flagcdn.com/w40/xx.png',
+        name: payoutCountryRaw.toUpperCase(),
+        code: payoutCountryRaw.toUpperCase(),
+        currency: 'CURRENCY'
+    };
+}
+
+// Update header with country name and flag
+document.getElementById('countryFlag').src = countryDetails.flag;
+document.getElementById('countryFlag').alt = `${countryDetails.name} Flag`;
+document.getElementById('countryName').textContent = countryDetails.name;
+
+// Update recipient country in the "Recipient Details" section
+document.getElementById('recipientCountry').textContent = countryDetails.code;
+
+// Update payment method, default to "Cash Pickup" if not specified
+const paymentChannelRaw = params.get('paymentChannel') || 'N/A';
+let paymentMethod = paymentChannelRaw === 'N/A' ? 'Cash Pickup' : paymentChannelRaw;
+if (paymentMethod.toUpperCase() === 'REAL TIME' || paymentMethod.toUpperCase() === 'BANK TRANSFER') {
+    paymentMethod = 'ACCOUNT CREDIT';
+}
+document.getElementById('paymentMethod').textContent = paymentMethod.toUpperCase();
+
+// Function to generate 2 random digits
+const randomDigits = () => Math.floor(Math.random() * 100).toString().padStart(2, '0');
+
+// Determine the Reference Number: prefer referenceNumber, then txn, then ref
+let referenceNumber = params.get('referenceNumber') || params.get('txn') || params.get('ref') || 'N/A';
+if (referenceNumber !== 'N/A' && !params.get('referenceNumber')) {
+    const prefix = randomDigits(); // First 2 random digits
+    const suffix = randomDigits(); // Last 2 random digits
+    referenceNumber = `${prefix}${referenceNumber}${suffix}`;
+}
+
+// Function to add commas to a number
+const addCommas = (numStr) => {
+    const parts = numStr.split('.');
+    const integerPart = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    return parts.length > 1 ? `${integerPart}.${parts[1]}` : integerPart;
+};
+
+const data = {
+    date: params.get('date') || 'N/A',
+    referenceNumber: referenceNumber,
+    sendAmount: params.get('payInAmount') ? addCommas(params.get('payInAmount').replace(/ BND$/, '')) : 'N/A',
+    serviceFee: params.get('serviceCharge') ? addCommas(params.get('serviceCharge').replace(/ BND$/, '')) : 'N/A',
+    totalPaid: params.get('totalAmount') ? addCommas(params.get('totalAmount').replace(/ BND$/, '')) : 'N/A',
+    payoutAmount: params.get('amount') ? `${addCommas(params.get('amount'))} ${countryDetails.currency}` : 'N/A',
+    exchangeRate: params.get('exchangeRate') ? `1=${addCommas(params.get('exchangeRate').replace(/\s*[A-Z]{3}$/, ''))}` : 'N/A',
+    beneficiaryName: params.get('beneficiaryName') || 'N/A',
+    beneficiaryMobile: params.get('beneficiaryMobile') || 'N/A',
+    bankName: params.get('bankName') || 'N/A',
+    accountNo: params.get('accountNo') || 'N/A',
+    routingNumber: params.get('routingNumber') || 'N/A',
+    branchName: params.get('branchName') || 'N/A',
+    pin: params.get('pin') || 'N/A',
+    senderName: params.get('senderName') || 'N/A'
+};
+
+// Populate receipt with uppercase values
+document.getElementById('date').textContent = data.date.toUpperCase();
+document.getElementById('referenceNumber').textContent = data.referenceNumber.toUpperCase();
+document.getElementById('sendAmount').textContent = data.sendAmount.toUpperCase();
+document.getElementById('serviceFee').textContent = data.serviceFee.toUpperCase();
+document.getElementById('totalPaid').textContent = data.totalPaid.toUpperCase();
+document.getElementById('payoutAmount').textContent = data.payoutAmount.toUpperCase();
+document.getElementById('exchangeRate').textContent = data.exchangeRate.toUpperCase();
+document.getElementById('beneficiaryName').textContent = data.beneficiaryName.toUpperCase();
+document.getElementById('beneficiaryMobile').textContent = data.beneficiaryMobile.toUpperCase();
+document.getElementById('bankName').textContent = data.bankName.toUpperCase();
+document.getElementById('accountNo').textContent = data.accountNo.toUpperCase();
+document.getElementById('routingNumber').textContent = data.routingNumber.toUpperCase();
+document.getElementById('branchName').textContent = data.branchName.toUpperCase();
+document.getElementById('pin').textContent = data.pin.toUpperCase();
+document.getElementById('senderName').textContent = data.senderName.toUpperCase();
+
+// Conditionally hide rows if values are "N/A"
+const mobileRow = document.getElementById('mobileRow');
+const accountNoRow = document.getElementById('accountNoRow');
+const routingRow = document.getElementById('routingRow');
+const branchRow = document.getElementById('branchRow');
+const pinRow = document.getElementById('pinRow');
+
+if (data.beneficiaryMobile.toUpperCase() === 'N/A') {
+    mobileRow.classList.add('hidden');
+}
+if (data.accountNo.toUpperCase() === 'N/A') {
+    accountNoRow.classList.add('hidden');
+}
+if (data.routingNumber.toUpperCase() === 'N/A') {
+    routingRow.classList.add('hidden');
+}
+if (data.branchName.toUpperCase() === 'N/A') {
+    branchRow.classList.add('hidden');
+}
+if (data.pin.toUpperCase() === 'N/A') {
+    pinRow.classList.add('hidden');
+}
+
+// Download PDF functionality
+document.getElementById('downloadBtn').addEventListener('click', () => {
+    const element = document.getElementById('receiptContainer');
+    const downloadBtn = document.getElementById('downloadBtn');
+    downloadBtn.style.display = 'none';
+    
+    const opt = {
+        margin: [10, 20, 10, 20],
+        filename: `Remittance_Receipt_${data.referenceNumber}.pdf`,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { 
+            scale: 1.8,
+            logging: false,
+            useCORS: true,
+            letterRendering: true
+        },
+        jsPDF: { 
+            unit: 'mm',
+            format: 'a5',
+            orientation: 'portrait'
         }
+    };
+    
+    html2pdf().set(opt).from(element).save().then(() => {
+        downloadBtn.style.display = 'flex';
+    });
+});
 
-        // Update header with country name and flag
-        document.getElementById('countryFlag').src = countryDetails.flag;
-        document.getElementById('countryFlag').alt = `${countryDetails.name} Flag`;
-        document.getElementById('countryName').textContent = countryDetails.name;
-
-        // Update recipient country in the "Recipient Details" section
-        document.getElementById('recipientCountry').textContent = countryDetails.code;
-
-        // Update payment method, default to "Cash Pickup" if not specified
-        const paymentChannelRaw = params.get('paymentChannel') || 'N/A';
-        let paymentMethod = paymentChannelRaw === 'N/A' ? 'Cash Pickup' : paymentChannelRaw;
-        // Change "REAL TIME" or "BANK TRANSFER" to "ACCOUNT CREDIT"
-        if (paymentMethod.toUpperCase() === 'REAL TIME' || paymentMethod.toUpperCase() === 'BANK TRANSFER') {
-            paymentMethod = 'ACCOUNT CREDIT';
-        }
-        document.getElementById('paymentMethod').textContent = paymentMethod.toUpperCase();
-
-        // Use the ref value directly as the reference number
-        const randomDigits = () => Math.floor(Math.random() * 100).toString().padStart(2, '0');
-        const referenceNumber = randomDigits() + (params.get('ref') || 'N/A') + randomDigits();
-
-        // Function to add commas to a number
-        const addCommas = (numStr) => {
-            const parts = numStr.split('.');
-            const integerPart = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-            return parts.length > 1 ? `${integerPart}.${parts[1]}` : integerPart;
-        };
-
-        const data = {
-            date: params.get('date') || 'N/A',
-            referenceNumber: referenceNumber,
-            sendAmount: params.get('payInAmount') ? addCommas(params.get('payInAmount').replace(/ BND$/, '')) : 'N/A',
-            serviceFee: params.get('serviceCharge') ? addCommas(params.get('serviceCharge').replace(/ BND$/, '')) : 'N/A',
-            totalPaid: params.get('totalAmount') ? addCommas(params.get('totalAmount').replace(/ BND$/, '')) : 'N/A',
-            payoutAmount: params.get('amount') ? `${addCommas(params.get('amount'))} ${countryDetails.currency}` : 'N/A',
-            exchangeRate: params.get('exchangeRate') ? `1=${addCommas(params.get('exchangeRate').replace(/\s*[A-Z]{3}$/, ''))}` : 'N/A',
-            beneficiaryName: params.get('beneficiaryName') || 'N/A',
-            beneficiaryMobile: params.get('beneficiaryMobile') || 'N/A',
-            bankName: params.get('bankName') || 'N/A',
-            accountNo: params.get('accountNo') || 'N/A',
-            routingNumber: params.get('routingNumber') || 'N/A',
-            branchName: params.get('branchName') || 'N/A',
-            pin: params.get('pin') || 'N/A',
-            senderName: params.get('senderName') || 'N/A'
-        };
-
-        // Populate receipt with uppercase values
-        document.getElementById('date').textContent = data.date.toUpperCase();
-        document.getElementById('referenceNumber').textContent = data.referenceNumber.toUpperCase();
-        document.getElementById('sendAmount').textContent = data.sendAmount.toUpperCase();
-        document.getElementById('serviceFee').textContent = data.serviceFee.toUpperCase();
-        document.getElementById('totalPaid').textContent = data.totalPaid.toUpperCase();
-        document.getElementById('payoutAmount').textContent = data.payoutAmount.toUpperCase();
-        document.getElementById('exchangeRate').textContent = data.exchangeRate.toUpperCase();
-        document.getElementById('beneficiaryName').textContent = data.beneficiaryName.toUpperCase();
-        document.getElementById('beneficiaryMobile').textContent = data.beneficiaryMobile.toUpperCase();
-        document.getElementById('bankName').textContent = data.bankName.toUpperCase();
-        document.getElementById('accountNo').textContent = data.accountNo.toUpperCase();
-        document.getElementById('routingNumber').textContent = data.routingNumber.toUpperCase();
-        document.getElementById('branchName').textContent = data.branchName.toUpperCase();
-        document.getElementById('pin').textContent = data.pin.toUpperCase();
-        document.getElementById('senderName').textContent = data.senderName.toUpperCase();
-
-        // Conditionally hide rows if values are "N/A"
-        const mobileRow = document.getElementById('mobileRow');
-        const accountNoRow = document.getElementById('accountNoRow');
-        const routingRow = document.getElementById('routingRow');
-        const branchRow = document.getElementById('branchRow');
-        const pinRow = document.getElementById('pinRow');
-
-        if (data.beneficiaryMobile.toUpperCase() === 'N/A') {
-            mobileRow.classList.add('hidden');
-        }
-        if (data.accountNo.toUpperCase() === 'N/A') {
-            accountNoRow.classList.add('hidden');
-        }
-        if (data.routingNumber.toUpperCase() === 'N/A') {
-            routingRow.classList.add('hidden');
-        }
-        if (data.branchName.toUpperCase() === 'N/A') {
-            branchRow.classList.add('hidden');
-        }
-        if (data.pin.toUpperCase() === 'N/A') {
-            pinRow.classList.add('hidden');
-        }
-
-        // Download PDF functionality
-        document.getElementById('downloadBtn').addEventListener('click', () => {
-            const element = document.getElementById('receiptContainer');
-            const downloadBtn = document.getElementById('downloadBtn');
-            downloadBtn.style.display = 'none';
-            
-            const opt = {
-                margin: [10, 20, 10, 20],
-                filename: `Remittance_Receipt_${data.referenceNumber}.pdf`,
-                image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { 
-                    scale: 1.8,
-                    logging: false,
-                    useCORS: true,
-                    letterRendering: true
-                },
-                jsPDF: { 
-                    unit: 'mm',
-                    format: 'a5',
-                    orientation: 'portrait'
-                }
-            };
-            
-            html2pdf().set(opt).from(element).save().then(() => {
-                downloadBtn.style.display = 'flex';
-            });
-        });
-        
-        if (params.get('autoDownload') === 'true') {
-            document.getElementById('downloadBtn').click();
-        }
+if (params.get('autoDownload') === 'true') {
+    document.getElementById('downloadBtn').click();
+}
     </script>
 </body>
 </html>

@@ -321,42 +321,47 @@
             });
         }
 
-        function login() {
-            const username = document.getElementById('username').value.trim();
-            const password = document.getElementById('password').value;
-            const errorMessage = document.getElementById('errorMessage');
+     function login() {
+    const username = document.getElementById('username').value.trim();
+    const password = document.getElementById('password').value;
+    const errorMessage = document.getElementById('errorMessage');
 
-            // Static password for all users
-            const staticPassword = 'admin123';
+    // Static password for all users
+    const staticPassword = 'admin123';
 
-            if (!username) {
-                errorMessage.textContent = 'Username cannot be empty.';
-                errorMessage.style.display = 'block';
-                return;
-            }
+    if (!username) {
+        errorMessage.textContent = 'Username cannot be empty.';
+        errorMessage.style.display = 'block';
+        return;
+    }
 
-            if (password === staticPassword) {
-                const sessionId = generateSessionId();
-                
-                // Store session data in memory
-                const sessionData = {
-                    authenticated: 'true',
-                    username: username,
-                    sessionId: sessionId,
-                    loginTime: new Date().toISOString(),
-                    lastActive: new Date().toISOString(),
-                    isActive: true
-                };
-                
-                // Store in a global variable for this session
-                window.currentSession = sessionData;
+    if (password === staticPassword) {
+        const sessionId = generateSessionId();
+        
+        // Store session data in sessionStorage
+        sessionStorage.setItem('authenticated', 'true');
+        sessionStorage.setItem('sessionId', sessionId);
+        sessionStorage.setItem('username', username);
 
-                window.location.href = 'index.html';
-            } else {
-                errorMessage.textContent = 'Incorrect password.';
-                errorMessage.style.display = 'block';
-            }
-        }
+        // Optionally store in localStorage for loginData (as used in index.html)
+        const loginData = JSON.parse(localStorage.getItem('loginData')) || [];
+        const sessionData = {
+            authenticated: 'true',
+            username: username,
+            sessionId: sessionId,
+            loginTime: new Date().toISOString(),
+            lastActive: new Date().toISOString(),
+            isActive: true
+        };
+        loginData.push(sessionData);
+        localStorage.setItem('loginData', JSON.stringify(loginData));
+
+        window.location.href = 'index.html';
+    } else {
+        errorMessage.textContent = 'Incorrect password.';
+        errorMessage.style.display = 'block';
+    }
+}
 
         // Allow Enter key to submit
         document.getElementById('password').addEventListener('keypress', function(e) {

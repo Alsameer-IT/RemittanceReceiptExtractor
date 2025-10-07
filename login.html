@@ -5,126 +5,307 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Remittance Receipt Extractor</title>
     <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            background: linear-gradient(135deg, #f0f4f8 0%, #d9e2ec 100%);
+        * {
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        /* Video Background */
+        .video-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -1;
+        }
+
+        .video-background::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.3), rgba(168, 85, 247, 0.3));
+        }
+
+        #bg-video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Container */
+        .container {
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
         }
-        .login-container {
-            background-color: #ffffff;
-            padding: 40px;
-            border-radius: 12px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+
+        /* Glassmorphic Login Box */
+        .login-box {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            padding: 50px 40px;
             width: 100%;
-            max-width: 400px;
+            max-width: 420px;
+            animation: slideIn 0.6s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Title */
+        .login-title {
             text-align: center;
+            margin-bottom: 40px;
         }
-        h2 {
-            color: #2c3e50;
-            margin-bottom: 30px;
-            font-size: 24px;
-            font-weight: 600;
-        }
-        .input-group {
-            margin-bottom: 20px;
-            text-align: left;
-        }
-        label {
-            display: block;
+
+        .login-title h2 {
+            color: #ffffff;
+            font-size: 32px;
+            font-weight: 700;
             margin-bottom: 8px;
-            color: #34495e;
-            font-size: 14px;
-            font-weight: 500;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
         }
-        input[type="text"],
-        input[type="password"] {
+
+        .login-title p {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 14px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Input Groups */
+        .input-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 10px;
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: 600;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-group input {
             width: 100%;
-            padding: 12px;
-            border: 1px solid #dfe6e9;
-            border-radius: 6px;
-            box-sizing: border-box;
-            font-size: 14px;
-            transition: border-color 0.3s ease;
+            padding: 14px 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 12px;
+            color: #ffffff;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
         }
-        input[type="text"]:focus,
-        input[type="password"]:focus {
-            border-color: #3498db;
+
+        .input-group input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .input-group input:focus {
             outline: none;
+            background: rgba(255, 255, 255, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
         }
+
+        /* Password Toggle */
         .password-toggle {
             display: flex;
             align-items: center;
-            margin-top: 10px;
-            user-select: none;
+            margin-top: 12px;
+            gap: 8px;
         }
+
         .password-toggle input[type="checkbox"] {
-            margin-right: 8px;
+            width: 18px;
+            height: 18px;
             cursor: pointer;
-            width: 16px;
-            height: 16px;
+            accent-color: #8b5cf6;
         }
+
         .password-toggle label {
             margin: 0;
             font-size: 13px;
-            color: #7f8c8d;
+            color: rgba(255, 255, 255, 0.9);
             cursor: pointer;
+            user-select: none;
         }
-        button {
-            background-color: #3498db;
-            color: #ffffff;
-            border: none;
-            padding: 12px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 16px;
+
+        /* Login Button */
+        .login-btn {
             width: 100%;
-            transition: background-color 0.3s ease;
+            padding: 14px;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            border: none;
+            border-radius: 12px;
+            color: #ffffff;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+            margin-top: 10px;
         }
-        button:hover {
-            background-color: #2980b9;
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.6);
         }
+
+        .login-btn:active {
+            transform: translateY(0);
+        }
+
+        /* Error Message */
         .error-message {
-            color: #e74c3c;
-            margin-top: 15px;
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            color: #ffffff;
+            padding: 12px;
+            border-radius: 10px;
+            margin-top: 20px;
             font-size: 14px;
+            text-align: center;
             display: none;
+            backdrop-filter: blur(10px);
         }
+
+        /* Decorative Elements */
+        .decoration {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .decoration:nth-child(1) {
+            width: 100px;
+            height: 100px;
+            top: 10%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .decoration:nth-child(2) {
+            width: 150px;
+            height: 150px;
+            top: 60%;
+            right: 10%;
+            animation-delay: 2s;
+        }
+
+        .decoration:nth-child(3) {
+            width: 80px;
+            height: 80px;
+            bottom: 15%;
+            left: 15%;
+            animation-delay: 4s;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+
+        /* Responsive Design */
         @media (max-width: 480px) {
-            .login-container {
-                padding: 20px;
-                max-width: 90%;
+            .login-box {
+                padding: 40px 30px;
             }
-            h2 {
-                font-size: 20px;
+
+            .login-title h2 {
+                font-size: 26px;
             }
-            button {
-                font-size: 14px;
+
+            .decoration {
+                display: none;
             }
         }
     </style>
 </head>
 <body>
-    <div class="login-container">
-        <h2>Login</h2>
-        <div class="input-group">
-            <label for="username">Username</label>
-            <input type="text" id="username" placeholder="Enter your username" required>
-        </div>
-        <div class="input-group">
-            <label for="password">Password</label>
-            <input type="password" id="password" placeholder="Enter your password" required>
-            <div class="password-toggle">
-                <input type="checkbox" id="showPassword" onclick="togglePassword()">
-                <label for="showPassword">Show Password</label>
+    <!-- Video Background -->
+    <div class="video-background">
+        <video id="bg-video" autoplay loop muted playsinline>
+            <source src="https://videos.pexels.com/video-files/3571264/3571264-uhd_2560_1440_30fps.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+    </div>
+
+    <!-- Decorative Elements -->
+    <div class="decoration"></div>
+    <div class="decoration"></div>
+    <div class="decoration"></div>
+
+    <!-- Login Container -->
+    <div class="container">
+        <div class="login-box">
+            <div class="login-title">
+                <h2>Welcome Back</h2>
+                <p>Login to your account</p>
             </div>
+
+            <div class="input-group">
+                <label for="username">Username</label>
+                <div class="input-wrapper">
+                    <input type="text" id="username" placeholder="Enter your username" required>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label for="password">Password</label>
+                <div class="input-wrapper">
+                    <input type="password" id="password" placeholder="Enter your password" required>
+                </div>
+                <div class="password-toggle">
+                    <input type="checkbox" id="showPassword" onclick="togglePassword()">
+                    <label for="showPassword">Show Password</label>
+                </div>
+            </div>
+
+            <button class="login-btn" onclick="login()">Login</button>
+
+            <div id="errorMessage" class="error-message">Incorrect password.</div>
         </div>
-        <button onclick="login()">Login</button>
-        <div id="errorMessage" class="error-message">Incorrect password.</div>
     </div>
 
     <script>
@@ -156,21 +337,19 @@
 
             if (password === staticPassword) {
                 const sessionId = generateSessionId();
-                sessionStorage.setItem('authenticated', 'true');
-                sessionStorage.setItem('username', username);
-                sessionStorage.setItem('sessionId', sessionId);
-
-                // Store login details in localStorage
-                const loginData = JSON.parse(localStorage.getItem('loginData')) || [];
-                const loginEntry = {
-                    sessionId: sessionId,
+                
+                // Store session data in memory
+                const sessionData = {
+                    authenticated: 'true',
                     username: username,
+                    sessionId: sessionId,
                     loginTime: new Date().toISOString(),
                     lastActive: new Date().toISOString(),
                     isActive: true
                 };
-                loginData.push(loginEntry);
-                localStorage.setItem('loginData', JSON.stringify(loginData));
+                
+                // Store in a global variable for this session
+                window.currentSession = sessionData;
 
                 window.location.href = 'index.html';
             } else {
@@ -178,6 +357,19 @@
                 errorMessage.style.display = 'block';
             }
         }
+
+        // Allow Enter key to submit
+        document.getElementById('password').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                login();
+            }
+        });
+
+        document.getElementById('username').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                login();
+            }
+        });
     </script>
 </body>
 </html>

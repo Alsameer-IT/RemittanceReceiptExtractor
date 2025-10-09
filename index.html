@@ -463,7 +463,7 @@
             <div class="upload-section">
                 <input type="file" id="indonesiaFileInput" class="file-input" accept=".pdf">
                 <label for="indonesiaFileInput" class="upload-label">Choose PDF File</label>
-                <p id="indonesiaFileName">No file selected</p>
+                <p id="indonesia">No file selected</p>
                 <div id="indonesiaLoading" class="loading">Processing...</div>
                 <div id="indonesiaCountryError" class="error-message">Receipt can only be downloaded for Indonesia payout country.</div>
             </div>
@@ -575,7 +575,6 @@
                 </div>
             </div>
         </div>
-
         <!-- Bangladesh Section -->
         <div class="country-section">
             <div style="text-align: center;">
@@ -1188,8 +1187,8 @@
         }
 
         // Indonesia Section
-        const indonesiaFileInput = document.getElementById('indonesiaFileInput');
-        const indonesiaFileNameDisplay = document.getElementById('indonesiaFileName');
+         const indonesiaFileInput = document.getElementById('indonesiaFileInput');
+        const indonesiaFileNameDisplay = document.getElementById('indonesia');
         const indonesiaReceiptContainer = document.getElementById('indonesiaReceiptContainer');
         const indonesiaLoadingIndicator = document.getElementById('indonesiaLoading');
         const indonesiaDownloadBtn = document.getElementById('indonesiaDownloadBtn');
@@ -1210,8 +1209,8 @@
                 indonesiaReceiptContainer.style.display = 'block';
 
                 const isIndonesia = extractedData.payoutCountry && 
-                                (extractedData.payoutCountry.toLowerCase().includes('indonesia') || 
-                                extractedData.payoutCountry.toLowerCase().includes('indo'));
+                                   (extractedData.payoutCountry.toLowerCase().includes('indonesia') || 
+                                    extractedData.payoutCountry.toLowerCase().includes('indo'));
 
                 updateHeaderFlag(extractedData.payoutCountry);
 
@@ -1273,7 +1272,7 @@
             
             const customerIdMatch = senderSection.match(/Customer Id: ([^\n]+)/i);
             const senderNameMatch = senderSection.match(/Name: ([^\n]+)/i);
-            const senderAddressMatch = text.match(/Address: ([\s\S]*?)(?=(?:National ID|Passport))/i);
+            const senderAddressMatch = senderSection.match(/Address: ([\s\S]*?)(?=(?:National ID|Passport))/i);
             let senderAddress = 'N/A';
             let senderAddressRaw = 'N/A';
             if (senderAddressMatch) {
@@ -1284,9 +1283,9 @@
             const nationalityMatch = senderSection.match(/Nationality: ([^\n]+)/i);
             const professionMatch = senderSection.match(/Profession: ([^\n]+)/i);
             const senderMobileMatch = senderSection.match(/Mobile No: (\d+)/i) || 
-                            senderSection.match(/Mobile\s*No: (\d+)/i);
+                                    senderSection.match(/Mobile\s*No: (\d+)/i);
             
-            const senderName = senderNameMatch ? senderNameMatch[1].trim(): '';
+            const senderName = senderNameMatch ? senderNameMatch[1].trim() : '';
             
             const beneficiarySectionMatch = text.match(/Beneficary Details([\s\S]*?)(?=Payout\s*(?:Amount|Country)|$)/i);
             let beneficiarySection = beneficiarySectionMatch ? beneficiarySectionMatch[1] : '';
@@ -1439,9 +1438,15 @@
             const paymentSectionMatch = text.match(/(?:Payout\s*(?:Amount|Country)|PayoutCountry)([\s\S]*)$/i);
             let paymentSection = paymentSectionMatch ? paymentSectionMatch[1] : text;
             console.log('Payment Section (Indonesia):', paymentSection);
-
-            const payoutCountryMatch = paymentSection.match(/Payout Country: ([^\n]+)/i) || 
-                                    paymentSection.match(/PayoutCountry: ([^\n]+)/i);
+            
+            let payoutCountryMatch = paymentSection.match(/Payout Country: ([^\n]+)/i);
+            if (!payoutCountryMatch) {
+                payoutCountryMatch = paymentSection.match(/PayoutCountry: ([^\n]+)/i);
+            }
+            if (!payoutCountryMatch) {
+                payoutCountryMatch = text.match(/Payout\s*Country: ([^\n]+)/i) || text.match(/PayoutCountry: ([^\n]+)/i);
+            }
+            
             const sourceMatch = paymentSection.match(/Source: ([^\n]+)/i);
             const purposeMatch = paymentSection.match(/Purpose: ([^\n]+)/i);
             const payoutAmountMatch = paymentSection.match(/([\d,]+\.\d{2})\s*([A-Z]{3})/i);
@@ -1449,14 +1454,13 @@
             const payInAmountMatch = paymentSection.match(/Pay In Amount: ([\d,]+\.\d{2})\s*([A-Z]{3})/i);
             const serviceChargeMatch = paymentSection.match(/Service Charge: ([\d,]+\.\d{2})\s*([A-Z]{3})/i);
             const totalAmountMatch = paymentSection.match(/Total Amount: ([\d,]+\.\d{2})\s*([A-Z]{3})/i);
-            const txnNoMatch = text.match(/(?:Transaction No|Txn\s*No):?\s*([A-Za-z0-9]+)/i);
-
+            
             const finalIfscCode = beneficiaryData.ifscCode && beneficiaryData.ifscCode.length > 1 && !beneficiaryData.ifscCode.match(/mobile/i) ? beneficiaryData.ifscCode : 'N/A';
             const finalMobileNo = beneficiaryData.mobileNo && /^\d+$/.test(beneficiaryData.mobileNo) ? beneficiaryData.mobileNo : 'N/A';
-
+            
             const extractedData = {
                 receiptNo: receiptNoMatch ? receiptNoMatch[1].trim() : 'N/A',
-                txnNo: txnNoMatch ? txnNoMatch[1].trim() : 'N/A',
+                paymentChannel: paymentChannelMatch ? paymentChannelMatch[1].trim() : 'N/A',
                 date: dateMatch ? dateMatch[1].trim() : 'N/A',
                 customerId: customerIdMatch ? customerIdMatch[1].trim() : 'N/A',
                 senderName: senderNameMatch ? senderNameMatch[1].trim() : 'N/A',
@@ -1480,17 +1484,13 @@
                 serviceCharge: serviceChargeMatch ? `${serviceChargeMatch[1].trim()} ${serviceChargeMatch[2]}` : 'N/A',
                 totalAmount: totalAmountMatch ? `${totalAmountMatch[1].trim()} ${totalAmountMatch[2]}` : 'N/A'
             };
-
+            
             console.log('Extracted Data (Indonesia):', extractedData);
             return extractedData;
         }
 
         function populateReceiptIndonesia(data) {
             console.log('Data passed to UI (Indonesia):', data);
-
-            document.getElementById('indonesiaReceiptNo').textContent = data.receiptNo || 'N/A';
-            document.getElementById('indonesiaTxnNo').textContent = data.txnNo || 'N/A';
-            document.getElementById('indonesiaDate').textContent = data.date || 'N/A';
             document.getElementById('indonesiaCustomerId').textContent = data.customerId || 'N/A';
             document.getElementById('indonesiaSenderName').textContent = data.senderName || 'N/A';
             document.getElementById('indonesiaSenderAddress').innerHTML = (data.senderAddressRaw || 'N/A').replace(/\n/g, '<br>');
@@ -1511,29 +1511,25 @@
             document.getElementById('indonesiaPayInAmount').textContent = data.payInAmount || 'N/A';
             document.getElementById('indonesiaServiceCharge').textContent = data.serviceCharge || 'N/A';
             document.getElementById('indonesiaTotalAmount').textContent = `Total Amount: ${data.totalAmount || 'N/A'}`;
-
             document.getElementById('indonesiaDownloadBtn').onclick = () => downloadReceiptIndonesia(data);
         }
 
         function downloadReceiptIndonesia(data) {
             const amountMatch = data.payoutAmount.match(/([\d,]+\.\d{2})/);
             const amount = amountMatch ? amountMatch[1].replace(',', '') : '2529000';
-            const receiptUrl = `indonesia_receipt.html?` + new URLSearchParams({
-                bankName: data.bankName || 'N/A',
+            const now = new Date();
+            const bruneiTime = new Date(now.getTime() + (8 * 60 * 60 * 1000));
+            const formattedDate = bruneiTime.toISOString().replace('T', ' ').replace(/\.\d+Z/, '') + ' BNT';
+            
+            const receiptUrl = 'indonesia_receipt.html?' + new URLSearchParams({
+                date: formattedDate,
+                bankName: data.bankName || 'BRI',
                 accountNo: data.accountNo || 'N/A',
                 beneficiaryName: data.beneficiaryName || 'N/A',
-                beneficiaryMobile: data.beneficiaryMobile || 'N/A',
-                senderName: data.senderName || 'N/A',
                 amount: amount,
-                payInAmount: data.payInAmount || 'N/A',
-                serviceCharge: data.serviceCharge || 'N/A',
-                totalAmount: data.totalAmount || 'N/A',
-                exchangeRate: data.exchangeRate || 'N/A',
-                txn: data.txnNo || 'N/A',
-                ref: data.receiptNo || '73644H66088',
-                date: data.date || 'N/A'
+                ref: data.receiptNo || '73644H66088'
             }).toString();
-
+            
             window.open(receiptUrl, '_blank');
         }
 

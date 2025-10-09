@@ -296,7 +296,7 @@
             const reversedRef = refNumber.split('').reverse().join('');
             const refWithZero = reversedRef.slice(0, -1) + '0';
             const reversedMobile = senderMobile.split("").reverse().join("");
-            mergedReference = refWithZero + reversedMobile;
+            mergedReference = refWithZero + reversedMobile+"0";
         }
 
         // Extract and format amounts
@@ -365,12 +365,12 @@
         const totalAmountRow = document.getElementById('totalAmountRow');
 
         if (paymentMethod.includes('cash') || paymentMethod.includes('pickup')) {
-            // Cash Pickup - Show sender name
+            // Cash Pickup - Show sender name and bank name
             if (data.pin === 'N/A') pinRow.classList.add('hidden');
             if (data.receiverPhone === 'N/A') phoneRow.classList.add('hidden');
             
-            // Hide bank details
-            bankRow.classList.add('hidden');
+            // Show bank name for cash pickup, hide other bank details
+            if (data.bankName === 'N/A') bankRow.classList.add('hidden');
             accountRow.classList.add('hidden');
             ifscRow.classList.add('hidden');
             routingRow.classList.add('hidden');

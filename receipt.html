@@ -365,8 +365,7 @@
         const totalAmountRow = document.getElementById('totalAmountRow');
 
         if (paymentMethod.includes('cash') || paymentMethod.includes('pickup')) {
-            // Cash Pickup - Show all amount details
-            senderRow.classList.add('hidden');
+            // Cash Pickup - Show sender name
             if (data.pin === 'N/A') pinRow.classList.add('hidden');
             if (data.receiverPhone === 'N/A') phoneRow.classList.add('hidden');
             

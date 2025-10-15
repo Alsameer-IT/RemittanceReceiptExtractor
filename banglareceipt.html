@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Remittance Receipt</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 1rem;
+        }
+
+        .receipt-container {
+            width: 100%;
+            max-width: 600px;
+            background: #ffffff;
+            border-radius: 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .receipt-content {
+            padding: 2.5rem 2rem;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .receipt-row {
+            display: grid;
+            grid-template-columns: 200px 1fr;
+            gap: 2rem;
+            padding: 0.8rem 0;
+        }
+
+        .receipt-label {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #1a1a1a;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            line-height: 1.4;
+            text-align: left;
+        }
+
+        .receipt-value {
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: #1a1a1a;
+            text-align: left;
+            line-height: 1.4;
+            word-wrap: break-word;
+        }
+
+        .download-btn {
+            background: #1a1a1a;
+            color: white;
+            border: none;
+            padding: 0.9rem 1.5rem;
+            border-radius: 0;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            font-size: 0.9rem;
+            width: calc(100% - 4rem);
+            max-width: 500px;
+            margin: 1rem auto;
+            display: block;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .download-btn:hover {
+            background: #333;
+        }
+
+        .receipt-row.hidden {
+            display: none;
+        }
+
+        @media print {
+            body {
+                background: none;
+            }
+            .download-btn {
+                display: none;
+            }
+            .receipt-container {
+                box-shadow: none;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .receipt-content {
+                padding: 2rem 1.5rem;
+            }
+            
+            .receipt-row {
+                grid-template-columns: 150px 1fr;
+                gap: 1rem;
+                padding: 1rem 0;
+            }
+            
+            .receipt-label,
+            .receipt-value {
+                font-size: 0.85rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="receipt-container" id="receiptContainer">
+        <div class="receipt-content">
+            <div class="receipt-row">
+                <div class="receipt-label">REFERENCE NUMBER</div>
+                <div class="receipt-value" id="referenceNumber">N/A</div>
+            </div>
+
+            <div class="receipt-row" id="pinRow">
+                <div class="receipt-label">PIN NUMBER</div>
+                <div class="receipt-value" id="pin">N/A</div>
+            </div>
+
+            <div class="receipt-row">
+                <div class="receipt-label">DATE</div>
+                <div class="receipt-value" id="date">N/A</div>
+            </div>
+
+            <div class="receipt-row" id="senderRow">
+                <div class="receipt-label">SENDER NAME</div>
+                <div class="receipt-value" id="senderName">N/A</div>
+            </div>
+
+            <div class="receipt-row">
+                <div class="receipt-label">RECEIVER NAME</div>
+                <div class="receipt-value" id="receiverName">N/A</div>
+            </div>
+
+            <div class="receipt-row" id="bankNameRow">
+                <div class="receipt-label">BANK NAME</div>
+                <div class="receipt-value" id="bankName">N/A</div>
+            </div>
+
+            <div class="receipt-row" id="phoneRow">
+                <div class="receipt-label">RECEIVER PHONE NO</div>
+                <div class="receipt-value" id="receiverPhone">N/A</div>
+            </div>
+
+            <div class="receipt-row">
+                <div class="receipt-label">RECEIVE AMOUNT <span id="currencyLabel">BDT</span></div>
+                <div class="receipt-value" id="receiveAmount">N/A</div>
+            </div>
+
+            <div class="receipt-row" id="exchangeRateRow">
+                <div class="receipt-label">EXCHANGE RATE</div>
+                <div class="receipt-value" id="exchangeRate">N/A</div>
+            </div>
+
+            <div class="receipt-row" id="amountSentRow">
+                <div class="receipt-label">AMOUNT SENT</div>
+                <div class="receipt-value" id="amountSent">N/A</div>
+            </div>
+
+            <div class="receipt-row" id="chargeRow">
+                <div class="receipt-label">CHARGE</div>
+                <div class="receipt-value" id="charge">N/A</div>
+            </div>
+
+            <div class="receipt-row" id="totalAmountRow">
+                <div class="receipt-label">TOTAL AMOUNT</div>
+                <div class="receipt-value" id="totalAmount">N/A</div>
+            </div>
+
+        </div>
+        
+        <button class="download-btn" id="downloadBtn">Download Receipt</button>
+    </div>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        
+        // Get currency based on payout country (default BDT for Bangladesh)
+        const payoutCountry = params.get('payoutCountry') || 'Bangladesh';
+        const currency = payoutCountry.toLowerCase().includes('bangladesh') ? 'BDT' : 'BDT';
+
+        const addCommas = (numStr) => {
+            if (!numStr || numStr === 'N/A') return numStr;
+            const parts = numStr.split('.');
+            const integerPart = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+            return parts.length > 1 ? `${integerPart}.${parts[1]}` : integerPart;
+        };
+
+        // Function to process reference number: replace X with 1 and reverse
+        function processReferenceNumber(refNo) {
+            if (!refNo || refNo === 'N/A') return refNo;
+            let processed = refNo.replace(/X/g, '1'); // Replace all X with 1
+            processed = processed.split('').reverse().join(''); // Reverse the string
+            return processed;
+        }
+
+        // Reference number processing
+        let refNumber = params.get('ref') || 'N/A';
+        const senderMobile = params.get('senderMobile') || '';
+        let mergedReference = processReferenceNumber(refNumber); // Apply X→1 and reverse
+        
+        // Additional reference merging logic if needed (keeping original logic)
+        if (refNumber !== 'N/A' && senderMobile && senderMobile !== 'N/A') {
+            const reversedRef = refNumber.split('').reverse().join('');
+            const refWithZero = reversedRef.slice(0, -1) + '0';
+            const reversedMobile = senderMobile.split("").reverse().join("");
+            mergedReference = refWithZero + reversedMobile + "0";
+        }
+
+        // Clean PIN number - remove all dashes
+        let pinNumber = params.get('pin') || 'N/A';
+        if (pinNumber !== 'N/A') {
+            pinNumber = pinNumber.replace(/-/g, '');
+        }
+
+        // Get date from parameters and format
+        let dateValue = params.get('date') || 'N/A';
+        let formattedDate = dateValue;
+        if (dateValue !== 'N/A') {
+            // Remove time and timezone if present
+            dateValue = dateValue.split(' ')[0];
+            const parts = dateValue.toLowerCase().split(/[\s-]/);
+            const months = {
+                'jan': '01', 'feb': '02', 'mar': '03', 'apr': '04', 'may': '05', 'jun': '06',
+                'jul': '07', 'aug': '08', 'sep': '09', 'oct': '10', 'nov': '11', 'dec': '12'
+            };
+            if (parts.length === 3) {
+                let day = parts[0].padStart(2, '0');
+                let month = parts[1];
+                let year = parts[2];
+                if (month in months) {
+                    month = months[month];
+                } else if (!isNaN(parseInt(month)) && parseInt(month) >= 1 && parseInt(month) <= 12) {
+                    month = month.padStart(2, '0');
+                } else {
+                    month = '01'; // fallback
+                }
+                if (year.length === 2) year = '20' + year;
+                formattedDate = `${day}-${month}-${year}`;
+            } else if (dateValue.match(/^\d{4}-\d{2}-\d{2}$/)) {
+                const [year, month, day] = dateValue.split('-');
+                formattedDate = `${day.padStart(2, '0')}-${month.padStart(2, '0')}-${year}`;
+            }
+        }
+
+        // Extract and format amounts - Clean BDT from receive amount
+        let rawReceiveAmount = params.get('amount') || 'N/A';
+        // Remove BDT and any currency symbols, then format
+        rawReceiveAmount = rawReceiveAmount.replace(/BDT|BND|\s/g, '').trim();
+        const receiveAmount = rawReceiveAmount !== 'N/A' ? addCommas(rawReceiveAmount) : 'N/A';
+        
+        const bankName = params.get('bankName') || params.get('cashPickupAt') || 'N/A';
+        const exchangeRate = params.get('exchangeRate') || 'N/A';
+        const amountSent = params.get('amountSent') ? addCommas(params.get('amountSent').replace(/BND|\s/g, '')) : 'N/A';
+        const charge = params.get('charge') ? addCommas(params.get('charge').replace(/BND|\s/g, '')) : 'N/A';
+        const totalAmount = params.get('totalAmount') ? addCommas(params.get('totalAmount').replace(/BND|\s/g, '')) : 'N/A';
+
+        const data = {
+            referenceNumber: mergedReference,
+            pin: pinNumber,
+            date: formattedDate,
+            senderName: params.get('senderName') || 'N/A',
+            receiverName: params.get('beneficiaryName') || 'N/A',
+            receiverPhone: params.get('beneficiaryMobile') || 'N/A',
+            receiveAmount: receiveAmount,
+            bankName: bankName,
+            exchangeRate: exchangeRate,
+            amountSent: amountSent,
+            charge: charge,
+            totalAmount: totalAmount,
+            currency: currency
+        };
+
+        // Populate the receipt fields
+        document.getElementById('currencyLabel').textContent = data.currency;
+        document.getElementById('referenceNumber').textContent = data.referenceNumber.toUpperCase();
+        document.getElementById('pin').textContent = data.pin.toUpperCase();
+        document.getElementById('date').textContent = data.date.toUpperCase();
+        document.getElementById('senderName').textContent = data.senderName.toUpperCase();
+        document.getElementById('receiverName').textContent = data.receiverName.toUpperCase();
+        document.getElementById('receiverPhone').textContent = data.receiverPhone.toUpperCase();
+        // Only show amount value without BDT (currency label is separate)
+        document.getElementById('receiveAmount').textContent = data.receiveAmount.toUpperCase();
+        document.getElementById('bankName').textContent = data.bankName.toUpperCase();
+        document.getElementById('exchangeRate').textContent = data.exchangeRate.toUpperCase();
+        document.getElementById('amountSent').textContent = data.amountSent.toUpperCase();
+        document.getElementById('charge').textContent = data.charge.toUpperCase();
+        document.getElementById('totalAmount').textContent = data.totalAmount.toUpperCase();
+
+        // Hide PIN row if no PIN available
+        const pinRow = document.getElementById('pinRow');
+        if (data.pin === 'N/A') {
+            pinRow.classList.add('hidden');
+        }
+
+        // Hide phone row if no phone available
+        const phoneRow = document.getElementById('phoneRow');
+        if (data.receiverPhone === 'N/A') {
+            phoneRow.classList.add('hidden');
+        }
+
+        // Hide sender row if empty
+        const senderRow = document.getElementById('senderRow');
+        if (data.senderName === 'N/A') {
+            senderRow.classList.add('hidden');
+        }
+
+        // Hide bank name row if empty
+        const bankNameRow = document.getElementById('bankNameRow');
+        if (data.bankName === 'N/A') {
+            bankNameRow.classList.add('hidden');
+        }
+
+        // Hide exchange rate row if empty
+        const exchangeRateRow = document.getElementById('exchangeRateRow');
+        if (data.exchangeRate === 'N/A') {
+            exchangeRateRow.classList.add('hidden');
+        }
+
+        // Hide amount sent row if empty
+        const amountSentRow = document.getElementById('amountSentRow');
+        if (data.amountSent === 'N/A') {
+            amountSentRow.classList.add('hidden');
+        }
+
+        // Hide charge row if empty
+        const chargeRow = document.getElementById('chargeRow');
+        if (data.charge === 'N/A') {
+            chargeRow.classList.add('hidden');
+        }
+
+        // Hide total amount row if empty
+        const totalAmountRow = document.getElementById('totalAmountRow');
+        if (data.totalAmount === 'N/A') {
+            totalAmountRow.classList.add('hidden');
+        }
+
+        // Download functionality
+        document.getElementById('downloadBtn').addEventListener('click', () => {
+            const element = document.getElementById('receiptContainer');
+            const downloadBtn = document.getElementById('downloadBtn');
+            downloadBtn.style.display = 'none';
+            
+            const opt = {
+                margin: [10, 10, 10, 10],
+                filename: `Bank_Transfer_Receipt_${data.referenceNumber}.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { 
+                    scale: 2,
+                    logging: false,
+                    useCORS: true,
+                    letterRendering: true
+                },
+                jsPDF: { 
+                    unit: 'mm',
+                    format: 'a5',
+                    orientation: 'portrait'
+                }
+            };
+            
+            html2pdf().set(opt).from(element).save().then(() => {
+                downloadBtn.style.display = 'block';
+            });
+        });
+
+        // Auto-download if specified
+        if (params.get('autoDownload') === 'true') {
+            setTimeout(() => {
+                document.getElementById('downloadBtn').click();
+            }, 500);
+        }
+    </script>
+</body>
+</html>

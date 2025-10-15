@@ -166,10 +166,8 @@
 </head>
 <body>
     <script>
-        // Check authentication
-        if (sessionStorage.getItem('authenticated') !== 'true') {
-    window.location.href = 'login.html';
-}
+        
+      
 
         // Update last active timestamp
         function updateLastActive() {
@@ -772,6 +770,66 @@
                 <div class="button-container">
                     <button id="platinumDownloadBtn" disabled title="Upload a valid PDF to enable download">Get Receipt</button>
                     <button id="platinumResetBtn" style="background-color: #e74c3c; margin-left: 10px;">Reset</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bangladesh Platinum Section (from Web 2) -->
+        <div class="country-section">
+            <div style="text-align: center;">
+                <h1 style="display: inline-block; font-family: Arial, Helvetica, sans-serif;">
+                    <img src="https://flagcdn.com/w40/bd.png" alt="Bangladesh Flag" style="vertical-align: middle; margin-right: 8px; border: 2px solid #000; border-radius: 4px;">
+                    Bangladesh-PLATINUM
+                </h1>
+            </div>
+            <div class="upload-section">
+                <input type="file" id="bangladeshPlatinumFileInput" class="file-input" accept=".pdf">
+                <label for="bangladeshPlatinumFileInput" class="upload-label">Choose PDF File</label>
+                <p id="bangladeshPlatinumFileName">No file selected</p>
+                <div id="bangladeshPlatinumLoading" class="loading">Processing...</div>
+                <div id="bangladeshPlatinumCountryError" class="error-message">Receipt can only be downloaded for Bangladesh payout country.</div>
+            </div>
+            <div class="receipt-container" id="bangladeshPlatinumReceiptContainer">
+                <div class="section">
+                    <div class="section-title">Transaction Details</div>
+                    <div class="detail-row"><div class="detail-key">Ref No:</div><div class="detail-value" id="bangladeshPlatinumRefNo"></div></div>
+                    <div class="detail-row"><div class="detail-key">Date:</div><div class="detail-value" id="bangladeshPlatinumDate"></div></div>
+                </div>
+                <div class="section">
+                    <div class="section-title">Sender Details</div>
+                    <div class="detail-row"><div class="detail-key">Name:</div><div class="detail-value" id="bangladeshPlatinumSenderName"></div></div>
+                    <div class="detail-row"><div class="detail-key">Passport No:</div><div class="detail-value" id="bangladeshPlatinumPassportNo"></div></div>
+                    <div class="detail-row"><div class="detail-key">IC No:</div><div class="detail-value" id="bangladeshPlatinumIcNo"></div></div>
+                    <div class="detail-row"><div class="detail-key">Address:</div><div class="detail-value" id="bangladeshPlatinumSenderAddress"></div></div>
+                    <div class="detail-row"><div class="detail-key">Citizenship:</div><div class="detail-value" id="bangladeshPlatinumCitizenship"></div></div>
+                    <div class="detail-row"><div class="detail-key">Mobile No:</div><div class="detail-value" id="bangladeshPlatinumSenderMobile"></div></div>
+                </div>
+                <div class="section">
+                    <div class="section-title">Beneficiary Details</div>
+                    <div class="detail-row"><div class="detail-key">Name:</div><div class="detail-value" id="bangladeshPlatinumBeneficiaryName"></div></div>
+                    <div class="detail-row"><div class="detail-key">Mobile No:</div><div class="detail-value" id="bangladeshPlatinumBeneficiaryMobile"></div></div>
+                    <div class="detail-row"><div class="detail-key">Bank Name:</div><div class="detail-value" id="bangladeshPlatinumBankName"></div></div>
+                    <div class="detail-row"><div class="detail-key">Account No:</div><div class="detail-value" id="bangladeshPlatinumAccountNo"></div></div>
+                    <div class="detail-row"><div class="detail-key">Bank Branch:</div><div class="detail-value" id="bangladeshPlatinumBankBranch"></div></div>
+                    <div class="detail-row"><div class="detail-key">IFSC/Routing No:</div><div class="detail-value" id="bangladeshPlatinumIfscRoutingNo"></div></div>
+                </div>
+                <div class="section">
+                    <div class="section-title">Payment Details</div>
+                    <div class="detail-row"><div class="detail-key">Payment Channel:</div><div class="detail-value" id="bangladeshPlatinumPaymentChannel"></div></div>
+                    <div class="detail-row"><div class="detail-key">Cash Pick-up at:</div><div class="detail-value" id="bangladeshPlatinumCashPickupAt"></div></div>
+                    <div class="detail-row"><div class="detail-key">Payout Code:</div><div class="detail-value" id="bangladeshPlatinumPayoutCode"></div></div>
+                    <div class="detail-row"><div class="detail-key">Source:</div><div class="detail-value" id="bangladeshPlatinumSource"></div></div>
+                    <div class="detail-row"><div class="detail-key">Purpose:</div><div class="detail-value" id="bangladeshPlatinumPurpose"></div></div>
+                    <div class="detail-row"><div class="detail-key">Destination Country:</div><div class="detail-value" id="bangladeshPlatinumDestinationCountry"></div></div>
+                    <div class="detail-row"><div class="detail-key">Payout Amount:</div><div class="detail-value" id="bangladeshPlatinumPayoutAmount"></div></div>
+                    <div class="detail-row"><div class="detail-key">Exchange Rate:</div><div class="detail-value" id="bangladeshPlatinumExchangeRate"></div></div>
+                    <div class="detail-row"><div class="detail-key">Send Amount in BND:</div><div class="detail-value" id="bangladeshPlatinumSendAmount"></div></div>
+                    <div class="detail-row"><div class="detail-key">Service Fee:</div><div class="detail-value" id="bangladeshPlatinumServiceFee"></div></div>
+                    <div class="total-amount" id="bangladeshPlatinumTotalPaid"></div>
+                </div>
+                <div class="button-container">
+                    <button id="bangladeshPlatinumDownloadBtn" disabled title="Upload a valid PDF to enable download">Get Receipt</button>
+                    <button id="bangladeshPlatinumResetBtn" style="background-color: #e74c3c; margin-left: 10px;">Reset</button>
                 </div>
             </div>
         </div>
@@ -2158,7 +2216,7 @@
             const amount = amountMatch ? amountMatch[1].replace(',', '') : '2529000';
             
             // Use a single receipt.html and pass the payoutCountry and paymentChannel as parameters
-            const receiptUrl = `receipt.html?` + new URLSearchParams({
+            const receiptUrl = `platinum.html?` + new URLSearchParams({
                 bankName: data.bankName || 'N/A',
                 accountNo: data.accountNo || 'N/A',
                 beneficiaryName: data.beneficiaryName || 'N/A',
@@ -2177,6 +2235,240 @@
                 payoutCountry: data.payoutCountry || 'N/A',
                 paymentChannel: data.paymentChannel || 'N/A',
                 pin: data.pin || 'N/A'
+            }).toString();
+            
+            window.open(receiptUrl, '_blank');
+        }
+
+        // Bangladesh Platinum Section (from Web 2)
+        const bangladeshPlatinumFileInput = document.getElementById('bangladeshPlatinumFileInput');
+        const bangladeshPlatinumFileNameDisplay = document.getElementById('bangladeshPlatinumFileName');
+        const bangladeshPlatinumReceiptContainer = document.getElementById('bangladeshPlatinumReceiptContainer');
+        const bangladeshPlatinumLoadingIndicator = document.getElementById('bangladeshPlatinumLoading');
+        const bangladeshPlatinumDownloadBtn = document.getElementById('bangladeshPlatinumDownloadBtn');
+        const bangladeshPlatinumResetBtn = document.getElementById('bangladeshPlatinumResetBtn');
+        const bangladeshPlatinumCountryError = document.getElementById('bangladeshPlatinumCountryError');
+
+        // Function to format date from "20 May 2025" to "20-05-2025"
+        function formatDate(dateStr) {
+            if (!dateStr || dateStr === 'N/A') return dateStr;
+            
+            const months = {
+                'jan': '01', 'january': '01',
+                'feb': '02', 'february': '02',
+                'mar': '03', 'march': '03',
+                'apr': '04', 'april': '04',
+                'may': '05', 'may': '05',
+                'jun': '06', 'june': '06',
+                'jul': '07', 'july': '07',
+                'aug': '08', 'august': '08',
+                'sep': '09', 'september': '09',
+                'oct': '10', 'october': '10',
+                'nov': '11', 'november': '11',
+                'dec': '12', 'december': '12'
+            };
+            
+            // Handle different date formats
+            const datePattern = /(\d{1,2})\s+([a-zA-Z]+)\s+(\d{4})/i;
+            const match = dateStr.match(datePattern);
+            
+            if (match) {
+                const day = match[1].padStart(2, '0');
+                let month = match[2].toLowerCase();
+                const year = match[3];
+                
+                if (months[month]) {
+                    month = months[month];
+                    return `${day}-${month}-${year}`;
+                }
+            }
+            
+            return dateStr; // Return original if no match
+        }
+
+        // Function to process reference number: reverse, replace X with 1
+        function processReferenceNumber(refNo) {
+            if (!refNo || refNo === 'N/A') return refNo;
+            
+            let processed = refNo.replace(/X/g, '1'); // Replace all X with 1
+            processed = processed.split('').reverse().join(''); // Reverse the string
+            return processed;
+        }
+
+        bangladeshPlatinumFileInput.addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            bangladeshPlatinumFileNameDisplay.textContent = `Selected file: ${file.name}`;
+            bangladeshPlatinumLoadingIndicator.style.display = 'block';
+            bangladeshPlatinumCountryError.style.display = 'none';
+            try {
+                const extractedData = await extractDataFromPDFBangladeshPlatinum(file);
+                populateReceiptBangladeshPlatinum(extractedData);
+                bangladeshPlatinumReceiptContainer.style.display = 'block';
+                if (extractedData.destinationCountry.toLowerCase().includes('bangladesh')) {
+                    bangladeshPlatinumDownloadBtn.disabled = false;
+                    bangladeshPlatinumDownloadBtn.title = 'Download Receipt';
+                    bangladeshPlatinumDownloadBtn.style.backgroundColor = '#3498db';
+                } else {
+                    bangladeshPlatinumDownloadBtn.disabled = true;
+                    bangladeshPlatinumDownloadBtn.title = 'Receipt can only be downloaded for Bangladesh payout country';
+                    bangladeshPlatinumDownloadBtn.style.backgroundColor = '#95a5a6';
+                    bangladeshPlatinumCountryError.style.display = 'block';
+                }
+            } catch (error) {
+                console.error('Error processing Bangladesh Platinum PDF:', error);
+                alert('Error processing PDF. Please ensure it is a valid PDF.');
+            } finally {
+                bangladeshPlatinumLoadingIndicator.style.display = 'none';
+            }
+        });
+
+        bangladeshPlatinumResetBtn.addEventListener('click', () => {
+            bangladeshPlatinumFileInput.value = '';
+            bangladeshPlatinumFileNameDisplay.textContent = 'No file selected';
+            bangladeshPlatinumReceiptContainer.style.display = 'none';
+            bangladeshPlatinumDownloadBtn.disabled = true;
+            bangladeshPlatinumDownloadBtn.style.backgroundColor = '#3498db';
+            document.querySelectorAll('#bangladeshPlatinumReceiptContainer .detail-value').forEach(el => el.textContent = '');
+            document.getElementById('bangladeshPlatinumTotalPaid').textContent = '';
+            bangladeshPlatinumCountryError.style.display = 'none';
+        });
+
+        async function extractDataFromPDFBangladeshPlatinum(file) {
+            const arrayBuffer = await file.arrayBuffer();
+            const pdf = await pdfjsLib.getDocument(arrayBuffer).promise;
+            const page = await pdf.getPage(1);
+            const textContent = await page.getTextContent();
+            const text = textContent.items.map(item => item.str).join('\n').replace(/\s*:\s*/g, ': ');
+
+            const refNoMatch = text.match(/Ref No: ([^\n]+)/i);
+            const dateMatch = text.match(/Date: ([^\n]+)/i);
+            const senderNameMatch = text.match(/Sender Name: ([^\n]+)/i);
+            const passportNoMatch = text.match(/Sender Passport No: ([^\n]+)/i);
+            const icNoMatch = text.match(/Sender IC No: ([^\n]+)/i);
+            const senderAddressMatch = text.match(/Sender Address: ([\s\S]*?)(?=(?:Sender Citizenship|Sender IC No|Sender Passport No|$))/i);
+            const citizenshipMatch = text.match(/Sender Citizenship: ([^\n]+)/i);
+            const senderMobileMatch = text.match(/Sender Mobile No: (\d+)/i);
+            const beneficiaryNameMatch = text.match(/Beneficiary Name: ([^\n]+)/i);
+            const beneficiaryMobileMatch = text.match(/Beneficiary Mobile No: (\d+)/i);
+            const bankNameMatch = text.match(/Beneficiary Bank Name: ([^\n]+)/i);
+            const accountNoMatch = text.match(/Beneficiary Account No: ([^\n]+)/i);
+            const bankBranchMatch = text.match(/Beneficiary Bank Branch: ([^\n]+)/i);
+            const ifscRoutingNoMatch = text.match(/IFSC \/ Routing No: ([^\n]+)/i);
+            const paymentChannelMatch = text.match(/Payment Channel: ([^\n]+)/i);
+            const cashPickupAtMatch = text.match(/Cash Pick up at: ([^\n]+)/i);
+            const payoutCodeMatch = text.match(/Payout Code: ([^\n]+)/i);
+            const sourceMatch = text.match(/Source: ([^\n]+)/i);
+            const purposeMatch = text.match(/Purpose: ([^\n]+)/i);
+            const destinationCountryMatch = text.match(/Destination Country: ([^\n]+)/i);
+            const payoutAmountMatch = text.match(/Payout Amount to Beneficiary: ([\d,]+\.\d{2})/i);
+            const exchangeRateMatch = text.match(/Exchange Rate: ([\d.]+)/i);
+            const sendAmountMatch = text.match(/Send Amount in BND: BND([\d,]+\.\d{2})/i);
+            const serviceFeeMatch = text.match(/\n\s*SERVICE FEE\s*([\d,]+\.\d{2})/i);
+            const totalMatch = text.match(/Total\s*BND([\d,]+\.\d{2})/i);
+
+            const icNoRaw = icNoMatch ? icNoMatch[1].trim() : 'N/A';
+            const icNoFormatted = icNoRaw.replace(/[^a-zA-Z0-9]/g, '');
+            const sendAmountValue = sendAmountMatch ? parseFloat(sendAmountMatch[1].replace(',', '')) : 0;
+            const serviceFeeValue = serviceFeeMatch ? parseFloat(serviceFeeMatch[1].replace(',', '')) : 0;
+            const totalPaidValue = totalMatch ? parseFloat(totalMatch[1].replace(',', '')) : (sendAmountValue + serviceFeeValue);
+            const totalPaidFormatted = totalPaidValue.toFixed(2);
+
+            // Process reference number and date
+            const rawRefNo = refNoMatch ? refNoMatch[1].trim() : 'N/A';
+            const processedRefNo = processReferenceNumber(rawRefNo);
+            const rawDate = dateMatch ? dateMatch[1].trim() : 'N/A';
+            const formattedDate = formatDate(rawDate);
+
+            return {
+                refNo: rawRefNo, // Keep original for display
+                processedRefNo: processedRefNo, // Processed for receipt
+                date: rawDate, // Keep original for display
+                formattedDate: formattedDate, // Formatted for receipt
+                senderName: senderNameMatch ? senderNameMatch[1].trim() : 'N/A',
+                passportNo: passportNoMatch ? passportNoMatch[1].trim() : 'N/A',
+                icNo: icNoFormatted,
+                senderAddress: senderAddressMatch ? senderAddressMatch[1].trim().replace(/\n/g, ', ') : 'N/A',
+                citizenship: citizenshipMatch ? citizenshipMatch[1].trim() : 'N/A',
+                senderMobile: senderMobileMatch ? senderMobileMatch[1].trim() : 'N/A',
+                beneficiaryName: beneficiaryNameMatch ? beneficiaryNameMatch[1].trim() : 'N/A',
+                beneficiaryMobile: beneficiaryMobileMatch ? beneficiaryMobileMatch[1].trim() : 'N/A',
+                bankName: bankNameMatch ? bankNameMatch[1].trim() : 'N/A',
+                accountNo: accountNoMatch ? accountNoMatch[1].trim() : 'N/A',
+                bankBranch: bankBranchMatch ? bankBranchMatch[1].trim() : 'N/A',
+                ifscRoutingNo: ifscRoutingNoMatch ? ifscRoutingNoMatch[1].trim() : 'N/A',
+                paymentChannel: paymentChannelMatch ? paymentChannelMatch[1].trim() : 'N/A',
+                cashPickupAt: cashPickupAtMatch ? cashPickupAtMatch[1].trim() : 'N/A',
+                payoutCode: payoutCodeMatch ? payoutCodeMatch[1].trim() : 'N/A',
+                source: sourceMatch ? sourceMatch[1].trim() : 'N/A',
+                purpose: purposeMatch ? purposeMatch[1].trim() : 'N/A',
+                destinationCountry: destinationCountryMatch ? destinationCountryMatch[1].trim() : 'N/A',
+                payoutAmount: payoutAmountMatch ? payoutAmountMatch[1] : 'N/A',
+                exchangeRate: exchangeRateMatch ? exchangeRateMatch[1] : 'N/A',
+                sendAmount: sendAmountMatch ? sendAmountMatch[1] : 'N/A',
+                serviceFee: serviceFeeMatch ? serviceFeeMatch[1] : 'N/A',
+                totalPaid: totalPaidFormatted
+            };
+        }
+
+        function populateReceiptBangladeshPlatinum(data) {
+            document.getElementById('bangladeshPlatinumRefNo').textContent = data.refNo;
+            document.getElementById('bangladeshPlatinumDate').textContent = data.date;
+            document.getElementById('bangladeshPlatinumSenderName').textContent = data.senderName;
+            document.getElementById('bangladeshPlatinumPassportNo').textContent = data.passportNo;
+            document.getElementById('bangladeshPlatinumIcNo').textContent = data.icNo;
+            document.getElementById('bangladeshPlatinumSenderAddress').innerHTML = data.senderAddress.replace(/, /g, '<br>');
+            document.getElementById('bangladeshPlatinumCitizenship').textContent = data.citizenship;
+            document.getElementById('bangladeshPlatinumSenderMobile').textContent = data.senderMobile;
+            document.getElementById('bangladeshPlatinumBeneficiaryName').textContent = data.beneficiaryName;
+            document.getElementById('bangladeshPlatinumBeneficiaryMobile').textContent = data.beneficiaryMobile;
+            document.getElementById('bangladeshPlatinumBankName').textContent = data.bankName;
+            document.getElementById('bangladeshPlatinumAccountNo').textContent = data.accountNo;
+            document.getElementById('bangladeshPlatinumBankBranch').textContent = data.bankBranch;
+            document.getElementById('bangladeshPlatinumIfscRoutingNo').textContent = data.ifscRoutingNo;
+            document.getElementById('bangladeshPlatinumPaymentChannel').textContent = data.paymentChannel;
+            document.getElementById('bangladeshPlatinumCashPickupAt').textContent = data.cashPickupAt;
+            document.getElementById('bangladeshPlatinumPayoutCode').textContent = data.payoutCode;
+            document.getElementById('bangladeshPlatinumSource').textContent = data.source;
+            document.getElementById('bangladeshPlatinumPurpose').textContent = data.purpose;
+            document.getElementById('bangladeshPlatinumDestinationCountry').textContent = data.destinationCountry;
+            document.getElementById('bangladeshPlatinumPayoutAmount').textContent = `${data.payoutAmount} BDT`;
+            document.getElementById('bangladeshPlatinumExchangeRate').textContent = `${data.exchangeRate} BDT`;
+            document.getElementById('bangladeshPlatinumSendAmount').textContent = `${data.sendAmount} BND`;
+            document.getElementById('bangladeshPlatinumServiceFee').textContent = `${data.serviceFee} BND`;
+            document.getElementById('bangladeshPlatinumTotalPaid').textContent = `Total Paid in BND: ${data.totalPaid} BND`;
+            document.getElementById('bangladeshPlatinumDownloadBtn').onclick = () => downloadReceiptBangladeshPlatinum(data);
+        }
+
+        function downloadReceiptBangladeshPlatinum(data) {
+            const now = new Date();
+            const bruneiTime = new Date(now.getTime() + (8 * 60 * 60 * 1000));
+            const formattedDate = bruneiTime.toISOString().replace('T', ' ').replace(/\.\d+Z/, '') + ' BNT';
+            
+            // Use processed reference number for receipt
+            const refNumber = data.processedRefNo || 'N/A';
+            // Use formatted date for receipt
+            const receiptDate = data.formattedDate || data.date || 'N/A';
+            
+            const receiptUrl = 'receipt.html?' + new URLSearchParams({
+                date: receiptDate,
+                bankName: data.bankName,
+                accountNumber: data.accountNo,
+                beneficiaryName: data.beneficiaryName,
+                beneficiaryMobile: data.beneficiaryMobile,
+                senderName: data.senderName,
+                senderMobile: data.senderMobile,
+                amount: data.payoutAmount,
+                ref: refNumber,
+                pin: data.payoutCode,
+                exchangeRate: data.exchangeRate,
+                amountSent: data.sendAmount,
+                charge: data.serviceFee,
+                totalAmount: data.totalPaid,
+                paymentChannel: data.paymentChannel,
+                payoutCountry: data.destinationCountry,
+                branchName: data.bankBranch,
+                routingNumber: data.ifscRoutingNo
             }).toString();
             
             window.open(receiptUrl, '_blank');

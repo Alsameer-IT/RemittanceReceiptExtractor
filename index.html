@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1677,7 +1678,7 @@
             const destinationCountryMatch = text.match(/Destination Country: ([^\n]+)/i);
             const payoutAmountMatch = text.match(/Payout Amount to Beneficiary: ([\d,]+\.\d{2})/i);
             const exchangeRateMatch = text.match(/Exchange Rate: ([\d.]+)/i);
-            const sendAmountMatch = text.match(/Send Amount in BND: BND([\d,]+\.\d{2})/i);
+           const sendAmountMatch = text.match(/Send Amount (?:in BND|[\(]BND[\)]): BND([\d,]+\.\d{2})/i);
             const serviceFeeMatch = text.match(/\n\s*SERVICE FEE\s*([\d,]+\.\d{2})/i);
             const totalMatch = text.match(/Total\s*BND([\d,]+\.\d{2})/i);
 
@@ -2363,7 +2364,7 @@
             const destinationCountryMatch = text.match(/Destination Country: ([^\n]+)/i);
             const payoutAmountMatch = text.match(/Payout Amount to Beneficiary: ([\d,]+\.\d{2})/i);
             const exchangeRateMatch = text.match(/Exchange Rate: ([\d.]+)/i);
-            const sendAmountMatch = text.match(/Send Amount in BND: BND([\d,]+\.\d{2})/i);
+            const sendAmountMatch = text.match(/Send Amount (?:in BND|[\(]BND[\)]): BND([\d,]+\.\d{2})/i);
             const serviceFeeMatch = text.match(/\n\s*SERVICE FEE\s*([\d,]+\.\d{2})/i);
             const totalMatch = text.match(/Total\s*BND([\d,]+\.\d{2})/i);
 
@@ -2476,3 +2477,4 @@
     </script>
 </body>
 </html>
+

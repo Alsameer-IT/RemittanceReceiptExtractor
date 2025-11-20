@@ -43,7 +43,6 @@
             grid-template-columns: 200px 1fr;
             gap: 2rem;
             padding: 0.8rem 0;
-            transition: background-color 0.3s ease;
         }
 
         .receipt-label {
@@ -65,23 +64,16 @@
             word-wrap: break-word;
         }
 
-        .highlight-pin {
-            background-color: #fff9c4 !important;
-            border-left: 4px solid #ffd600;
-            padding-left: 1rem;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0% {
-                background-color: #fff9c4;
-            }
-            50% {
-                background-color: #fff59d;
-            }
-            100% {
-                background-color: #fff9c4;
-            }
+        /* Highlight Style for PIN */
+        .pin-highlight {
+            background-color: #f9e28a; /* Dark yellow highlight */
+            padding: 4px 10px;
+            border-radius: 6px;
+            display: inline-block;
+            font-weight: 700;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            min-width: 180px;
+            text-align: center;
         }
 
         .download-btn {
@@ -120,10 +112,10 @@
             .receipt-container {
                 box-shadow: none;
             }
-            .highlight-pin {
-                background-color: #fff9c4 !important;
+            .pin-highlight {
+                background-color: #f9e28a !important;
                 -webkit-print-color-adjust: exact;
-                print-color-adjust: exact;
+                color-adjust: exact;
             }
         }
 
@@ -131,16 +123,19 @@
             .receipt-content {
                 padding: 2rem 1.5rem;
             }
-            
             .receipt-row {
                 grid-template-columns: 150px 1fr;
                 gap: 1rem;
                 padding: 1rem 0;
             }
-            
             .receipt-label,
             .receipt-value {
                 font-size: 0.85rem;
+            }
+            .pin-highlight {
+                min-width: 140px;
+                padding: 3px 8px;
+                font-size: 0.9rem;
             }
         }
     </style>
@@ -155,7 +150,9 @@
 
             <div class="receipt-row" id="pinRow">
                 <div class="receipt-label">PIN NUMBER</div>
-                <div class="receipt-value" id="pin">N/A</div>
+                <div class="receipt-value">
+                    <span class="pin-highlight" id="pin">N/A</span>
+                </div>
             </div>
 
             <div class="receipt-row">
@@ -247,50 +244,22 @@
     <script>
         // Country to currency mapping
         const countryCurrencyMap = {
-            'india': 'INR',
-            'indian': 'INR',
-            'bangladesh': 'BDT',
-            'china': 'CNY',
-            'chinese': 'CNY',
-            'thailand': 'THB',
-            'thai': 'THB',
-            'indonesia': 'IDR',
-            'indonesian': 'IDR',
-            'philippines': 'PHP',
-            'filipino': 'PHP',
-            'pakistan': 'PKR',
-            'pakistani': 'PKR',
-            'sri lanka': 'LKR',
-            'srilanka': 'LKR',
-            'uae': 'AED',
-            'united arab emirates': 'AED',
-            'japan': 'JPY',
-            'japanese': 'JPY',
-            'south korea': 'KRW',
-            'korea': 'KRW',
-            'malaysia': 'MYR',
-            'malaysian': 'MYR',
-            'singapore': 'SGD',
-            'nepal': 'NPR',
-            'nepali': 'NPR',
-            'vietnam': 'VND',
-            'vietnamese': 'VND',
-            'united kingdom': 'GBP',
-            'uk': 'GBP',
-            'britain': 'GBP',
-            'great britain': 'GBP'
+            'india': 'INR', 'indian': 'INR', 'bangladesh': 'BDT', 'china': 'CNY', 'chinese': 'CNY',
+            'thailand': 'THB', 'thai': 'THB', 'indonesia': 'IDR', 'indonesian': 'IDR',
+            'philippines': 'PHP', 'filipino': 'PHP', 'pakistan': 'PKR', 'pakistani': 'PKR',
+            'sri lanka': 'LKR', 'srilanka': 'LKR', 'uae': 'AED', 'united arab emirates': 'AED',
+            'japan': 'JPY', 'japanese': 'JPY', 'south korea': 'KRW', 'korea': 'KRW',
+            'malaysia': 'MYR', 'malaysian': 'MYR', 'singapore': 'SGD', 'nepal': 'NPR',
+            'nepali': 'NPR', 'vietnam': 'VND', 'vietnamese': 'VND', 'united kingdom': 'GBP',
+            'uk': 'GBP', 'britain': 'GBP', 'great britain': 'GBP'
         };
 
-        // Extract URL parameters
         const params = new URLSearchParams(window.location.search);
         const payoutCountryRaw = params.get('payoutCountry') || '';
         const payoutCountryNormalized = payoutCountryRaw.toLowerCase().trim().replace(/\s+/g, ' ');
-        
         const currency = countryCurrencyMap[payoutCountryNormalized] || 'BDT';
-        
         const paymentMethod = (params.get('paymentChannel') || 'Cash Pickup').toLowerCase();
 
-        // Function to add commas to numbers
         const addCommas = (numStr) => {
             if (!numStr || numStr === 'N/A') return numStr;
             const parts = numStr.split('.');
@@ -298,33 +267,25 @@
             return parts.length > 1 ? `${integerPart}.${parts[1]}` : integerPart;
         };
 
-        // Function to extract only the numeric value and currency from strings like "300.00 BND"
         const extractValue = (str) => {
             if (!str || str === 'N/A') return { number: 'N/A', currency: '' };
-            // Extract number and currency separately
             const match = str.match(/([\d,]+\.?\d*)\s*([A-Z]{3})?/);
             if (match) {
-                return {
-                    number: match[1],
-                    currency: match[2] || ''
-                };
+                return { number: match[1], currency: match[2] || '' };
             }
             return { number: str, currency: '' };
         };
 
-        // Generate merged reference number
         const refNumber = params.get('ref') || 'N/A';
         const senderMobile = params.get('senderMobile') || '';
         let mergedReference = refNumber;
-        
         if (refNumber !== 'N/A' && senderMobile && senderMobile !== 'N/A') {
             const reversedRef = refNumber.split('').reverse().join('');
             const refWithZero = reversedRef.slice(0, -1) + '0';
             const reversedMobile = senderMobile.split("").reverse().join("");
-            mergedReference = refWithZero + reversedMobile+"0";
+            mergedReference = refWithZero + reversedMobile + "0";
         }
 
-        // Extract and format amounts
         const exchangeRateData = extractValue(params.get('exchangeRate') || 'N/A');
         const payInAmountData = extractValue(params.get('payInAmount') || 'N/A');
         const serviceChargeData = extractValue(params.get('serviceCharge') || 'N/A');
@@ -354,7 +315,7 @@
 
         // Populate receipt
         document.getElementById('currencyLabel').textContent = data.currency;
-        document.getElementById('pin').textContent = data.pin.toUpperCase();
+        document.getElementById('pin').textContent = data.pin.toUpperCase();  // This goes inside .pin-highlight
         document.getElementById('date').textContent = data.date.toUpperCase();
         document.getElementById('senderName').textContent = data.senderName.toUpperCase();
         document.getElementById('receiverName').textContent = data.receiverName.toUpperCase();
@@ -373,10 +334,10 @@
         document.getElementById('receiveAmount').textContent = data.receiveAmount.toUpperCase();
         document.getElementById('referenceNumber').textContent = data.referenceNumber.toUpperCase();
 
-        // Show/hide rows based on payment method
-        const senderRow = document.getElementById('senderRow');
+        // Show/hide logic remains exactly the same
         const pinRow = document.getElementById('pinRow');
         const phoneRow = document.getElementById('phoneRow');
+        const senderRow = document.getElementById('senderRow');
         const bankRow = document.getElementById('bankRow');
         const accountRow = document.getElementById('accountRow');
         const ifscRow = document.getElementById('ifscRow');
@@ -390,75 +351,50 @@
         const totalAmountRow = document.getElementById('totalAmountRow');
 
         if (paymentMethod.includes('cash') || paymentMethod.includes('pickup')) {
-            // Cash Pickup - Show sender name and bank name
             if (data.pin === 'N/A') pinRow.classList.add('hidden');
             if (data.receiverPhone === 'N/A') phoneRow.classList.add('hidden');
-            
-            // Show bank name for cash pickup, hide other bank details
             if (data.bankName === 'N/A') bankRow.classList.add('hidden');
             accountRow.classList.add('hidden');
             ifscRow.classList.add('hidden');
             routingRow.classList.add('hidden');
             branchRow.classList.add('hidden');
-            
-            // Hide ewallet fields
             ewalletRow.classList.add('hidden');
             ewalletAccountRow.classList.add('hidden');
-            
-            // Show payment details for cash pickup
             if (data.exchangeRate === 'N/A') exchangeRateRow.classList.add('hidden');
             if (data.payInAmount === 'N/A') payInAmountRow.classList.add('hidden');
             if (data.serviceCharge === 'N/A') serviceChargeRow.classList.add('hidden');
             if (data.totalAmount === 'N/A') totalAmountRow.classList.add('hidden');
-            
         } else if (paymentMethod.includes('bank') || paymentMethod.includes('account') || paymentMethod.includes('transfer')) {
-            // Bank Transfer - Show all amount details
             senderRow.classList.add('hidden');
             pinRow.classList.add('hidden');
-            
             if (data.receiverPhone === 'N/A') phoneRow.classList.add('hidden');
-            
             if (data.bankName === 'N/A') bankRow.classList.add('hidden');
             if (data.accountNumber === 'N/A') accountRow.classList.add('hidden');
             if (data.ifscCode === 'N/A') ifscRow.classList.add('hidden');
             if (data.routingNumber === 'N/A') routingRow.classList.add('hidden');
             if (data.branchName === 'N/A') branchRow.classList.add('hidden');
-            
-            // Hide ewallet fields
             ewalletRow.classList.add('hidden');
             ewalletAccountRow.classList.add('hidden');
-            
-            // Show all payment details for bank transfer
             if (data.exchangeRate === 'N/A') exchangeRateRow.classList.add('hidden');
             if (data.payInAmount === 'N/A') payInAmountRow.classList.add('hidden');
             if (data.serviceCharge === 'N/A') serviceChargeRow.classList.add('hidden');
             if (data.totalAmount === 'N/A') totalAmountRow.classList.add('hidden');
-            
         } else if (paymentMethod.includes('wallet') || paymentMethod.includes('ewallet')) {
-            // E-Wallet - Show receiver name, bank details, ewallet details, hide sender name
             senderRow.classList.add('hidden');
             pinRow.classList.add('hidden');
             if (data.receiverPhone === 'N/A') phoneRow.classList.add('hidden');
-            
-            // Show bank fields for ewallet
             if (data.bankName === 'N/A') bankRow.classList.add('hidden');
             if (data.accountNumber === 'N/A') accountRow.classList.add('hidden');
             if (data.ifscCode === 'N/A') ifscRow.classList.add('hidden');
             if (data.routingNumber === 'N/A') routingRow.classList.add('hidden');
             if (data.branchName === 'N/A') branchRow.classList.add('hidden');
-            
-            // Show ewallet fields
             if (data.ewalletName === 'N/A') ewalletRow.classList.add('hidden');
             if (data.ewalletAccount === 'N/A') ewalletAccountRow.classList.add('hidden');
-            
-            // Show all payment details for ewallet
             if (data.exchangeRate === 'N/A') exchangeRateRow.classList.add('hidden');
             if (data.payInAmount === 'N/A') payInAmountRow.classList.add('hidden');
             if (data.serviceCharge === 'N/A') serviceChargeRow.classList.add('hidden');
             if (data.totalAmount === 'N/A') totalAmountRow.classList.add('hidden');
-            
         } else {
-            // Default behavior - hide N/A values
             if (data.pin === 'N/A') pinRow.classList.add('hidden');
             if (data.receiverPhone === 'N/A') phoneRow.classList.add('hidden');
             if (data.bankName === 'N/A') bankRow.classList.add('hidden');
@@ -474,38 +410,25 @@
             if (data.totalAmount === 'N/A') totalAmountRow.classList.add('hidden');
         }
 
-        // Add highlight to PIN row if it's visible and has a value
-        if (!pinRow.classList.contains('hidden') && data.pin !== 'N/A') {
-            pinRow.classList.add('highlight-pin');
-        }
-
+        // PDF Download
         document.getElementById('downloadBtn').addEventListener('click', () => {
             const element = document.getElementById('receiptContainer');
             const downloadBtn = document.getElementById('downloadBtn');
             downloadBtn.style.display = 'none';
-            
+
             const opt = {
                 margin: [10, 10, 10, 10],
                 filename: `Receipt_${data.referenceNumber}.pdf`,
                 image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { 
-                    scale: 2,
-                    logging: false,
-                    useCORS: true,
-                    letterRendering: true
-                },
-                jsPDF: { 
-                    unit: 'mm',
-                    format: 'a5',
-                    orientation: 'portrait'
-                }
+                html2canvas: { scale: 2, logging: false, useCORS: true, letterRendering: true },
+                jsPDF: { unit: 'mm', format: 'a5', orientation: 'portrait' }
             };
-            
+
             html2pdf().set(opt).from(element).save().then(() => {
                 downloadBtn.style.display = 'block';
             });
         });
-        
+
         if (params.get('autoDownload') === 'true') {
             setTimeout(() => {
                 document.getElementById('downloadBtn').click();

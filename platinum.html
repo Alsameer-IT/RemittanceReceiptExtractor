@@ -90,6 +90,13 @@
             display: none;
         }
 
+        /* 新增：PIN 高亮樣式 */
+        .receipt-row.pin-highlight {
+            background-color: #fff9c4 !important; /* 淺黃色背景 */
+            padding: 1rem 0 !important;
+            border-radius: 4px;
+        }
+
         @media print {
             body {
                 background: none;
@@ -99,6 +106,9 @@
             }
             .receipt-container {
                 box-shadow: none;
+            }
+            .receipt-row.pin-highlight {
+                background-color: #fff9c4 !important;
             }
         }
 
@@ -276,7 +286,6 @@
         // Function to extract only the numeric value and currency from strings like "300.00 BND"
         const extractValue = (str) => {
             if (!str || str === 'N/A') return { number: 'N/A', currency: '' };
-            // Extract number and currency separately
             const match = str.match(/([\d,]+\.?\d*)\s*([A-Z]{3})?/);
             if (match) {
                 return {
@@ -348,9 +357,14 @@
         document.getElementById('receiveAmount').textContent = data.receiveAmount.toUpperCase();
         document.getElementById('referenceNumber').textContent = data.referenceNumber.toUpperCase();
 
+        // === 新增：如果 PIN 有值，就給整個 PIN 行加上黃色高亮 ===
+        const pinRow = document.getElementById('pinRow');
+        if (data.pin && data.pin !== 'N/A' && data.pin.trim() !== '') {
+            pinRow.classList.add('pin-highlight');
+        }
+
         // Show/hide rows based on payment method
         const senderRow = document.getElementById('senderRow');
-        const pinRow = document.getElementById('pinRow');
         const phoneRow = document.getElementById('phoneRow');
         const bankRow = document.getElementById('bankRow');
         const accountRow = document.getElementById('accountRow');
@@ -365,75 +379,53 @@
         const totalAmountRow = document.getElementById('totalAmountRow');
 
         if (paymentMethod.includes('cash') || paymentMethod.includes('pickup')) {
-            // Cash Pickup - Show sender name and bank name
             if (data.pin === 'N/A') pinRow.classList.add('hidden');
             if (data.receiverPhone === 'N/A') phoneRow.classList.add('hidden');
-            
-            // Show bank name for cash pickup, hide other bank details
             if (data.bankName === 'N/A') bankRow.classList.add('hidden');
             accountRow.classList.add('hidden');
             ifscRow.classList.add('hidden');
             routingRow.classList.add('hidden');
             branchRow.classList.add('hidden');
-            
-            // Hide ewallet fields
             ewalletRow.classList.add('hidden');
             ewalletAccountRow.classList.add('hidden');
-            
-            // Show payment details for cash pickup
             if (data.exchangeRate === 'N/A') exchangeRateRow.classList.add('hidden');
             if (data.payInAmount === 'N/A') payInAmountRow.classList.add('hidden');
             if (data.serviceCharge === 'N/A') serviceChargeRow.classList.add('hidden');
             if (data.totalAmount === 'N/A') totalAmountRow.classList.add('hidden');
             
         } else if (paymentMethod.includes('bank') || paymentMethod.includes('account') || paymentMethod.includes('transfer')) {
-            // Bank Transfer - Show all amount details
             senderRow.classList.add('hidden');
             pinRow.classList.add('hidden');
-            
             if (data.receiverPhone === 'N/A') phoneRow.classList.add('hidden');
-            
             if (data.bankName === 'N/A') bankRow.classList.add('hidden');
             if (data.accountNumber === 'N/A') accountRow.classList.add('hidden');
             if (data.ifscCode === 'N/A') ifscRow.classList.add('hidden');
             if (data.routingNumber === 'N/A') routingRow.classList.add('hidden');
             if (data.branchName === 'N/A') branchRow.classList.add('hidden');
-            
-            // Hide ewallet fields
             ewalletRow.classList.add('hidden');
             ewalletAccountRow.classList.add('hidden');
-            
-            // Show all payment details for bank transfer
             if (data.exchangeRate === 'N/A') exchangeRateRow.classList.add('hidden');
             if (data.payInAmount === 'N/A') payInAmountRow.classList.add('hidden');
             if (data.serviceCharge === 'N/A') serviceChargeRow.classList.add('hidden');
             if (data.totalAmount === 'N/A') totalAmountRow.classList.add('hidden');
             
         } else if (paymentMethod.includes('wallet') || paymentMethod.includes('ewallet')) {
-            // E-Wallet - Show receiver name, bank details, ewallet details, hide sender name
             senderRow.classList.add('hidden');
             pinRow.classList.add('hidden');
             if (data.receiverPhone === 'N/A') phoneRow.classList.add('hidden');
-            
-            // Show bank fields for ewallet
             if (data.bankName === 'N/A') bankRow.classList.add('hidden');
             if (data.accountNumber === 'N/A') accountRow.classList.add('hidden');
             if (data.ifscCode === 'N/A') ifscRow.classList.add('hidden');
             if (data.routingNumber === 'N/A') routingRow.classList.add('hidden');
             if (data.branchName === 'N/A') branchRow.classList.add('hidden');
-            
-            // Show ewallet fields
             if (data.ewalletName === 'N/A') ewalletRow.classList.add('hidden');
             if (data.ewalletAccount === 'N/A') ewalletAccountRow.classList.add('hidden');
-            
-            // Show all payment details for ewallet
             if (data.exchangeRate === 'N/A') exchangeRateRow.classList.add('hidden');
             if (data.payInAmount === 'N/A') payInAmountRow.classList.add('hidden');
             if (data.serviceCharge === 'N/A') serviceChargeRow.classList.add('hidden');
             if (data.totalAmount === 'N/A') totalAmountRow.classList.add('hidden');
             
         } else {
-            // Default behavior - hide N/A values
             if (data.pin === 'N/A') pinRow.classList.add('hidden');
             if (data.receiverPhone === 'N/A') phoneRow.classList.add('hidden');
             if (data.bankName === 'N/A') bankRow.classList.add('hidden');

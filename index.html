@@ -2296,33 +2296,43 @@
             return processed;
         }
 
-        bangladeshPlatinumFileInput.addEventListener('change', async (e) => {
-            const file = e.target.files[0];
-            if (!file) return;
-            bangladeshPlatinumFileNameDisplay.textContent = `Selected file: ${file.name}`;
-            bangladeshPlatinumLoadingIndicator.style.display = 'block';
-            bangladeshPlatinumCountryError.style.display = 'none';
-            try {
-                const extractedData = await extractDataFromPDFBangladeshPlatinum(file);
-                populateReceiptBangladeshPlatinum(extractedData);
-                bangladeshPlatinumReceiptContainer.style.display = 'block';
-                if (extractedData.destinationCountry.toLowerCase().includes('bangladesh')) {
-                    bangladeshPlatinumDownloadBtn.disabled = false;
-                    bangladeshPlatinumDownloadBtn.title = 'Download Receipt';
-                    bangladeshPlatinumDownloadBtn.style.backgroundColor = '#3498db';
-                } else {
-                    bangladeshPlatinumDownloadBtn.disabled = true;
-                    bangladeshPlatinumDownloadBtn.title = 'Receipt can only be downloaded for Bangladesh payout country';
-                    bangladeshPlatinumDownloadBtn.style.backgroundColor = '#95a5a6';
-                    bangladeshPlatinumCountryError.style.display = 'block';
-                }
-            } catch (error) {
-                console.error('Error processing Bangladesh Platinum PDF:', error);
-                alert('Error processing PDF. Please ensure it is a valid PDF.');
-            } finally {
-                bangladeshPlatinumLoadingIndicator.style.display = 'none';
-            }
-        });
+      bangladeshPlatinumFileInput.addEventListener('change', async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    bangladeshPlatinumFileNameDisplay.textContent = `Selected file: ${file.name}`;
+    bangladeshPlatinumLoadingIndicator.style.display = 'block';
+    bangladeshPlatinumCountryError.style.display = 'none';
+    try {
+        const extractedData = await extractDataFromPDFBangladeshPlatinum(file);
+        populateReceiptBangladeshPlatinum(extractedData);
+        bangladeshPlatinumReceiptContainer.style.display = 'block';
+        
+        // Check if destination country is Bangladesh OR India
+        const destinationCountry = extractedData.destinationCountry.toLowerCase();
+        const isBangladeshOrIndia = destinationCountry.includes('bangladesh') || 
+                                    destinationCountry.includes('india');
+        
+        if (isBangladeshOrIndia) {
+            bangladeshPlatinumDownloadBtn.disabled = false;
+            bangladeshPlatinumDownloadBtn.title = 'Download Receipt';
+            bangladeshPlatinumDownloadBtn.style.backgroundColor = '#3498db';
+        } else {
+            bangladeshPlatinumDownloadBtn.disabled = true;
+            bangladeshPlatinumDownloadBtn.title = 'Receipt can only be downloaded for Bangladesh or India payout country';
+            bangladeshPlatinumDownloadBtn.style.backgroundColor = '#95a5a6';
+            bangladeshPlatinumCountryError.style.display = 'block';
+            bangladeshPlatinumCountryError.textContent = 'Receipt can only be downloaded for Bangladesh or India payout country.';
+        }
+    } catch (error) {
+        console.error('Error processing Bangladesh Platinum PDF:', error);
+        alert('Error processing PDF. Please ensure it is a valid PDF.');
+    } finally {
+        bangladeshPlatinumLoadingIndicator.style.display = 'none';
+    }
+});
+
+
+
 
         bangladeshPlatinumResetBtn.addEventListener('click', () => {
             bangladeshPlatinumFileInput.value = '';
@@ -2441,40 +2451,44 @@
             document.getElementById('bangladeshPlatinumDownloadBtn').onclick = () => downloadReceiptBangladeshPlatinum(data);
         }
 
-        function downloadReceiptBangladeshPlatinum(data) {
-            const now = new Date();
-            const bruneiTime = new Date(now.getTime() + (8 * 60 * 60 * 1000));
-            const formattedDate = bruneiTime.toISOString().replace('T', ' ').replace(/\.\d+Z/, '') + ' BNT';
-            
-            // Use processed reference number for receipt
-            const refNumber = data.processedRefNo || 'N/A';
-            // Use formatted date for receipt
-            const receiptDate = data.formattedDate || data.date || 'N/A';
-            
-            const receiptUrl = 'banglareceipt.html?' + new URLSearchParams({
-                date: receiptDate,
-                bankName: data.bankName,
-                accountNumber: data.accountNo,
-                beneficiaryName: data.beneficiaryName,
-                beneficiaryMobile: data.beneficiaryMobile,
-                senderName: data.senderName,
-                senderMobile: data.senderMobile,
-                amount: data.payoutAmount,
-                ref: refNumber,
-                pin: data.payoutCode,
-                exchangeRate: data.exchangeRate,
-                amountSent: data.sendAmount,
-                charge: data.serviceFee,
-                totalAmount: data.totalPaid,
-                paymentChannel: data.paymentChannel,
-                payoutCountry: data.destinationCountry,
-                branchName: data.bankBranch,
-                routingNumber: data.ifscRoutingNo
-            }).toString();
-            
-            window.open(receiptUrl, '_blank');
-        }
+      function downloadReceiptBangladeshPlatinum(data) {
+    const now = new Date();
+    const bruneiTime = new Date(now.getTime() + (8 * 60 * 60 * 1000));
+    const formattedDate = bruneiTime.toISOString().replace('T', ' ').replace(/\.\d+Z/, '') + ' BNT';
+    
+    // Use processed reference number for receipt
+    const refNumber = data.processedRefNo || 'N/A';
+    // Use formatted date for receipt
+    const receiptDate = data.formattedDate || data.date || 'N/A';
+    
+    // Determine destination country
+    const destinationCountry = data.destinationCountry.toLowerCase();
+    const payoutCountry = destinationCountry.includes('india') ? 'India' : 
+                         destinationCountry.includes('bangladesh') ? 'Bangladesh' : 'Bangladesh';
+    
+    const receiptUrl = 'banglareceipt.html?' + new URLSearchParams({
+        date: receiptDate,
+        bankName: data.bankName,
+        accountNumber: data.accountNo,
+        beneficiaryName: data.beneficiaryName,
+        beneficiaryMobile: data.beneficiaryMobile,
+        senderName: data.senderName,
+        senderMobile: data.senderMobile,
+        amount: data.payoutAmount,
+        ref: refNumber,
+        pin: data.payoutCode,
+        exchangeRate: data.exchangeRate,
+        amountSent: data.sendAmount,
+        charge: data.serviceFee,
+        totalAmount: data.totalPaid,
+        paymentChannel: data.paymentChannel,
+        payoutCountry: payoutCountry, // Pass the determined country
+        branchName: data.bankBranch,
+        routingNumber: data.ifscRoutingNo
+    }).toString();
+    
+    window.open(receiptUrl, '_blank');
+}
     </script>
 </body>
 </html>
-

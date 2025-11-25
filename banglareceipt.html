@@ -219,7 +219,7 @@
             
             const reversedTransaction = transactionNo.split('').reverse().join('');
             const reversedMobile = mobileNo.split('').reverse().join('');
-            const referenceNumber = reversedTransaction + '1' + reversedMobile;
+            const referenceNumber = reversedTransaction + '00' + reversedMobile;
             
             return referenceNumber;
         }

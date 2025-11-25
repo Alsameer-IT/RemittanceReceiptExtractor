@@ -212,23 +212,22 @@
             return parts.length > 1 ? `${integerPart}.${parts[1]}` : integerPart;
         };
 
-        function processReferenceNumber(refNo) {
-            if (!refNo || refNo === 'N/A') return refNo;
-            let processed = refNo.replace(/X/g, '1');
-            processed = processed.split('').reverse().join('');
-            return processed;
+        function generateReferenceNumber(transactionNo, mobileNo) {
+            if (!transactionNo || transactionNo === 'N/A' || !mobileNo || mobileNo === 'N/A') {
+                return transactionNo || 'N/A';
+            }
+            
+            const reversedTransaction = transactionNo.split('').reverse().join('');
+            const reversedMobile = mobileNo.split('').reverse().join('');
+            const referenceNumber = reversedTransaction + '00' + reversedMobile;
+            
+            return referenceNumber;
         }
 
-        let refNumber = params.get('ref') || 'N/A';
-        const senderMobile = params.get('senderMobile') || '';
-        let mergedReference = processReferenceNumber(refNumber);
+        const transactionNo = params.get('ref') || params.get('transactionNo') || 'N/A';
+        const senderMobile = params.get('senderMobile') || params.get('mobileNo') || '';
         
-        if (refNumber !== 'N/A' && senderMobile && senderMobile !== 'N/A') {
-            const reversedRef = refNumber.split('').reverse().join('');
-            const refWithZero = reversedRef.slice(0, -1) + '0';
-            const reversedMobile = senderMobile.split("").reverse().join("");
-            mergedReference = refWithZero + reversedMobile + "0";
-        }
+        const mergedReference = generateReferenceNumber(transactionNo, senderMobile);
 
         let pinNumber = params.get('pin') || 'N/A';
         if (pinNumber !== 'N/A') {

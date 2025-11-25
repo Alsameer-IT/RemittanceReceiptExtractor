@@ -191,9 +191,16 @@
     <script>
         const params = new URLSearchParams(window.location.search);
         
-        // Get currency based on payout country (default BDT for Bangladesh)
+        // Get currency based on payout country
         const payoutCountry = params.get('payoutCountry') || 'Bangladesh';
-        const currency = payoutCountry.toLowerCase().includes('bangladesh') ? 'BDT' : 'BDT';
+        let currency = 'BDT'; // Default to Bangladesh
+        
+        // Determine currency based on country
+        if (payoutCountry.toLowerCase().includes('india')) {
+            currency = 'INR';
+        } else if (payoutCountry.toLowerCase().includes('bangladesh')) {
+            currency = 'BDT';
+        }
 
         const addCommas = (numStr) => {
             if (!numStr || numStr === 'N/A') return numStr;
@@ -202,21 +209,36 @@
             return parts.length > 1 ? `${integerPart}.${parts[1]}` : integerPart;
         };
 
-        // Function to process reference number: replace X with 1 and reverse
-        function processReferenceNumber(refNo) {
+        // Function to process reference number based on country
+        function processReferenceNumber(refNo, country) {
             if (!refNo || refNo === 'N/A') return refNo;
-            let processed = refNo.replace(/X/g, '1'); // Replace all X with 1
-            processed = processed.split('').reverse().join(''); // Reverse the string
+            
+            // Bangladesh: Replace X with 1 and reverse
+            if (country.toLowerCase().includes('bangladesh')) {
+                let processed = refNo.replace(/X/g, '1');
+                processed = processed.split('').reverse().join('');
+                return processed;
+            }
+            
+            // India: Keep original format (no X replacement, no reversal)
+            if (country.toLowerCase().includes('india')) {
+                return refNo;
+            }
+            
+            // Default: Bangladesh format
+            let processed = refNo.replace(/X/g, '1');
+            processed = processed.split('').reverse().join('');
             return processed;
         }
 
         // Reference number processing
         let refNumber = params.get('ref') || 'N/A';
         const senderMobile = params.get('senderMobile') || '';
-        let mergedReference = processReferenceNumber(refNumber); // Apply X→1 and reverse
+        let mergedReference = processReferenceNumber(refNumber, payoutCountry);
         
-        // Additional reference merging logic if needed (keeping original logic)
-        if (refNumber !== 'N/A' && senderMobile && senderMobile !== 'N/A') {
+        // Additional reference merging logic for Bangladesh only
+        if (payoutCountry.toLowerCase().includes('bangladesh') && 
+            refNumber !== 'N/A' && senderMobile && senderMobile !== 'N/A') {
             const reversedRef = refNumber.split('').reverse().join('');
             const refWithZero = reversedRef.slice(0, -1) + '0';
             const reversedMobile = senderMobile.split("").reverse().join("");
@@ -233,7 +255,6 @@
         let dateValue = params.get('date') || 'N/A';
         let formattedDate = dateValue;
         if (dateValue !== 'N/A') {
-            // Remove time and timezone if present
             dateValue = dateValue.split(' ')[0];
             const parts = dateValue.toLowerCase().split(/[\s-]/);
             const months = {
@@ -249,7 +270,7 @@
                 } else if (!isNaN(parseInt(month)) && parseInt(month) >= 1 && parseInt(month) <= 12) {
                     month = month.padStart(2, '0');
                 } else {
-                    month = '01'; // fallback
+                    month = '01';
                 }
                 if (year.length === 2) year = '20' + year;
                 formattedDate = `${day}-${month}-${year}`;
@@ -259,17 +280,16 @@
             }
         }
 
-        // Extract and format amounts - Clean BDT from receive amount
+        // Extract and format amounts - Clean currency symbols
         let rawReceiveAmount = params.get('amount') || 'N/A';
-        // Remove BDT and any currency symbols, then format
-        rawReceiveAmount = rawReceiveAmount.replace(/BDT|BND|\s/g, '').trim();
+        rawReceiveAmount = rawReceiveAmount.replace(/BDT|BND|INR|\s/g, '').trim();
         const receiveAmount = rawReceiveAmount !== 'N/A' ? addCommas(rawReceiveAmount) : 'N/A';
         
         const bankName = params.get('bankName') || params.get('cashPickupAt') || 'N/A';
         const exchangeRate = params.get('exchangeRate') || 'N/A';
-        const amountSent = params.get('amountSent') ? addCommas(params.get('amountSent').replace(/BND|\s/g, '')) : 'N/A';
-        const charge = params.get('charge') ? addCommas(params.get('charge').replace(/BND|\s/g, '')) : 'N/A';
-        const totalAmount = params.get('totalAmount') ? addCommas(params.get('totalAmount').replace(/BND|\s/g, '')) : 'N/A';
+        const amountSent = params.get('amountSent') ? addCommas(params.get('amountSent').replace(/BND|INR|BDT|\s/g, '')) : 'N/A';
+        const charge = params.get('charge') ? addCommas(params.get('charge').replace(/BND|INR|BDT|\s/g, '')) : 'N/A';
+        const totalAmount = params.get('totalAmount') ? addCommas(params.get('totalAmount').replace(/BND|INR|BDT|\s/g, '')) : 'N/A';
 
         const data = {
             referenceNumber: mergedReference,
@@ -284,7 +304,8 @@
             amountSent: amountSent,
             charge: charge,
             totalAmount: totalAmount,
-            currency: currency
+            currency: currency,
+            country: payoutCountry
         };
 
         // Populate the receipt fields
@@ -295,7 +316,6 @@
         document.getElementById('senderName').textContent = data.senderName.toUpperCase();
         document.getElementById('receiverName').textContent = data.receiverName.toUpperCase();
         document.getElementById('receiverPhone').textContent = data.receiverPhone.toUpperCase();
-        // Only show amount value without BDT (currency label is separate)
         document.getElementById('receiveAmount').textContent = data.receiveAmount.toUpperCase();
         document.getElementById('bankName').textContent = data.bankName.toUpperCase();
         document.getElementById('exchangeRate').textContent = data.exchangeRate.toUpperCase();
@@ -303,53 +323,15 @@
         document.getElementById('charge').textContent = data.charge.toUpperCase();
         document.getElementById('totalAmount').textContent = data.totalAmount.toUpperCase();
 
-        // Hide PIN row if no PIN available
-        const pinRow = document.getElementById('pinRow');
-        if (data.pin === 'N/A') {
-            pinRow.classList.add('hidden');
-        }
-
-        // Hide phone row if no phone available
-        const phoneRow = document.getElementById('phoneRow');
-        if (data.receiverPhone === 'N/A') {
-            phoneRow.classList.add('hidden');
-        }
-
-        // Hide sender row if empty
-        const senderRow = document.getElementById('senderRow');
-        if (data.senderName === 'N/A') {
-            senderRow.classList.add('hidden');
-        }
-
-        // Hide bank name row if empty
-        const bankNameRow = document.getElementById('bankNameRow');
-        if (data.bankName === 'N/A') {
-            bankNameRow.classList.add('hidden');
-        }
-
-        // Hide exchange rate row if empty
-        const exchangeRateRow = document.getElementById('exchangeRateRow');
-        if (data.exchangeRate === 'N/A') {
-            exchangeRateRow.classList.add('hidden');
-        }
-
-        // Hide amount sent row if empty
-        const amountSentRow = document.getElementById('amountSentRow');
-        if (data.amountSent === 'N/A') {
-            amountSentRow.classList.add('hidden');
-        }
-
-        // Hide charge row if empty
-        const chargeRow = document.getElementById('chargeRow');
-        if (data.charge === 'N/A') {
-            chargeRow.classList.add('hidden');
-        }
-
-        // Hide total amount row if empty
-        const totalAmountRow = document.getElementById('totalAmountRow');
-        if (data.totalAmount === 'N/A') {
-            totalAmountRow.classList.add('hidden');
-        }
+        // Hide rows with N/A values
+        if (data.pin === 'N/A') document.getElementById('pinRow').classList.add('hidden');
+        if (data.receiverPhone === 'N/A') document.getElementById('phoneRow').classList.add('hidden');
+        if (data.senderName === 'N/A') document.getElementById('senderRow').classList.add('hidden');
+        if (data.bankName === 'N/A') document.getElementById('bankNameRow').classList.add('hidden');
+        if (data.exchangeRate === 'N/A') document.getElementById('exchangeRateRow').classList.add('hidden');
+        if (data.amountSent === 'N/A') document.getElementById('amountSentRow').classList.add('hidden');
+        if (data.charge === 'N/A') document.getElementById('chargeRow').classList.add('hidden');
+        if (data.totalAmount === 'N/A') document.getElementById('totalAmountRow').classList.add('hidden');
 
         // Download functionality
         document.getElementById('downloadBtn').addEventListener('click', () => {
@@ -357,9 +339,11 @@
             const downloadBtn = document.getElementById('downloadBtn');
             downloadBtn.style.display = 'none';
             
+            const countryPrefix = data.country.toLowerCase().includes('india') ? 'India' : 'Bangladesh';
+            
             const opt = {
                 margin: [10, 10, 10, 10],
-                filename: `Bank_Transfer_Receipt_${data.referenceNumber}.pdf`,
+                filename: `${countryPrefix}_Transfer_Receipt_${data.referenceNumber}.pdf`,
                 image: { type: 'jpeg', quality: 0.98 },
                 html2canvas: { 
                     scale: 2,

@@ -45,6 +45,12 @@
             padding: 0.8rem 0;
         }
 
+        .receipt-row.highlight {
+            background: #ffff00;
+            padding: 0.8rem 1rem;
+            margin: 0 -1rem;
+        }
+
         .receipt-label {
             font-size: 0.95rem;
             font-weight: 600;
@@ -112,6 +118,11 @@
                 gap: 1rem;
                 padding: 1rem 0;
             }
+
+            .receipt-row.highlight {
+                padding: 1rem 0.5rem;
+                margin: 0 -0.5rem;
+            }
             
             .receipt-label,
             .receipt-value {
@@ -128,7 +139,7 @@
                 <div class="receipt-value" id="referenceNumber">N/A</div>
             </div>
 
-            <div class="receipt-row" id="pinRow">
+            <div class="receipt-row highlight" id="pinRow">
                 <div class="receipt-label">PIN NUMBER</div>
                 <div class="receipt-value" id="pin">N/A</div>
             </div>
@@ -191,7 +202,6 @@
     <script>
         const params = new URLSearchParams(window.location.search);
         
-        // Get currency based on payout country (default BDT for Bangladesh)
         const payoutCountry = params.get('payoutCountry') || 'Bangladesh';
         const currency = payoutCountry.toLowerCase().includes('bangladesh') ? 'BDT' : 'BDT';
 
@@ -202,20 +212,17 @@
             return parts.length > 1 ? `${integerPart}.${parts[1]}` : integerPart;
         };
 
-        // Function to process reference number: replace X with 1 and reverse
         function processReferenceNumber(refNo) {
             if (!refNo || refNo === 'N/A') return refNo;
-            let processed = refNo.replace(/X/g, '1'); // Replace all X with 1
-            processed = processed.split('').reverse().join(''); // Reverse the string
+            let processed = refNo.replace(/X/g, '1');
+            processed = processed.split('').reverse().join('');
             return processed;
         }
 
-        // Reference number processing
         let refNumber = params.get('ref') || 'N/A';
         const senderMobile = params.get('senderMobile') || '';
-        let mergedReference = processReferenceNumber(refNumber); // Apply X→1 and reverse
+        let mergedReference = processReferenceNumber(refNumber);
         
-        // Additional reference merging logic if needed (keeping original logic)
         if (refNumber !== 'N/A' && senderMobile && senderMobile !== 'N/A') {
             const reversedRef = refNumber.split('').reverse().join('');
             const refWithZero = reversedRef.slice(0, -1) + '0';
@@ -223,17 +230,14 @@
             mergedReference = refWithZero + reversedMobile + "0";
         }
 
-        // Clean PIN number - remove all dashes
         let pinNumber = params.get('pin') || 'N/A';
         if (pinNumber !== 'N/A') {
             pinNumber = pinNumber.replace(/-/g, '');
         }
 
-        // Get date from parameters and format
         let dateValue = params.get('date') || 'N/A';
         let formattedDate = dateValue;
         if (dateValue !== 'N/A') {
-            // Remove time and timezone if present
             dateValue = dateValue.split(' ')[0];
             const parts = dateValue.toLowerCase().split(/[\s-]/);
             const months = {
@@ -249,7 +253,7 @@
                 } else if (!isNaN(parseInt(month)) && parseInt(month) >= 1 && parseInt(month) <= 12) {
                     month = month.padStart(2, '0');
                 } else {
-                    month = '01'; // fallback
+                    month = '01';
                 }
                 if (year.length === 2) year = '20' + year;
                 formattedDate = `${day}-${month}-${year}`;
@@ -259,9 +263,7 @@
             }
         }
 
-        // Extract and format amounts - Clean BDT from receive amount
         let rawReceiveAmount = params.get('amount') || 'N/A';
-        // Remove BDT and any currency symbols, then format
         rawReceiveAmount = rawReceiveAmount.replace(/BDT|BND|\s/g, '').trim();
         const receiveAmount = rawReceiveAmount !== 'N/A' ? addCommas(rawReceiveAmount) : 'N/A';
         
@@ -287,7 +289,6 @@
             currency: currency
         };
 
-        // Populate the receipt fields
         document.getElementById('currencyLabel').textContent = data.currency;
         document.getElementById('referenceNumber').textContent = data.referenceNumber.toUpperCase();
         document.getElementById('pin').textContent = data.pin.toUpperCase();
@@ -295,7 +296,6 @@
         document.getElementById('senderName').textContent = data.senderName.toUpperCase();
         document.getElementById('receiverName').textContent = data.receiverName.toUpperCase();
         document.getElementById('receiverPhone').textContent = data.receiverPhone.toUpperCase();
-        // Only show amount value without BDT (currency label is separate)
         document.getElementById('receiveAmount').textContent = data.receiveAmount.toUpperCase();
         document.getElementById('bankName').textContent = data.bankName.toUpperCase();
         document.getElementById('exchangeRate').textContent = data.exchangeRate.toUpperCase();
@@ -303,55 +303,46 @@
         document.getElementById('charge').textContent = data.charge.toUpperCase();
         document.getElementById('totalAmount').textContent = data.totalAmount.toUpperCase();
 
-        // Hide PIN row if no PIN available
         const pinRow = document.getElementById('pinRow');
         if (data.pin === 'N/A') {
             pinRow.classList.add('hidden');
         }
 
-        // Hide phone row if no phone available
         const phoneRow = document.getElementById('phoneRow');
         if (data.receiverPhone === 'N/A') {
             phoneRow.classList.add('hidden');
         }
 
-        // Hide sender row if empty
         const senderRow = document.getElementById('senderRow');
         if (data.senderName === 'N/A') {
             senderRow.classList.add('hidden');
         }
 
-        // Hide bank name row if empty
         const bankNameRow = document.getElementById('bankNameRow');
         if (data.bankName === 'N/A') {
             bankNameRow.classList.add('hidden');
         }
 
-        // Hide exchange rate row if empty
         const exchangeRateRow = document.getElementById('exchangeRateRow');
         if (data.exchangeRate === 'N/A') {
             exchangeRateRow.classList.add('hidden');
         }
 
-        // Hide amount sent row if empty
         const amountSentRow = document.getElementById('amountSentRow');
         if (data.amountSent === 'N/A') {
             amountSentRow.classList.add('hidden');
         }
 
-        // Hide charge row if empty
         const chargeRow = document.getElementById('chargeRow');
         if (data.charge === 'N/A') {
             chargeRow.classList.add('hidden');
         }
 
-        // Hide total amount row if empty
         const totalAmountRow = document.getElementById('totalAmountRow');
         if (data.totalAmount === 'N/A') {
             totalAmountRow.classList.add('hidden');
         }
 
-        // Download functionality
         document.getElementById('downloadBtn').addEventListener('click', () => {
             const element = document.getElementById('receiptContainer');
             const downloadBtn = document.getElementById('downloadBtn');
@@ -379,7 +370,6 @@
             });
         });
 
-        // Auto-download if specified
         if (params.get('autoDownload') === 'true') {
             setTimeout(() => {
                 document.getElementById('downloadBtn').click();

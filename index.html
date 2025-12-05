@@ -316,7 +316,7 @@
             <div style="text-align: center;">
                 <h1 style="display: inline-block; font-family: Arial, Helvetica, sans-serif;">
                     <img id="globalCountryFlag" src="" alt="Country Flag" style="width: 40px; height: 40px; vertical-align: middle; margin-right: 8px; border: 2px solid #000; border-radius: 4px; display: none;">
-                    <span id="globalCountryName">Global </span>
+                    <span id="globalCountryName">Wadi(Hafs)</span>
                 </h1>
             </div>
             <div class="upload-section">
@@ -455,7 +455,7 @@
             <div style="text-align: center;">
                 <h1 style="display: inline-block; font-family: Arial, Helvetica, sans-serif;">
                     <img src="https://flagcdn.com/w40/id.png" alt="Indonesia Flag" style="vertical-align: middle; margin-right: 8px; border: 2px solid #000; border-radius: 4px;">
-                    Indonesia
+                    (Hafs)
                 </h1>
             </div>
             <div class="upload-section">
@@ -578,7 +578,7 @@
             <div style="text-align: center;">
                 <h1 style="display: inline-block; font-family: Arial, Helvetica, sans-serif;">
                     <img src="https://flagcdn.com/w40/bd.png" alt="Bangladesh Flag" style="vertical-align: middle; margin-right: 8px; border: 2px solid #000; border-radius: 4px;">
-                    Bangladesh
+                    Bangladesh-Zoho(Hafs)
                 </h1>
             </div>
             <div class="upload-section">
@@ -641,7 +641,7 @@
                     <img src="https://cdn-icons-png.flaticon.com/512/1034/1034551.png" 
                          alt="Platinum" 
                          style="width: 40px; height: 40px; margin-right: 8px; border: 2px solid #000; border-radius: 4px;">
-                    Platinum
+                    Wadi(Platinum)
                 </h1>
             </div>
             <div class="upload-section">
@@ -779,7 +779,7 @@
             <div style="text-align: center;">
                 <h1 style="display: inline-block; font-family: Arial, Helvetica, sans-serif;">
                     <img src="https://flagcdn.com/w40/bd.png" alt="Bangladesh Flag" style="vertical-align: middle; margin-right: 8px; border: 2px solid #000; border-radius: 4px;">
-                    Bangladesh(Platinum)
+                    Bangladesh-Zoho(Platinum)
                 </h1>
             </div>
             <div class="upload-section">
@@ -951,13 +951,275 @@
                 </div>
             </div>
         </div>
+        
+        <!-- Section 7: Iqbal1 (Original Global) -->
+        <div class="country-section">
+            <div style="text-align: center;">
+                 <h1 style="display: inline-block; font-family: Arial, Helvetica, sans-serif;">
+                    <img src="https://flagcdn.com/w40/id.png" 
+                         alt="Indonesia Flag" 
+                         style="vertical-align: middle; margin-right: 8px; border: 2px solid #000; border-radius: 4px;">
+                    Iqbal (Wadi)
+                </h1>
+            </div>
+
+            <div class="upload-section">
+                <input type="file" id="iqbal1FileInput" class="file-input" accept=".pdf">
+                <label for="iqbal1FileInput" class="upload-label">Choose PDF File</label>
+                <p id="iqbal1FileName"></p>
+                <div id="iqbal1Loading" class="loading">Processing...</div>
+                <div id="iqbal1CountryError" class="error-message">Receipt can only be downloaded for valid PDF files.</div>
+            </div>
+            
+            <div class="receipt-container" id="iqbal1ReceiptContainer">
+                <!-- Section for Receipt Metadata -->
+                <div class="section">
+                    <div class="section-title">Receipt Metadata</div>
+                    <div class="detail-row">
+                        <div class="detail-key">Transaction No:</div>
+                        <div class="detail-value" id="iqbal1TxnNo"></div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-key">Date:</div>
+                        <div class="detail-value" id="iqbal1Date"></div>
+                    </div>
+                </div>
+
+                <!-- Section for Transaction Details -->
+                <div class="section">
+                    <div class="section-title">Transaction Details</div>
+                    <div class="detail-row">
+                        <div class="detail-key">Payment Channel:</div>
+                        <div class="detail-value" id="iqbal1PaymentChannel"></div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-key">Pin:</div>
+                        <div class="detail-value" id="iqbal1Pin"></div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">Sender Details</div>
+                    <div class="detail-row">
+                        <div class="detail-key">Customer Id:</div>
+                        <div class="detail-value" id="iqbal1CustomerId"></div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-key">Name:</div>
+                        <div class="detail-value" id="iqbal1SenderName"></div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-key">Address:</div>
+                        <div class="detail-value" id="iqbal1SenderAddress"></div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-key">Passport:</div>
+                        <div class="detail-value" id="iqbal1NationalId"></div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-key">Nationality:</div>
+                        <div class="detail-value" id="iqbal1Nationality"></div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-key">Profession:</div>
+                        <div class="detail-value" id="iqbal1Profession"></div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-key">Mobile No:</div>
+                        <div class="detail-value" id="iqbal1SenderMobile"></div>
+                    </div>
+                </div>
+                
+                <div class="section">
+                    <div class="section-title">Beneficiary Details</div>
+                    <div class="detail-row">
+                        <div class="detail-key">Name:</div>
+                        <div class="detail-value" id="iqbal1BeneficiaryName"></div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-key">Bank Name:</div>
+                        <div class="detail-value" id="iqbal1BankName"></div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-key">Account No:</div>
+                        <div class="detail-value" id="iqbal1AccountNo"></div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-key">IFSC/Bank Code:</div>
+                        <div class="detail-value" id="iqbal1IfscCode"></div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-key">Mobile No:</div>
+                        <div class="detail-value" id="iqbal1BeneficiaryMobile"></div>
+                    </div>
+                </div>
+                
+                <div class="section">
+                    <div class="section-title">Payment Details</div>
+                    <div class="detail-row">
+                        <div class="detail-key">Payout Country:</div>
+                        <div class="detail-value" id="iqbal1PayoutCountry"></div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-key">Source:</div>
+                        <div class="detail-value" id="iqbal1Source"></div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-key">Purpose:</div>
+                        <div class="detail-value" id="iqbal1Purpose"></div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-key">Payout Amount:</div>
+                        <div class="detail-value" id="iqbal1PayoutAmount"></div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-key">Exchange Rate:</div>
+                        <div class="detail-value" id="iqbal1ExchangeRate"></div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-key">Pay in Amount:</div>
+                        <div class="detail-value" id="iqbal1PayInAmount"></div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-key">Service Charge:</div>
+                        <div class="detail-value" id="iqbal1ServiceCharge"></div>
+                    </div>
+                    <div class="total-amount" id="iqbal1TotalAmount"></div>
+                </div>
+                
+                <div class="button-container">
+                    <button id="iqbal1DownloadBtn" disabled title="Upload a valid PDF to enable download">Get Receipt</button>
+                    <button id="iqbal1ResetBtn" style="background-color: #e74c3c; margin-left: 10px;">Reset</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 8: Iqbal2 (Original Indonesia) -->
+        <div class="country-section">
+            <div style="text-align: center;">
+                <h1 style="display: inline-block; font-family: Arial, Helvetica, sans-serif;">
+                    <img src="https://flagcdn.com/w40/id.png" 
+                         alt="Indonesia Flag" 
+                         style="vertical-align: middle; margin-right: 8px; border: 2px solid #000; border-radius: 4px;">
+                    Iqbal (Garuda)
+                </h1>
+            </div>
+
+           <div class="upload-section">
+                <input type="file" id="iqbal2FileInput" accept=".pdf" style="display: none;">
+                <label for="iqbal2FileInput" class="upload-label">Choose PDF File</label>
+                <p id="iqbal2FileName"></p>
+                <div id="iqbal2Loading">Processing...</div>
+                <div id="iqbal2CountryError" class="error-message">Receipt can only be downloaded for Indonesia payout country.</div>
+            </div>
+            
+            <div class="receipt-container" id="iqbal2ReceiptContainer">
+                <div class="section">
+                    <div class="section-title">Receipt Information</div>
+                    <div class="detail-row">
+                        <div class="detail-key">Receipt No:</div>
+                        <div class="detail-value" id="iqbal2ReceiptNo"></div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-key">Date:</div>
+                        <div class="detail-value" id="iqbal2ReceiptDate"></div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">Sender Details</div>
+                    <div class="detail-row">
+                        <div class="detail-key">Name:</div>
+                        <div class="detail-value" id="iqbal2SenderName"></div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-key">Passport No:</div>
+                        <div class="detail-value" id="iqbal2PassportNo"></div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-key">IC No:</div>
+                        <div class="detail-value" id="iqbal2IcNo"></div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-key">Address:</div>
+                        <div class="detail-value" id="iqbal2SenderAddress"></div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-key">Citizenship:</div>
+                        <div class="detail-value" id="iqbal2Citizenship"></div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-key">Profession:</div>
+                        <div class="detail-value" id="iqbal2Profession"></div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-key">Mobile No:</div>
+                        <div class="detail-value" id="iqbal2SenderMobile"></div>
+                    </div>
+                </div>
+                
+                <div class="section">
+                    <div class="section-title">Beneficiary Details</div>
+                    <div class="detail-row">
+                        <div class="detail-key">Country:</div>
+                        <div class="detail-value" id="iqbal2BeneficiaryCountry"></div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-key">Name:</div>
+                        <div class="detail-value" id="iqbal2BeneficiaryName"></div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-key">Bank:</div>
+                        <div class="detail-value" id="iqbal2BankName"></div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-key">Account Number:</div>
+                        <div class="detail-value" id="iqbal2AccountNo"></div>
+                    </div>
+                </div>
+                
+                <div class="section">
+                    <div class="section-title">Payment Details</div>
+                    <div class="detail-row">
+                        <div class="detail-key">Payout Amount:</div>
+                        <div class="detail-value" id="iqbal2PayoutAmount"></div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-key">FX Rate:</div>
+                        <div class="detail-value" id="iqbal2FxRate"></div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-key">Send Amount:</div>
+                        <div class="detail-value" id="iqbal2SendAmount"></div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-key">Service Fee:</div>
+                        <div class="detail-value" id="iqbal2ServiceFee"></div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-key">Source:</div>
+                        <div class="detail-value" id="iqbal2Source"></div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-key">Purpose:</div>
+                        <div class="detail-value" id="iqbal2Purpose"></div>
+                    </div>
+                    <div class="total-amount" id="iqbal2TotalAmount"></div>
+                </div>
+                
+                <div class="button-container">
+                    <button id="iqbal2DownloadBtn" disabled title="Upload a valid PDF to enable download">Get Receipt</button>
+                    <button id="iqbal2ResetBtn" style="background-color: #e74c3c; margin-left: 10px;">Reset</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
         // Initialize PDF.js worker
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.11.338/pdf.worker.min.js';
 
-        // Global Section
+         // Global Section
         const globalFileInput = document.getElementById('globalFileInput');
         const globalFileNameDisplay = document.getElementById('globalFileName');
         const globalReceiptContainer = document.getElementById('globalReceiptContainer');
@@ -2999,8 +3261,869 @@ function downloadReceipt(data) {
     const receiptUrl = 'receipt1.html?' + new URLSearchParams(params).toString();
     window.open(receiptUrl, '_blank');
 }
+
+
+        // Section 7: Iqbal1 (Original Global) - JavaScript
+        const iqbal1FileInput = document.getElementById('iqbal1FileInput');
+        const iqbal1FileNameDisplay = document.getElementById('iqbal1FileName');
+        const iqbal1ReceiptContainer = document.getElementById('iqbal1ReceiptContainer');
+        const iqbal1LoadingIndicator = document.getElementById('iqbal1Loading');
+        const iqbal1DownloadBtn = document.getElementById('iqbal1DownloadBtn');
+        const iqbal1ResetBtn = document.getElementById('iqbal1ResetBtn');
+        const iqbal1CountryError = document.getElementById('iqbal1CountryError');
+        
+        iqbal1FileInput.addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            iqbal1FileNameDisplay.textContent = `Selected file: ${file.name}`;
+            iqbal1LoadingIndicator.style.display = 'block';
+            iqbal1CountryError.style.display = 'none';
+            
+            try {
+                const extractedData = await extractDataFromPDFIqbal1(file);
+                populateReceiptIqbal1(extractedData);
+                iqbal1ReceiptContainer.style.display = 'block';
+                
+                // Check if payout country is valid
+                const payoutCountry = extractedData.payoutCountry ? extractedData.payoutCountry.trim().toLowerCase() : '';
+                if (payoutCountry && payoutCountry !== 'n/a') {
+                    iqbal1DownloadBtn.disabled = false;
+                    iqbal1DownloadBtn.title = 'Download Receipt';
+                    iqbal1DownloadBtn.style.backgroundColor = '#3498db';
+                } else {
+                    iqbal1DownloadBtn.disabled = true;
+                    iqbal1DownloadBtn.title = 'Receipt can only be downloaded for a valid payout country';
+                    iqbal1DownloadBtn.style.backgroundColor = '#95a5a6';
+                    iqbal1CountryError.style.display = 'block';
+                    iqbal1CountryError.textContent = 'Receipt can only be downloaded for a valid payout country';
+                }
+            } catch (error) {
+                console.error('Error processing PDF:', error);
+                let message = 'Error processing PDF. Please ensure it is a valid PDF and has the correct format.';
+                if (error.message.includes('Invalid PDF')) {
+                    message = 'The uploaded file is not a valid PDF.';
+                } else if (error.message.includes('No text')) {
+                    message = 'The PDF contains no extractable text.';
+                }
+                alert(message);
+                iqbal1DownloadBtn.disabled = true;
+                iqbal1DownloadBtn.title = 'Upload a valid PDF to enable download';
+                iqbal1DownloadBtn.style.backgroundColor = '#95a5a6';
+                iqbal1CountryError.style.display = 'block';
+                iqbal1CountryError.textContent = message;
+            } finally {
+                iqbal1LoadingIndicator.style.display = 'none';
+            }
+        });
+        
+        iqbal1ResetBtn.addEventListener('click', () => {
+            iqbal1FileInput.value = '';
+            iqbal1FileNameDisplay.textContent = '';
+            iqbal1ReceiptContainer.style.display = 'none';
+            iqbal1DownloadBtn.disabled = true;
+            iqbal1DownloadBtn.style.backgroundColor = '#3498db';
+            iqbal1DownloadBtn.title = 'Upload a valid PDF to enable download';
+            document.querySelectorAll('#iqbal1ReceiptContainer .detail-value').forEach(el => el.textContent = '');
+            document.getElementById('iqbal1TotalAmount').textContent = '';
+            iqbal1CountryError.style.display = 'none';
+        });
+        
+        async function extractDataFromPDFIqbal1(file) {
+            const arrayBuffer = await file.arrayBuffer();
+            const pdf = await pdfjsLib.getDocument(arrayBuffer).promise;
+            const page = await pdf.getPage(1);
+            const textContent = await page.getTextContent();
+            const textItems = textContent.items.map(item => item.str);
+            
+            // Join text items with line breaks to preserve structure
+            let text = textItems.join('\n');
+            
+            // Normalize text to handle inconsistent spacing
+            text = text.replace(/\s*:\s*/g, ': ').replace(/\n\s+/g, '\n');
+            
+            // Log the full text for debugging
+            console.log('Full extracted text (Iqbal1):', text);
+            
+            // Extract receipt metadata - Enhanced to capture both Txn No and Receipt No
+            const topLeftDateMatch = text.match(/^\d{1,2}\/\d{1,2}\/\d{2},\s*\d{1,2}:\d{2}\s*(?:AM|PM)/im);
+            
+            // Try multiple patterns for transaction/receipt number
+            let txnNo = 'N/A';
+            let txnNoMatch = null;
+            
+            // Pattern 1: Txn No with optional colon and spaces
+            txnNoMatch = text.match(/Txn\s*No\.?\s*:?\s*(\d+)/i);
+            if (txnNoMatch) {
+                txnNo = txnNoMatch[1].trim();
+                console.log('Found Txn No:', txnNo);
+            }
+            
+            // Pattern 2: Receipt No with optional colon and spaces
+            if (!txnNoMatch || txnNo === 'N/A') {
+                txnNoMatch = text.match(/Receipt\s*No\.?\s*:?\s*(\d+)/i);
+                if (txnNoMatch) {
+                    txnNo = txnNoMatch[1].trim();
+                    console.log('Found Receipt No:', txnNo);
+                }
+            }
+            
+            // Pattern 3: Transaction No with optional colon and spaces
+            if (!txnNoMatch || txnNo === 'N/A') {
+                txnNoMatch = text.match(/Transaction\s*No\.?\s*:?\s*(\d+)/i);
+                if (txnNoMatch) {
+                    txnNo = txnNoMatch[1].trim();
+                    console.log('Found Transaction No:', txnNo);
+                }
+            }
+            
+            // Pattern 4: Ref No with optional colon and spaces
+            if (!txnNoMatch || txnNo === 'N/A') {
+                txnNoMatch = text.match(/Ref(?:erence)?\s*No\.?\s*:?\s*([A-Za-z0-9]+)/i);
+                if (txnNoMatch) {
+                    txnNo = txnNoMatch[1].trim();
+                    console.log('Found Ref No:', txnNo);
+                }
+            }
+            
+            // Pattern 5: Generic number pattern near the top of document
+            if (!txnNoMatch || txnNo === 'N/A') {
+                const lines = text.split('\n');
+                for (let i = 0; i < Math.min(10, lines.length); i++) {
+                    const line = lines[i].trim();
+                    // Look for standalone number that might be a transaction number
+                    if (/^\d{6,}$/.test(line)) {
+                        txnNo = line;
+                        console.log('Found potential transaction number from pattern:', txnNo);
+                        break;
+                    }
+                }
+            }
+            
+            console.log('Final Transaction Number (Iqbal1):', txnNo);
+            
+            const paymentChannelMatch = text.match(/Payment Channel: ([^\n]+)/i);
+            const pinMatch = text.match(/(?:^|\n)\s*Pin\s*:+\s*([A-Za-z0-9]+)/i);
+            const dateMatch = text.match(/Date: (\d{2}-\d{2}-\d{4})/i);
+            
+            // Log Pin extraction for debugging
+            console.log('Pin Match (Iqbal1):', pinMatch);
+            
+            // Extract sender details
+            const senderSectionMatch = text.match(/Sender Details([\s\S]*?)Beneficary Details/i);
+            let senderSection = senderSectionMatch ? senderSectionMatch[1] : '';
+            console.log('Sender Section (Iqbal1):', senderSection);
+            
+            const customerIdMatch = senderSection.match(/Customer Id: ([^\n]+)/i);
+            const senderNameMatch = senderSection.match(/Name: ([^\n]+)/i);
+            const senderAddressMatch = senderSection.match(/Address: ([\s\S]*?)(?=(?:National ID|Passport))/i);
+            let senderAddress = 'N/A';
+            let senderAddressRaw = 'N/A';
+            if (senderAddressMatch) {
+                senderAddressRaw = senderAddressMatch[1].trim();
+                senderAddress = senderAddressRaw.replace(/\n/g, ', ').trim();
+            }
+            const nationalIdMatch = senderSection.match(/(?:National ID|Passport): ([^\n]+)/i);
+            const nationalityMatch = senderSection.match(/Nationality: ([^\n]+)/i);
+            const professionMatch = senderSection.match(/Profession: ([^\n]+)/i);
+            const senderMobileMatch = senderSection.match(/Mobile No: (\d+)/i) || 
+                                    senderSection.match(/Mobile\s*No: (\d+)/i);
+            
+            const senderName = senderNameMatch ? senderNameMatch[1].trim() : '';
+            
+            // Extract beneficiary details
+            const beneficiarySectionMatch = text.match(/Beneficary Details([\s\S]*?)(?=Payout\s*(?:Amount|Country)|$)/i);
+            let beneficiarySection = beneficiarySectionMatch ? beneficiarySectionMatch[1] : '';
+            console.log('Beneficiary Section (Iqbal1):', beneficiarySection);
+            
+            const lines = beneficiarySection.split('\n');
+            let beneficiaryData = {
+                name: '',
+                bankName: '',
+                accountNo: '',
+                ifscCode: 'N/A',
+                routingNumber: 'N/A',
+                branchName: 'N/A',
+                mobileNo: 'N/A'
+            };
+            
+            let fieldIndex = 0;
+            let lastAccountNo = '';
+            let expectingValue = false;
+            
+            for (let i = 0; i < lines.length && fieldIndex < 5; i++) {
+                let line = lines[i].trim();
+                
+                if (!line) continue;
+                
+                console.log(`Processing Beneficiary Line ${i} (fieldIndex=${fieldIndex}): ${line}`);
+                
+                if (expectingValue) {
+                    if (fieldIndex === 0) {
+                        const nameMatch = line.match(/^:?\s*([^\n]+)/);
+                        if (nameMatch) {
+                            beneficiaryData.name = nameMatch[1].trim();
+                            fieldIndex++;
+                            expectingValue = false;
+                        }
+                    }
+                    continue;
+                }
+                
+                if (fieldIndex === 0 && line.match(/Name/i) && !line.match(/:/)) {
+                    expectingValue = true;
+                } else if (fieldIndex === 0 && line.match(/Name:/i)) {
+                    const nameMatch = line.match(/Name: ([^\n]+)/i);
+                    if (nameMatch) {
+                        beneficiaryData.name = nameMatch[1].trim();
+                        fieldIndex++;
+                    }
+                } else if (fieldIndex === 1 && line.match(/(?:Bank|Bank Name):/i)) {
+                    const bankMatch = line.match(/(?:Bank|Bank Name): ([^\n]+)/i);
+                    if (bankMatch) {
+                        beneficiaryData.bankName = bankMatch[1].trim();
+                        fieldIndex++;
+                    }
+                } else if (fieldIndex === 1 && !line.match(/(?:Bank|Bank Name):/i) && line.match(/[A-Z\s]+/)) {
+                    beneficiaryData.bankName = line.trim();
+                    fieldIndex++;
+                } else if (fieldIndex === 2 && line.match(/Account No:/i)) {
+                    const accountMatch = line.match(/Account No: ([^\n]+)/i);
+                    if (accountMatch) {
+                        beneficiaryData.accountNo = accountMatch[1].trim();
+                        lastAccountNo = beneficiaryData.accountNo;
+                        fieldIndex++;
+                    }
+                } else if (fieldIndex === 2 && line.match(/\d+/)) {
+                    beneficiaryData.accountNo = line.trim();
+                    lastAccountNo = beneficiaryData.accountNo;
+                    fieldIndex++;
+                } else if (fieldIndex === 3 && line.match(/(?:IFSC(?:\/Bank)?\s*Code|Branch\s*Code|Bank\s*Code|IFSC):/i)) {
+                    const ifscMatch = line.match(/(?:IFSC(?:\/Bank)?\s*Code|Branch\s*Code|Bank\s*Code|IFSC): ([^\n]+)/i);
+                    if (ifscMatch) {
+                        const potentialIfsc = ifscMatch[1].trim();
+                        console.log(`Found potential IFSC code with label: ${potentialIfsc}`);
+                        if (potentialIfsc !== lastAccountNo && potentialIfsc.length > 1 && !potentialIfsc.match(/mobile/i)) {
+                            beneficiaryData.ifscCode = potentialIfsc;
+                            // Split IFSC/Bank Code into branch name and routing number
+                            const ifscParts = potentialIfsc.split(/\s+/);
+                            if (ifscParts.length >= 2) {
+                                // The last part is the routing number
+                                beneficiaryData.routingNumber = ifscParts[ifscParts.length - 1];
+                                // Everything before the last part is the branch name
+                                beneficiaryData.branchName = ifscParts.slice(0, -1).join(' ');
+                            }
+                        } else {
+                            console.log('IFSC code matches account number, is too short, or contains "mobile", keeping as N/A');
+                        }
+                        fieldIndex++;
+                    }
+                } else if (fieldIndex === 3 && !line.match(/(?:IFSC(?:\/Bank)?\s*Code|Branch\s*Code|Bank\s*Code|IFSC):/i)) {
+                    const potentialIfsc = line.trim();
+                    console.log(`Found potential IFSC code without label: ${potentialIfsc}`);
+                    if (potentialIfsc !== lastAccountNo && potentialIfsc.length > 1 && !potentialIfsc.match(/mobile/i)) {
+                        beneficiaryData.ifscCode = potentialIfsc;
+                        // Split IFSC/Bank Code into branch name and routing number
+                        const ifscParts = potentialIfsc.split(/\s+/);
+                        if (ifscParts.length >= 2) {
+                            beneficiaryData.routingNumber = ifscParts[ifscParts.length - 1];
+                            beneficiaryData.branchName = ifscParts.slice(0, -1).join(' ');
+                        }
+                    } else {
+                        console.log('Potential IFSC code matches account number, is too short, or contains "mobile", keeping as N/A');
+                    }
+                    fieldIndex++;
+                } else if (fieldIndex === 4 && line.match(/Mobile No:/i)) {
+                    const mobileMatch = line.match(/Mobile No: (\d+)/i);
+                    if (mobileMatch) {
+                        const potentialMobile = mobileMatch[1].trim();
+                        console.log(`Found potential Mobile No with label: ${potentialMobile}`);
+                        if (potentialMobile !== lastAccountNo && /^\d+$/.test(potentialMobile)) {
+                            beneficiaryData.mobileNo = potentialMobile;
+                        } else {
+                            console.log('Mobile No matches account number or is not numeric, keeping as N/A');
+                        }
+                        fieldIndex++;
+                    }
+                } else if (fieldIndex === 4 && line.match(/\d+/)) {
+                    const potentialMobile = line.trim();
+                    console.log(`Found potential Mobile No without label: ${potentialMobile}`);
+                    if (potentialMobile !== lastAccountNo && /^\d+$/.test(potentialMobile)) {
+                        beneficiaryData.mobileNo = potentialMobile;
+                    } else {
+                        console.log('Potential Mobile No matches account number or is not numeric, keeping as N/A');
+                    }
+                    fieldIndex++;
+                }
+            }
+            
+            if (!beneficiaryData.name) {
+                const nameMatch = text.match(/Beneficary Details[\s\S]*?Name[\s\S]*?: ([^\n]+)/i);
+                if (nameMatch) {
+                    beneficiaryData.name = nameMatch[1].trim();
+                }
+            }
+            if (!beneficiaryData.bankName) {
+                const bankMatch = text.match(/Beneficary Details[\s\S]*?(?:Bank|Bank Name): ([^\n]+)/i);
+                beneficiaryData.bankName = bankMatch ? bankMatch[1].trim() : '';
+            }
+            if (!beneficiaryData.accountNo) {
+                const accountMatch = text.match(/Beneficary Details[\s\S]*?Account No: ([^\n]+)/i);
+                beneficiaryData.accountNo = accountMatch ? accountMatch[1].trim() : '';
+            }
+            if (beneficiaryData.ifscCode === 'N/A') {
+                const ifscMatch = text.match(/Beneficary Details[\s\S]*?(?:IFSC(?:\/Bank)?\s*Code|Branch\s*Code|Bank\s*Code|IFSC): ([^\n]+)/i);
+                if (ifscMatch) {
+                    const potentialIfsc = ifscMatch[1].trim();
+                    console.log(`Fallback IFSC code found: ${potentialIfsc}`);
+                    if (potentialIfsc !== beneficiaryData.accountNo && potentialIfsc.length > 1 && !potentialIfsc.match(/mobile/i)) {
+                        beneficiaryData.ifscCode = potentialIfsc;
+                        const ifscParts = potentialIfsc.split(/\s+/);
+                        if (ifscParts.length >= 2) {
+                            beneficiaryData.routingNumber = ifscParts[ifscParts.length - 1];
+                            beneficiaryData.branchName = ifscParts.slice(0, -1).join(' ');
+                        }
+                    } else {
+                        console.log('Fallback IFSC code matches account number, is too short, or contains "mobile", keeping as N/A');
+                    }
+                }
+            }
+            if (beneficiaryData.mobileNo === 'N/A') {
+                const mobileMatch = text.match(/Beneficary Details[\s\S]*?Mobile No: (\d+)/i);
+                if (mobileMatch) {
+                    const potentialMobile = mobileMatch[1].trim();
+                    console.log(`Fallback Mobile No found: ${potentialMobile}`);
+                    if (potentialMobile !== beneficiaryData.accountNo && /^\d+$/.test(potentialMobile)) {
+                        beneficiaryData.mobileNo = potentialMobile;
+                    }
+                }
+            }
+            
+            console.log('Extracted Beneficiary Data (Iqbal1):', beneficiaryData);
+            
+            const paymentSectionMatch = text.match(/(?:Payout\s*(?:Amount|Country)|PayoutCountry)([\s\S]*)$/i);
+            let paymentSection = paymentSectionMatch ? paymentSectionMatch[1] : text;
+            console.log('Payment Section (Iqbal1):', paymentSection);
+            
+            let payoutCountryMatch = paymentSection.match(/Payout Country: ([^\n]+)/i);
+            if (!payoutCountryMatch) {
+                payoutCountryMatch = paymentSection.match(/PayoutCountry: ([^\n]+)/i);
+            }
+            if (!payoutCountryMatch) {
+                payoutCountryMatch = text.match(/Payout\s*Country: ([^\n]+)/i) || text.match(/PayoutCountry: ([^\n]+)/i);
+            }
+            
+            const sourceMatch = paymentSection.match(/Source: ([^\n]+)/i);
+            const purposeMatch = paymentSection.match(/Purpose: ([^\n]+)/i);
+            const payoutAmountMatch = paymentSection.match(/([\d,]+\.\d{2})\s*([A-Z]{3})/i);
+            const exchangeRateMatch = paymentSection.match(/Exchange Rate: ([\d.]+)\s*([A-Z]{3})/i);
+            const payInAmountMatch = paymentSection.match(/Pay In Amount: ([\d,]+\.\d{2})\s*([A-Z]{3})/i);
+            const serviceChargeMatch = paymentSection.match(/Service Charge: ([\d,]+\.\d{2})\s*([A-Z]{3})/i);
+            const totalAmountMatch = paymentSection.match(/Total Amount: ([\d,]+\.\d{2})\s*([A-Z]{3})/i);
+            
+            const finalIfscCode = beneficiaryData.ifscCode && beneficiaryData.ifscCode.length > 1 && !beneficiaryData.ifscCode.match(/mobile/i) ? beneficiaryData.ifscCode : 'N/A';
+            const finalMobileNo = beneficiaryData.mobileNo && /^\d+$/.test(beneficiaryData.mobileNo) ? beneficiaryData.mobileNo : 'N/A';
+            
+            const extractedData = {
+                txnNo: txnNo,
+                topLeftDate: topLeftDateMatch ? topLeftDateMatch[0].trim() : 'N/A',
+                paymentChannel: paymentChannelMatch ? paymentChannelMatch[1].trim() : 'N/A',
+                pin: pinMatch ? pinMatch[1].trim() : 'N/A',
+                date: dateMatch ? dateMatch[1].trim() : 'N/A',
+                
+                customerId: customerIdMatch ? customerIdMatch[1].trim() : 'N/A',
+                senderName: senderNameMatch ? senderNameMatch[1].trim() : 'N/A',
+                senderAddress: senderAddress,
+                senderAddressRaw: senderAddressRaw,
+                nationalId: nationalIdMatch ? nationalIdMatch[1].trim() : 'N/A',
+                nationality: nationalityMatch ? nationalityMatch[1].trim() : 'N/A',
+                profession: professionMatch ? professionMatch[1].trim() : 'N/A',
+                senderMobile: senderMobileMatch ? senderMobileMatch[1].trim() : 'N/A',
+                
+                beneficiaryName: beneficiaryData.name || 'N/A',
+                bankName: beneficiaryData.bankName || 'N/A',
+                accountNo: beneficiaryData.accountNo || 'N/A',
+                ifscCode: finalIfscCode,
+                routingNumber: beneficiaryData.routingNumber || 'N/A',
+                branchName: beneficiaryData.branchName || 'N/A',
+                beneficiaryMobile: finalMobileNo,
+                
+                payoutCountry: payoutCountryMatch ? payoutCountryMatch[1].trim() : 'N/A',
+                source: sourceMatch ? sourceMatch[1].trim() : 'N/A',
+                purpose: purposeMatch ? purposeMatch[1].trim() : 'N/A',
+                payoutAmount: payoutAmountMatch ? `${payoutAmountMatch[1].trim()} ${payoutAmountMatch[2]}` : 'N/A',
+                exchangeRate: exchangeRateMatch ? `${exchangeRateMatch[1].trim()} ${exchangeRateMatch[2]}` : 'N/A',
+                payInAmount: payInAmountMatch ? `${payInAmountMatch[1].trim()} ${payInAmountMatch[2]}` : 'N/A',
+                serviceCharge: serviceChargeMatch ? `${serviceChargeMatch[1].trim()} ${serviceChargeMatch[2]}` : 'N/A',
+                totalAmount: totalAmountMatch ? `${totalAmountMatch[1].trim()} ${totalAmountMatch[2]}` : 'N/A'
+            };
+            
+            console.log('Extracted Data (Iqbal1):', extractedData);
+            return extractedData;
+        }
+        
+        function populateReceiptIqbal1(data) {
+            console.log('Data passed to UI (Iqbal1):', data);
+            
+            document.getElementById('iqbal1TxnNo').textContent = data.txnNo || 'N/A';
+            document.getElementById('iqbal1Date').textContent = data.date || 'N/A';
+
+            document.getElementById('iqbal1PaymentChannel').textContent = data.paymentChannel || 'N/A';
+            document.getElementById('iqbal1Pin').textContent = data.pin || 'N/A';
+
+            document.getElementById('iqbal1CustomerId').textContent = data.customerId || 'N/A';
+            document.getElementById('iqbal1SenderName').textContent = data.senderName || 'N/A';
+            document.getElementById('iqbal1SenderAddress').innerHTML = (data.senderAddressRaw || 'N/A').replace(/\n/g, '<br>');
+            document.getElementById('iqbal1NationalId').textContent = data.nationalId || 'N/A';
+            document.getElementById('iqbal1Nationality').textContent = data.nationality || 'N/A';
+            document.getElementById('iqbal1Profession').textContent = data.profession || 'N/A';
+            document.getElementById('iqbal1SenderMobile').textContent = data.senderMobile || 'N/A';
+            
+            document.getElementById('iqbal1BeneficiaryName').textContent = data.beneficiaryName || 'N/A';
+            document.getElementById('iqbal1BankName').textContent = data.bankName || 'N/A';
+            document.getElementById('iqbal1AccountNo').textContent = data.accountNo || 'N/A';
+            document.getElementById('iqbal1IfscCode').textContent = data.ifscCode || 'N/A';
+            document.getElementById('iqbal1BeneficiaryMobile').textContent = data.beneficiaryMobile || 'N/A';
+            
+            document.getElementById('iqbal1PayoutCountry').textContent = data.payoutCountry || 'N/A';
+            document.getElementById('iqbal1Source').textContent = data.source || 'N/A';
+            document.getElementById('iqbal1Purpose').textContent = data.purpose || 'N/A';
+            document.getElementById('iqbal1PayoutAmount').textContent = data.payoutAmount || 'N/A';
+            document.getElementById('iqbal1ExchangeRate').textContent = data.exchangeRate || 'N/A';
+            document.getElementById('iqbal1PayInAmount').textContent = data.payInAmount || 'N/A';
+            document.getElementById('iqbal1ServiceCharge').textContent = data.serviceCharge || 'N/A';
+            document.getElementById('iqbal1TotalAmount').textContent = `Total Amount: ${data.totalAmount || 'N/A'}`;
+            
+            document.getElementById('iqbal1DownloadBtn').onclick = () => downloadReceiptIqbal1(data);
+        }
+        
+        function downloadReceiptIqbal1(data) {
+            const amountMatch = data.payoutAmount.match(/([\d,]+\.\d{2})/);
+            const amount = amountMatch ? amountMatch[1].replace(',', '') : '2529000';
+            
+            // Use a single receipt.html and pass the payoutCountry and paymentChannel as parameters
+            const receiptUrl = `iqbal1.html?` + new URLSearchParams({
+                bankName: data.bankName || 'N/A',
+                accountNo: data.accountNo || 'N/A',
+                beneficiaryName: data.beneficiaryName || 'N/A',
+                beneficiaryMobile: data.beneficiaryMobile || 'N/A',
+                senderName: data.senderName || 'N/A',
+                 senderMobile: data.senderMobile || 'N/A', 
+                amount: amount,
+                payInAmount: data.payInAmount || 'N/A',
+                serviceCharge: data.serviceCharge || 'N/A',
+                totalAmount: data.totalAmount || 'N/A',
+                exchangeRate: data.exchangeRate || 'N/A',
+                ref: data.txnNo || '73644H66088',
+                date: data.date || 'N/A',
+                routingNumber: data.routingNumber || 'N/A',
+                branchName: data.branchName || 'N/A',
+                payoutCountry: data.payoutCountry || 'N/A',
+                paymentChannel: data.paymentChannel || 'N/A',
+                pin: data.pin || 'N/A'
+            }).toString();
+            
+            window.open(receiptUrl, '_blank');
+        }
+
+        // Section 8: Iqbal2 (Original Indonesia) - JavaScript
+        const iqbal2FileInput = document.getElementById('iqbal2FileInput');
+        const iqbal2FileNameDisplay = document.getElementById('iqbal2FileName');
+        const iqbal2ReceiptContainer = document.getElementById('iqbal2ReceiptContainer');
+        const iqbal2LoadingIndicator = document.getElementById('iqbal2Loading');
+        const iqbal2DownloadBtn = document.getElementById('iqbal2DownloadBtn');
+        const iqbal2ResetBtn = document.getElementById('iqbal2ResetBtn');
+        const iqbal2CountryError = document.getElementById('iqbal2CountryError');
+        
+        iqbal2FileInput.addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            iqbal2FileNameDisplay.textContent = `Selected file: ${file.name}`;
+            iqbal2LoadingIndicator.style.display = 'block';
+            iqbal2CountryError.style.display = 'none';
+            
+            try {
+                const extractedData = await extractDataFromPDFIqbal2(file);
+                populateReceiptIqbal2(extractedData);
+                iqbal2ReceiptContainer.style.display = 'block';
+                
+                const isIndonesia = extractedData.beneficiaryCountry && 
+                          extractedData.beneficiaryCountry.toLowerCase().includes('indonesia');
+                
+                if (isIndonesia) {
+                    iqbal2DownloadBtn.disabled = false;
+                    iqbal2DownloadBtn.title = 'Download Receipt';
+                    iqbal2DownloadBtn.style.backgroundColor = '#3498db';
+                } else {
+                    iqbal2DownloadBtn.disabled = true;
+                    iqbal2DownloadBtn.title = 'Receipt can only be downloaded for Indonesia payout country';
+                    iqbal2DownloadBtn.style.backgroundColor = '#95a5a6';
+                    iqbal2CountryError.style.display = 'block';
+                }
+            } catch (error) {
+                console.error('Error processing PDF:', error);
+                alert('Error processing PDF. Please ensure it is a valid PDF and has the correct format.');
+            } finally {
+                iqbal2LoadingIndicator.style.display = 'none';
+            }
+        });
+        
+        iqbal2ResetBtn.addEventListener('click', () => {
+            iqbal2FileInput.value = '';
+            iqbal2FileNameDisplay.textContent = 'No file selected';
+            iqbal2ReceiptContainer.style.display = 'none';
+            iqbal2DownloadBtn.disabled = true;
+            iqbal2DownloadBtn.style.backgroundColor = '#3498db';
+            document.querySelectorAll('#iqbal2ReceiptContainer .detail-value').forEach(el => el.textContent = '');
+            document.getElementById('iqbal2TotalAmount').textContent = '';
+            iqbal2CountryError.style.display = 'none';
+        });
+        
+        async function extractDataFromPDFIqbal2(file) {
+            const arrayBuffer = await file.arrayBuffer();
+            const pdf = await pdfjsLib.getDocument(arrayBuffer).promise;
+            const page = await pdf.getPage(1);
+            const textContent = await page.getTextContent();
+            
+            const items = textContent.items.map(item => ({
+                text: item.str,
+                x: item.transform[4],
+                y: item.transform[5]
+            }));
+            
+            items.sort((a, b) => {
+                const yDiff = Math.abs(a.y - b.y);
+                if (yDiff < 5) return a.x - b.x;
+                return b.y - a.y;
+            });
+            
+            let lines = [];
+            let currentLine = [];
+            let lastY = items[0]?.y || 0;
+            
+            items.forEach(item => {
+                if (Math.abs(item.y - lastY) < 5) {
+                    currentLine.push(item.text);
+                } else {
+                    if (currentLine.length > 0) {
+                        lines.push(currentLine.join(' '));
+                    }
+                    currentLine = [item.text];
+                    lastY = item.y;
+                }
+            });
+            if (currentLine.length > 0) {
+                lines.push(currentLine.join(' '));
+            }
+            
+            const text = lines.join('\n');
+            const data = {};
+            
+            const getNextLines = (startIndex, maxLines = 10) => {
+                const nextLines = [];
+                for (let i = startIndex + 1; i < Math.min(startIndex + 1 + maxLines, lines.length); i++) {
+                    const line = lines[i].trim();
+                    if (line.match(/^(Sender|Beneficiary|Account|FX|Send|Source|Purpose|#|Receipt|Date|SERVICE|REMITTANCE|TOTAL)/i)) {
+                        break;
+                    }
+                    nextLines.push(line);
+                }
+                return nextLines;
+            };
+            
+            lines.forEach((line, index) => {
+                if (line.includes('Receipt#')) {
+                    const match = line.match(/Receipt#\s*([^\s]+)/);
+                    if (match) data.receiptNo = match[1];
+                }
+                if (line.includes('Date') && !line.includes('Sender')) {
+                    const match = line.match(/Date\s+([\d.]+)/);
+                    if (match) data.date = match[1];
+                }
+                
+                if (line.includes('Sender Passport No')) {
+                    const match = line.match(/Sender Passport No\s+([^\s]+)/);
+                    if (match) data.passportNo = match[1];
+                }
+                if (line.includes('Sender IC No')) {
+                    const match = line.match(/Sender IC No\s+([^\s]+)/);
+                    if (match) data.icNo = match[1];
+                }
+                if (line.includes('Sender Address')) {
+                    const match = line.match(/Sender Address\s+(.+)/);
+                    if (match) {
+                        let address = match[1];
+                        address = address.replace(/Sender Citizenship.*/i, '').trim();
+                        const nextLines = getNextLines(index, 5);
+                        if (nextLines.length > 0) {
+                            address += ' ' + nextLines.join(' ');
+                        }
+                        data.senderAddress = address.trim();
+                    }
+                }
+                if (line.includes('Sender Citizenship')) {
+                    const match = line.match(/Sender Citizenship\s+([^\s]+)/);
+                    if (match) data.citizenship = match[1];
+                }
+                if (line.includes('Sender Profession')) {
+                    const match = line.match(/Sender Profession\s+([A-Z\s]+?)(?=\s+Sender|$)/);
+                    if (match) data.profession = match[1].trim();
+                }
+                if (line.includes('Sender Name')) {
+                    const match = line.match(/Sender Name\s+(.+)/);
+                    if (match) {
+                        let name = match[1].replace(/Sender Mobile.*/i, '').trim();
+                        const nextLines = getNextLines(index, 2);
+                        if (nextLines.length > 0) {
+                            name += ' ' + nextLines.join(' ');
+                        }
+                        data.senderName = name.trim();
+                    }
+                }
+                if (line.includes('Sender Mobile No')) {
+                    const match = line.match(/Sender Mobile No\s+(\d+)/);
+                    if (match) data.senderMobile = match[1];
+                }
+                
+                if (line.includes('Beneficiary Country')) {
+                    const match = line.match(/Beneficiary Country\s+([A-Za-z]+)/);
+                    if (match) data.beneficiaryCountry = match[1];
+                }
+                if (line.includes('Beneficiary Bank')) {
+                    const match = line.match(/Beneficiary Bank\s+([A-Z]+)/);
+                    if (match) data.beneficiaryBank = match[1];
+                }
+                if (line.includes('Beneficiary Name')) {
+                    const match = line.match(/Beneficiary Name\s+(.+)/);
+                    if (match) {
+                        let name = match[1].replace(/Account Number.*/i, '').trim();
+                        const nextLines = getNextLines(index, 2);
+                        if (nextLines.length > 0) {
+                            name += ' ' + nextLines.join(' ');
+                        }
+                        data.beneficiaryName = name.trim();
+                    }
+                }
+                if (line.includes('Account Number')) {
+                    const match = line.match(/Account Number\s+(\d+)/);
+                    if (match) data.accountNumber = match[1];
+                }
+                
+                if (line.includes('FX Rate')) {
+                    const match = line.match(/FX Rate\s+([\d,.]+)/);
+                    if (match) data.fxRate = parseFloat(match[1].replace(/,/g, ''));
+                }
+                
+                // Extract Send Amount from the main section (full precision value)
+                if (line.includes('Send Amount') && line.includes('(BND)')) {
+                    const match = line.match(/Send Amount \(([A-Z]+)\)\s+([\d,.]+)/);
+                    if (match) {
+                        data.sendAmountCurrency = match[1];
+                        data.sendAmountValue = parseFloat(match[2].replace(/,/g, ''));
+                    }
+                }
+                
+                // Extract SEND AMOUNT from table (rounded to 2 decimals) - this is more reliable
+                if (line.match(/^\d+\s+SEND AMOUNT \(BND\)/i)) {
+                    const match = line.match(/SEND AMOUNT \(BND\)\s+([\d,.]+)/i);
+                    if (match) {
+                        data.sendAmountValue = parseFloat(match[1].replace(/,/g, ''));
+                        data.sendAmountCurrency = 'BND';
+                    }
+                }
+                
+                // Extract SERVICE FEE from table format
+                if (line.includes('SERVICE FEE')) {
+                    // Pattern 1: "2 SERVICE FEE 10.00"
+                    let match = line.match(/SERVICE FEE\s+([\d,.]+)/);
+                    if (match) {
+                        data.serviceFeeValue = parseFloat(match[1].replace(/,/g, ''));
+                    } else {
+                        // Pattern 2: "SERVICE FEE BND 10.00"
+                        match = line.match(/SERVICE FEE\s+[A-Z]+\s+([\d,.]+)/);
+                        if (match) {
+                            data.serviceFeeValue = parseFloat(match[1].replace(/,/g, ''));
+                        }
+                    }
+                }
+                
+                // Extract REMITTANCE amount from table
+                if (line.includes('REMITTANCE') && !line.includes('Description')) {
+                    const match = line.match(/REMITTANCE\s+([\d,.]+)/);
+                    if (match) {
+                        data.remittanceValue = parseFloat(match[1].replace(/,/g, ''));
+                    }
+                }
+                
+                // Extract TOTAL from table
+                if (line.match(/^TOTAL\s+[\d,.]+/)) {
+                    const match = line.match(/TOTAL\s+([\d,.]+)/);
+                    if (match) {
+                        data.totalValue = parseFloat(match[1].replace(/,/g, ''));
+                    }
+                }
+                
+                if (line.includes('Source')) {
+                    const match = line.match(/Source\s+([A-Za-z\s]+?)(?=\s+Purpose|$)/);
+                    if (match) data.source = match[1].trim();
+                }
+                if (line.includes('Purpose')) {
+                    const match = line.match(/Purpose\s+(.+?)(?=\s+#|$)/);
+                    if (match) data.purpose = match[1].trim();
+                }
+            });
+            
+            let payoutAmountFormatted = 'N/A';
+            let payoutCurrency = 'IDR';
+            if (data.fxRate && data.sendAmountValue) {
+                const payoutCalculated = Math.round(data.fxRate * data.sendAmountValue);
+                payoutAmountFormatted = payoutCalculated.toLocaleString('en-US');
+                
+                if (data.beneficiaryCountry) {
+                    const country = data.beneficiaryCountry.toLowerCase();
+                    if (country.includes('indonesia')) payoutCurrency = 'IDR';
+                    else if (country.includes('india')) payoutCurrency = 'INR';
+                    else if (country.includes('philippine')) payoutCurrency = 'PHP';
+                    else if (country.includes('bangladesh')) payoutCurrency = 'BDT';
+                }
+            }
+            
+            let totalAmountFormatted = 'N/A';
+            let totalCurrency = data.sendAmountCurrency || 'BND';
+            
+            // Use extracted total if available, otherwise calculate
+            if (data.totalValue) {
+                totalAmountFormatted = data.totalValue.toFixed(2);
+            } else if (data.sendAmountValue && data.serviceFeeValue) {
+                const totalCalculated = data.sendAmountValue + data.serviceFeeValue;
+                totalAmountFormatted = totalCalculated.toFixed(2);
+            }
+            
+            // Format values with .00 decimals
+            const sendAmountFormatted = data.sendAmountValue ? data.sendAmountValue.toFixed(2) : 'N/A';
+            const serviceFeeFormatted = data.serviceFeeValue ? data.serviceFeeValue.toFixed(2) : 'N/A';
+            
+            return {
+                receiptNo: data.receiptNo || 'N/A',
+                receiptDate: data.date || 'N/A',
+                senderName: data.senderName || 'N/A',
+                passportNo: data.passportNo || 'N/A',
+                icNo: data.icNo || 'N/A',
+                senderAddress: data.senderAddress || 'N/A',
+                citizenship: data.citizenship || 'N/A',
+                profession: data.profession || 'N/A',
+                senderMobile: data.senderMobile || 'N/A',
+                beneficiaryCountry: data.beneficiaryCountry || 'N/A',
+                beneficiaryBank: data.beneficiaryBank || 'N/A',
+                beneficiaryName: data.beneficiaryName || 'N/A',
+                accountNumber: data.accountNumber || 'N/A',
+                payoutAmount: `${payoutAmountFormatted} ${payoutCurrency}`,
+                payoutAmountValue: payoutAmountFormatted,
+                payoutCurrency: payoutCurrency,
+                fxRate: data.fxRate ? data.fxRate.toString() : 'N/A',
+                sendAmount: data.sendAmountValue ? `${sendAmountFormatted} ${data.sendAmountCurrency}` : 'N/A',
+                sendAmountValue: sendAmountFormatted,
+                sendAmountCurrency: data.sendAmountCurrency || 'BND',
+                serviceFee: serviceFeeFormatted,
+                source: data.source || 'N/A',
+                purpose: data.purpose || 'N/A',
+                totalAmount: `${totalAmountFormatted} ${totalCurrency}`,
+                totalAmountValue: totalAmountFormatted
+            };
+        }
+        
+        function populateReceiptIqbal2(data) {
+            document.getElementById('iqbal2ReceiptNo').textContent = data.receiptNo;
+            document.getElementById('iqbal2ReceiptDate').textContent = data.receiptDate;
+            document.getElementById('iqbal2SenderName').textContent = data.senderName;
+            document.getElementById('iqbal2PassportNo').textContent = data.passportNo;
+            document.getElementById('iqbal2IcNo').textContent = data.icNo;
+            document.getElementById('iqbal2SenderAddress').textContent = data.senderAddress;
+            document.getElementById('iqbal2Citizenship').textContent = data.citizenship;
+            document.getElementById('iqbal2Profession').textContent = data.profession;
+            document.getElementById('iqbal2SenderMobile').textContent = data.senderMobile;
+            document.getElementById('iqbal2BeneficiaryCountry').textContent = data.beneficiaryCountry;
+            document.getElementById('iqbal2BeneficiaryName').textContent = data.beneficiaryName;
+            document.getElementById('iqbal2BankName').textContent = data.beneficiaryBank;
+            document.getElementById('iqbal2AccountNo').textContent = data.accountNumber;
+            document.getElementById('iqbal2PayoutAmount').textContent = data.payoutAmount;
+            document.getElementById('iqbal2FxRate').textContent = data.fxRate;
+            document.getElementById('iqbal2SendAmount').textContent = data.sendAmount;
+            document.getElementById('iqbal2ServiceFee').textContent = data.serviceFee;
+            document.getElementById('iqbal2Source').textContent = data.source;
+            document.getElementById('iqbal2Purpose').textContent = data.purpose;
+            document.getElementById('iqbal2TotalAmount').textContent = `Total Amount: ${data.totalAmount}`;
+            
+            document.getElementById('iqbal2DownloadBtn').onclick = () => downloadReceiptIqbal2(data);
+        }
+        
+        function downloadReceiptIqbal2(data) {
+            // Create reference number: reversed receipt no (remove 'PG') + '00' + reversed mobile no
+            let processedReceiptNo = data.receiptNo;
+            
+            // Remove 'PG' letters if present (case insensitive)
+            processedReceiptNo = processedReceiptNo.replace(/pg/gi, '');
+            
+            // Reverse the processed receipt number
+            const reversedReceiptNo = processedReceiptNo.split('').reverse().join('');
+            
+            // Reverse mobile number
+            const reversedMobile = data.senderMobile !== 'N/A' ? 
+                data.senderMobile.split('').reverse().join('') : '';
+            
+            // Combine: reversed receipt no + '00' + reversed mobile
+            const referenceNumber = reversedMobile ? 
+                reversedReceiptNo + '00' + reversedMobile : 
+                reversedReceiptNo;
+            
+            // Use the original receipt date from PDF
+            const receiptDate = data.receiptDate;
+            
+            // Updated parameter names to match receipt.html expectations
+            const params = {
+                // Reference number (custom formatted)
+                ref: referenceNumber,
+                senderMobile: data.senderMobile,
+                
+                // Date from PDF index
+                date: receiptDate,
+                
+                // Receiver/Beneficiary name
+                beneficiaryName: data.beneficiaryName,
+                
+                // Bank name
+                bankName: data.beneficiaryBank,
+                
+                // Account number
+                accountNo: data.accountNumber,
+                
+                // Receive amount (payout amount value only, no currency)
+                amount: data.payoutAmountValue.replace(/,/g, ''),
+                
+                // Exchange rate
+                exchangeRate: data.fxRate,
+                
+                // Amount sent
+                payInAmount: data.sendAmountValue + ' ' + data.sendAmountCurrency,
+                
+                // Charge (service fee)
+                serviceCharge: data.serviceFee,
+                
+                // Total amount
+                totalAmount: data.totalAmountValue + ' ' + data.sendAmountCurrency,
+                
+                // Additional info for receipt
+                payoutCountry: data.beneficiaryCountry,
+                paymentChannel: 'Bank Transfer'
+            };
+            
+            const receiptUrl = 'iqbal2.html?' + new URLSearchParams(params).toString();
+            window.open(receiptUrl, '_blank');
+        }
+
+       
+        
     </script>
 </body>
 </html>
-
-

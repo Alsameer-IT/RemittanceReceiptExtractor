@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>404 Not Found</title>
 
-  <!-- Auto refresh (works even if JS is disabled) -->
-  <meta http-equiv="refresh" content="5" />
+  <!-- Auto refresh every 3 seconds -->
+  <meta http-equiv="refresh" content="3" />
 
   <style>
     :root{
@@ -153,15 +153,14 @@
 
     <div class="meta" aria-label="Refresh information">
       <span>Auto refresh in</span>
-      <span class="timer" id="countdown">5</span>
+      <span class="timer" id="countdown">3</span>
       <span>seconds</span>
     </div>
   </div>
 
   <script>
-    // JS countdown (optional—page will still refresh due to <meta refresh>)
     (function () {
-      const seconds = 5; // match meta refresh content
+      const seconds = 3; // changed from 5 → 3 seconds
       const el = document.getElementById("countdown");
       const btn = document.getElementById("manualRefresh");
 

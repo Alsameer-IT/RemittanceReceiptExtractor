@@ -1,1 +1,188 @@
-404 Error
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>404 Not Found</title>
+
+  <!-- Auto refresh (works even if JS is disabled) -->
+  <meta http-equiv="refresh" content="5" />
+
+  <style>
+    :root{
+      --bg: #0b1020;
+      --panel: rgba(255,255,255,0.06);
+      --stroke: rgba(255,255,255,0.14);
+      --text: #f5f7ff;
+      --muted: rgba(245,247,255,0.75);
+      --accent: #ff4d5a;
+    }
+
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color: var(--text);
+      background: radial-gradient(1200px 900px at 20% 10%, #1a1f3a 0%, rgba(11,16,32,1) 60%, #070a14 100%);
+      overflow:hidden;
+    }
+
+    .wrap{
+      width:min(92vw, 860px);
+      padding: 22px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02));
+      border: 1px solid var(--stroke);
+      box-shadow: 0 22px 80px rgba(0,0,0,0.55);
+      position: relative;
+      backdrop-filter: blur(8px);
+    }
+
+    .top{
+      display:flex;
+      align-items:flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .badge{
+      display:inline-flex;
+      gap: 8px;
+      align-items:center;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.10);
+      border: 1px solid rgba(255,255,255,0.18);
+      font-size: 13px;
+      letter-spacing: 0.2px;
+    }
+
+    .dot{
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: var(--accent);
+      box-shadow: 0 0 14px rgba(255,77,90,0.55);
+    }
+
+    h1{
+      margin: 10px 0 6px;
+      font-size: clamp(38px, 6vw, 64px);
+      letter-spacing: -0.5px;
+      line-height: 1;
+    }
+
+    .sub{
+      margin: 0;
+      font-size: 15px;
+      line-height: 1.6;
+      color: var(--muted);
+      max-width: 64ch;
+    }
+
+    .meta{
+      margin-top: 14px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+      font-size: 13px;
+      color: rgba(245,247,255,0.85);
+    }
+
+    .timer{
+      font-variant-numeric: tabular-nums;
+      padding: 3px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.22);
+      background: rgba(0,0,0,0.24);
+    }
+
+    .btn{
+      margin-left: auto;
+      padding: 8px 12px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.24);
+      background: rgba(255,255,255,0.10);
+      color: var(--text);
+      cursor: pointer;
+      transition: transform 140ms ease, background 140ms ease;
+    }
+    .btn:hover{ background: rgba(255,255,255,0.16); transform: translateY(-1px); }
+    .btn:active{ transform: translateY(0px) scale(0.98); }
+
+    .corner{
+      position:absolute;
+      inset: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(1200px 500px at 100% 0%, rgba(255,77,90,0.18), transparent 60%),
+        radial-gradient(900px 520px at 0% 100%, rgba(120,150,255,0.18), transparent 64%);
+      opacity: 0.9;
+      border-radius: 18px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap" role="main" aria-labelledby="title">
+    <div class="corner" aria-hidden="true"></div>
+
+    <div class="top">
+      <div>
+        <div class="badge" aria-label="Status">
+          <span class="dot" aria-hidden="true"></span>
+          <span>HTTP 404 — Not Found</span>
+        </div>
+        <h1 id="title">404</h1>
+        <p class="sub">
+          The page you’re trying to open doesn’t exist on this server (or the path is wrong).
+          This view will refresh automatically.
+        </p>
+      </div>
+
+      <button class="btn" type="button" id="manualRefresh" aria-label="Refresh now">
+        Refresh now
+      </button>
+    </div>
+
+    <div class="meta" aria-label="Refresh information">
+      <span>Auto refresh in</span>
+      <span class="timer" id="countdown">5</span>
+      <span>seconds</span>
+    </div>
+  </div>
+
+  <script>
+    // JS countdown (optional—page will still refresh due to <meta refresh>)
+    (function () {
+      const seconds = 5; // match meta refresh content
+      const el = document.getElementById("countdown");
+      const btn = document.getElementById("manualRefresh");
+
+      let remaining = seconds;
+      if (el) el.textContent = String(remaining);
+
+      const tick = () => {
+        remaining -= 1;
+        if (el) el.textContent = String(Math.max(remaining, 0));
+        if (remaining <= 0) {
+          clearInterval(timer);
+          location.reload();
+        }
+      };
+
+      const timer = setInterval(tick, 1000);
+
+      if (btn) {
+        btn.addEventListener("click", () => location.reload());
+      }
+    })();
+  </script>
+</body>
+</html>
